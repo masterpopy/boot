@@ -1,0 +1,134 @@
+package personal.popy.localserver.connect.buffer;
+
+import personal.popy.localserver.data.StaticBuffer;
+import personal.popy.localserver.servlet.ResponseImpl;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.CoderResult;
+
+public class ByteBufferStream extends ServletOutputStream {
+
+    private ResponseImpl response;
+    private ByteBuffer ob;
+    private CharBuffer cb;
+
+    private CharsetEncoder encoder;
+    public ByteBufferStream(ResponseImpl response) {
+        this.response = response;
+        ob = StaticBuffer.allocByteBuffer();
+        encoder = response.getCharset().newEncoder();
+    }
+
+
+    private void enableCharBuffer() {
+        if (cb == null) {
+            cb = StaticBuffer.allocCharBuffer();
+        }
+    }
+
+    @Override
+    public boolean isReady() {
+        return true;
+    }
+
+    @Override
+    public void setWriteListener(WriteListener writeListener) {
+
+    }
+
+    @Override
+    public void write(int b) {
+        ob.put((byte) b);
+    }
+
+    @Override
+    public void write(byte[] b, int off, int len) {
+        while (len > 0) {
+            int writebytes;
+            if (len > ob.remaining()) {
+                writebytes = ob.remaining();
+                ob.put(b, off, writebytes);
+                flush();
+            } else {
+                writebytes = len;
+                ob.put(b, off, writebytes);
+            }
+            len -= writebytes;
+            off += writebytes;
+        }
+    }
+
+    public void write(String s, int off, int len) throws IOException {
+        enableCharBuffer();
+        while (len > 0) {
+            int capacity = cb.capacity();
+            int writebytes = Math.min(len, capacity);
+            cb.put(s, off, writebytes);
+            encode();
+            len -= capacity;
+            off += writebytes;
+        }
+    }
+
+    private void encode() throws IOException {
+        cb.flip();
+        CoderResult encode;
+        do {
+            encode = encoder.encode(cb, ob, false);
+            if (encode.isError()) {
+                encode.throwException();
+            }
+        } while (judgeResult(encode));
+        cb.clear();
+    }
+
+    private boolean judgeResult(CoderResult coderResult) throws IOException {
+        if (coderResult.isOverflow()) {
+            flush();
+            return true;
+        } else if (coderResult.isUnderflow()) {
+            //todo lifted char
+            return false;
+        }
+        return false;
+    }
+
+
+    public void write(char[] s, int off, int len) throws IOException {
+        enableCharBuffer();
+        while (len > 0) {
+            int writebytes = Math.min(len, cb.capacity());
+            cb.put(s, off, writebytes);
+            encode();
+            len -= cb.capacity();
+            off += writebytes;
+        }
+    }
+
+    @Override
+    public void flush() {
+        response.sendBody();
+        ob.clear();
+    }
+
+    @Override
+    public void close() {
+        flush();
+        cb = null;
+        ob = null;
+        response = null;
+    }
+
+    public CharBuffer getCb() {
+        return cb;
+    }
+
+    public ByteBuffer getOb() {
+        return ob;
+    }
+}
