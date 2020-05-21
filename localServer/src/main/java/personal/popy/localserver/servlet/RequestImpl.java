@@ -35,8 +35,9 @@ public class RequestImpl implements HttpServletRequest {
         this.exchanger = exchanger;
     }
 
-
-
+    public HttpExchanger getExchanger() {
+        return exchanger;
+    }
 
     public void recycle() {
         entity.recycle();
@@ -416,7 +417,7 @@ public class RequestImpl implements HttpServletRequest {
 
     @Override
     public boolean isAsyncSupported() {
-        return false;
+        return true;
     }
 
     @Override

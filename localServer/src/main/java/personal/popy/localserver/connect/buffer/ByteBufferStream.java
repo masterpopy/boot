@@ -18,6 +18,10 @@ public class ByteBufferStream extends ServletOutputStream {
     private CharBuffer cb;
 
     private CharsetEncoder encoder;
+
+    private boolean isReady = true;
+    private WriteListener writeListener;
+
     public ByteBufferStream(ResponseImpl response) {
         this.response = response;
         ob = StaticBuffer.allocByteBuffer();
@@ -33,12 +37,18 @@ public class ByteBufferStream extends ServletOutputStream {
 
     @Override
     public boolean isReady() {
-        return true;
+        return isReady;
     }
 
     @Override
     public void setWriteListener(WriteListener writeListener) {
-
+        if (writeListener == null) {
+            throw new NullPointerException("response.writeListenerSet");
+        }
+        if (this.writeListener != null) {
+            throw new IllegalStateException("response.writeListenerSet");
+        }
+        this.writeListener = writeListener;
     }
 
     @Override
@@ -130,5 +140,13 @@ public class ByteBufferStream extends ServletOutputStream {
 
     public ByteBuffer getOb() {
         return ob;
+    }
+
+    public void setReady(boolean ready) {
+        isReady = ready;
+    }
+
+    public WriteListener getWriteListener() {
+        return writeListener;
     }
 }
