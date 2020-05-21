@@ -1,6 +1,5 @@
 package personal.popy.localserver.servlet;
 
-import personal.popy.localserver.connect.HttpRequestProtocol;
 import personal.popy.localserver.connect.StreamHandler;
 import personal.popy.localserver.connect.buffer.ResponseWriter;
 import personal.popy.localserver.connect.io.BlockRespWriter;
