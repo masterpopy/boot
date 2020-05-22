@@ -21,7 +21,7 @@ import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
 
-public class RequestImpl implements HttpServletRequest {
+public class RequestImpl implements HttpServletRequest,Runnable {
 
 
     private final HttpExchanger exchanger;
@@ -432,6 +432,11 @@ public class RequestImpl implements HttpServletRequest {
 
     public void doServlet(HttpReqEntity entity) {
         this.entity = entity;
+        run();
+    }
+
+    @Override
+    public void run() {
         try {
             ResponseImpl response = exchanger.createResponse();
             getServletContext().getServlet(getRequestURI()).service(this, response);

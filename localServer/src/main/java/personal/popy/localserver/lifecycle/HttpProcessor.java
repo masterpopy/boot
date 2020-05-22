@@ -1,5 +1,6 @@
 package personal.popy.localserver.lifecycle;
 
+import personal.popy.localserver.data.SynchronizedStack;
 import personal.popy.localserver.servlet.HttpExchanger;
 import personal.popy.localserver.servlet.ServletContextImpl;
 import personal.popy.localserver.source.Child;
@@ -12,15 +13,21 @@ import java.nio.channels.AsynchronousSocketChannel;
 public class HttpProcessor extends EnvAwire implements Processor {
 
     private ServletContext servletContext = new ServletContextImpl();
+
+    private static final SynchronizedStack<HttpExchanger> stack = new SynchronizedStack<>();
     public HttpProcessor() {
-
-
     }
 
     @Override
     public void processNewConnection(AsynchronousSocketChannel result) {
-        HttpExchanger exchanger = new HttpExchanger(this, result);
-        server.getConnectionContext().executeWork(exchanger);
+        HttpExchanger pop = stack.pop();
+        if (pop == null) {
+            pop = new HttpExchanger(this, result);
+        } else {
+            pop.setChannel(result);
+        }
+
+        pop.run();
     }
 
 
@@ -29,6 +36,9 @@ public class HttpProcessor extends EnvAwire implements Processor {
         return servletContext;
     }
 
-
+    public void endRequest(HttpExchanger exchanger) {
+        exchanger.end();
+        stack.push(exchanger);
+    }
 
 }

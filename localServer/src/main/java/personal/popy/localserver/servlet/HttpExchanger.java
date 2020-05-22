@@ -4,7 +4,6 @@ import personal.popy.localserver.connect.StreamHandler;
 import personal.popy.localserver.connect.buffer.ResponseWriter;
 import personal.popy.localserver.connect.io.BlockRespWriter;
 import personal.popy.localserver.data.ProcessBuffer;
-import personal.popy.localserver.data.StaticBuffer;
 import personal.popy.localserver.lifecycle.HttpProcessor;
 import personal.popy.localserver.lifecycle.ServerContext;
 import personal.popy.localserver.source.Child;
@@ -40,7 +39,7 @@ public class HttpExchanger implements StreamHandler<HttpReqEntity>, Runnable {
         this.channel = channel;
         this.request = new RequestImpl(this);
         this.protocol = new HttpRequestProtocol(this);
-        this.readBuf = StaticBuffer.allocByteBuffer();
+        this.readBuf = ByteBuffer.allocate(1024);
         this.buf = ProcessBuffer.alloc();
     }
 
@@ -95,7 +94,6 @@ public class HttpExchanger implements StreamHandler<HttpReqEntity>, Runnable {
         response = null;
 
 
-
         task.end(this, null);
         end();
         getServer().getConnectionContext().executeWork(this);
@@ -104,7 +102,9 @@ public class HttpExchanger implements StreamHandler<HttpReqEntity>, Runnable {
 
     @Override
     public void success(HttpReqEntity entity) {
-
+        if (buf == null) {
+            buf = ProcessBuffer.alloc();
+        }
         //write(ByteBuffer.wrap(ACK));//send ack
         getRequest().doServlet(entity);
     }
@@ -134,10 +134,7 @@ public class HttpExchanger implements StreamHandler<HttpReqEntity>, Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        StaticBuffer.saveByteBuffer(readBuf);
-        readBuf = null;
-        end();
-        buf.save();
+        getProcessor().endRequest(this);
         //System.out.println("closed happened");
     }
 
@@ -158,7 +155,12 @@ public class HttpExchanger implements StreamHandler<HttpReqEntity>, Runnable {
 
     public void end() {
         if (buf != null) {
-            buf.clear();
+            buf.save();
+            buf = null;
         }
+    }
+
+    public void setChannel(AsynchronousSocketChannel channel) {
+        this.channel = channel;
     }
 }
