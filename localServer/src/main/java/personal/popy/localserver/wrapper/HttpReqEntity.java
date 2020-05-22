@@ -3,6 +3,8 @@ package personal.popy.localserver.wrapper;
 import personal.popy.localserver.data.FastList;
 import personal.popy.localserver.data.Parameters;
 
+import java.nio.ByteBuffer;
+
 
 public class HttpReqEntity {
     public long method;
@@ -62,15 +64,15 @@ public class HttpReqEntity {
     public void parseHeader(SliencedBuffer bytes) {
         int start = bytes.getStart();
         int pos = bytes.getLimit();
-        byte[] origin = bytes.getOrigin();
+        ByteBuffer origin = bytes.getOrigin();
 
         //1. if header start with space that means this is a multiline header
-        if (origin[start] == ' ') {
+        if (origin.get(start) == ' ') {
             //todo
         }
         String key = null;
         while (start < pos) {
-            if (origin[start++] == ':') {
+            if (origin.get(start++) == ':') {
                 //head value found;
                 int start1 = bytes.getStart();
                 key = bytes.ansiString(start1, start - start1 - 1);
@@ -79,7 +81,9 @@ public class HttpReqEntity {
 
         }
 
-        while (origin[start] == ' ' || origin[start] == '\t') {
+        while (true) {
+            byte b = origin.get(start);
+            if (!(b == ' ' || b == '\t')) break;
             start++;
         }
         String value = bytes.ansiString(start, pos - start);

@@ -39,7 +39,7 @@ public class HttpExchanger implements StreamHandler<HttpReqEntity>, Runnable {
         this.channel = channel;
         this.request = new RequestImpl(this);
         this.protocol = new HttpRequestProtocol(this);
-        this.readBuf = ByteBuffer.allocate(1024);
+        this.readBuf = ByteBuffer.allocateDirect(1024);
         this.buf = ProcessBuffer.alloc();
     }
 

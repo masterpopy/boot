@@ -3,12 +3,13 @@ package personal.popy.localserver.wrapper;
 import personal.popy.localserver.data.ProcessBuffer;
 import personal.popy.localserver.util.UrlDecoder;
 
+import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.StandardCharsets;
 
 public class SliencedBuffer implements Cloneable {
 
-    public SliencedBuffer(byte[] origin, int start, int limit) {
+    public SliencedBuffer(ByteBuffer origin, int start, int limit) {
         reset(origin, start, limit);
     }
 
@@ -23,11 +24,11 @@ public class SliencedBuffer implements Cloneable {
         return limit;
     }
 
-    public byte[] getOrigin() {
+    public ByteBuffer getOrigin() {
         return origin;
     }
 
-    public SliencedBuffer reset(byte[] origin, int start, int limit) {
+    public SliencedBuffer reset(ByteBuffer  origin, int start, int limit) {
         this.start = start;
         this.limit = limit;
         this.origin = origin;
@@ -39,23 +40,16 @@ public class SliencedBuffer implements Cloneable {
     private int start;
     private int limit;
     private int length;
-    private byte[] origin;
+    private ByteBuffer origin;
     private String stringValue;
 
 
-    public String toString() {
-        if (origin == null) return "";
-        if (stringValue != null) {
-            return stringValue;
-        }
-        return stringValue = new String(origin, start, length);
-    }
 
     public String ansiString(int start, int length) {
         CharBuffer cb = ProcessBuffer.charBuf.get();
         char[] array = cb.array();
         for (int i = 0; i < length; i++) {
-            array[i] = (char) origin[i + start];
+            array[i] = (char) origin.get(i+start);
         }
         return new String(array, 0, length);
     }
@@ -64,15 +58,6 @@ public class SliencedBuffer implements Cloneable {
        return ansiString(0, length);
     }
 
-    public static int hashCode(byte[] value, int start, int length) {
-        int h = 0;
-        for (int i = 0; i < length; ++i) {
-            byte v = value[i + start];
-            h = 31 * h + (v & 255);
-        }
-
-        return h;
-    }
 
     public long getLong() {
         int i = length;
@@ -82,7 +67,7 @@ public class SliencedBuffer implements Cloneable {
         long ret = 0;
         for (int j = 0; j < i; j++) {
             ret = ret << 8;
-            ret |= Character.toUpperCase(origin[j + start]);
+            ret |= Character.toUpperCase(origin.get(j+start));
         }
         return ret;
     }
@@ -93,54 +78,13 @@ public class SliencedBuffer implements Cloneable {
         return this;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null) return false;
-        if (getClass() == o.getClass()) {
-            SliencedBuffer that = (SliencedBuffer) o;
-            if (length != that.length) {
-                return false;
-            }
-            for (int i = 0; i < length; i++) {
-                if (origin[start + i] != that.origin[that.start + i]) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        return false;
-    }
 
-
-    public boolean equalsIgnoreCase(String that) {
-        if (that == null) return false;
-        //unsafe, this string must be ansi, but headers can only be ansi, parameters should not use this method
-        if (stringValue != null) {
-            return stringValue.equals(that);
-        }
-        for (int i = 0; i < length; i++) {
-            if (Character.toLowerCase(origin[start + i]) != Character.toLowerCase(that.charAt(i))) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-
-    @Override
-    public int hashCode() {
-        if (stringValue != null) {
-            return stringValue.hashCode();
-        }
-        return hashCode(origin, start, length);
-    }
 
     public void decodeUrl(HttpReqEntity en) {
         CharBuffer cb = ProcessBuffer.charBuf.get();
         //todo charset
         while (start < limit) {
-            byte b = origin[start];
+            byte b = origin.get(start);
             if (b == '?') {
                 break;
             }
@@ -161,9 +105,7 @@ public class SliencedBuffer implements Cloneable {
     }
 
 
-    public int getInt() {
-        return parseInt(origin, start, limit, 10);
-    }
+
 
     public static int parseInt(byte[] s, int beginIndex, int endIndex, int radix) throws NumberFormatException {
         if (beginIndex >= 0 && beginIndex <= endIndex && endIndex <= s.length) {

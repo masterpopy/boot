@@ -56,7 +56,7 @@ public class ChannelStream<T> implements CompletionHandler<Integer, ByteBuffer>,
             while (readIndex < position) {
                 byte b = buffer.get(readIndex++);
                 if (meetSp.meet(b)) {
-                    w.accept(data, origin.reset(buffer.array(), curStart, readIndex - 1));
+                    w.accept(data, origin.reset(buffer, curStart, readIndex - 1));
                     return CompletedStatus.SUCCESS;
                 }
             }
@@ -80,7 +80,7 @@ public class ChannelStream<T> implements CompletionHandler<Integer, ByteBuffer>,
                 }
                 //匹配成功
                 readIndex += READ_UNTIL_END_LINE.length;
-                SliencedBuffer reset = origin.reset(buffer.array(), curStart, readIndex - READ_UNTIL_END_LINE.length);
+                SliencedBuffer reset = origin.reset(buffer, curStart, readIndex - READ_UNTIL_END_LINE.length);
                 if (reset.getLength() == READ_UNTIL_END_LINE.length) {
                     //empty give up
                     readIndex -= 2;

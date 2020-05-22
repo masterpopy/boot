@@ -1,5 +1,4 @@
 import org.junit.Test;
-import personal.popy.localserver.wrapper.SliencedBuffer;
 
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanFeatureInfo;
@@ -20,13 +19,6 @@ public class Run {
         System.out.println("255".compareTo("254"));
     }
 
-    static SliencedBuffer fromString(String value) {
-        byte[] v = new byte[value.length()];
-        for (int i = 0; i < v.length; i++) {
-            v[i] = (byte) value.charAt(i);
-        }
-        return new SliencedBuffer(v, 0, v.length);
-    }
 
     @Test
     public void runResponse() {

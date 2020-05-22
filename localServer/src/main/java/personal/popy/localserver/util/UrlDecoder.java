@@ -12,20 +12,20 @@ public class UrlDecoder {
     public static void convert(SliencedBuffer str, CharBuffer cb, CharsetDecoder decoder, HttpReqEntity entity) {
         int i = str.getStart();//当前指针位置
         final int limit = str.getLimit();
-        byte[] origin = str.getOrigin();
+        ByteBuffer origin = str.getOrigin();
         int pos = i;//填充指针位置
-        ByteBuffer wrap = ByteBuffer.wrap(origin, pos, pos);
+        ByteBuffer wrap = origin.duplicate();
         String key = null;
         while (i < limit) {
-            char c = (char) origin[i];
+            char c = (char) origin.get(i);
             switch (c) {
                 case '%':
                     if (i + 3 <= limit) {
-                        int v = x2c(origin[i + 1], origin[i + 2]);
+                        int v = x2c(origin.get(i+1), origin.get(i+2));
                         if (v < 0) {
                             throw new ServerException("URLDecoder: Illegal hex characters in escape (%) pattern - negative value");
                         }
-                        origin[pos++] = (byte) v;
+                        origin.put(pos++, (byte) v);
                         i += 3;
                     } else {
                         throw new ServerException("URLDecoder: Incomplete trailing escape (%) pattern");
