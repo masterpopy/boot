@@ -1,6 +1,5 @@
 package personal.popy.localserver.connect;
 
-import personal.popy.localserver.action.CharCondition;
 import personal.popy.localserver.action.CompletedStatus;
 import personal.popy.localserver.action.ReadAction;
 import personal.popy.localserver.wrapper.SliencedBuffer;
@@ -31,11 +30,11 @@ public class ChannelStream<T> implements CompletionHandler<Integer, ByteBuffer>,
         this.handler = handler;
     }
 
-    private static final CharCondition meetLf = ch -> ch == '\r';
+    /*private static final CharCondition meetLf = ch -> ch == '\r';
     private static final CharCondition meetCR = ch -> ch == '\n';
-    private static final CharCondition meetSp = ch -> ch == ' ' || ch == '\t';
+    private static final CharCondition meetSp = ch -> ch == ' ' || ch == '\t';*/
 
-    private static final CharCondition[] READ_UNTIL_END_LINE = {meetLf, meetCR};
+    private static final char[] READ_UNTIL_END_LINE = {'\r', '\n'};
 
     public ChannelStream() {
         origin = new SliencedBuffer();
@@ -45,17 +44,12 @@ public class ChannelStream<T> implements CompletionHandler<Integer, ByteBuffer>,
         this.data = data;
     }
 
-    public SliencedBuffer getOrigin() {
-        return origin;
-    }
-
-
     public ChannelStream<T> readToSpace(BiConsumer<T, SliencedBuffer> w) {
         stream.add(((result, buffer) -> {
             int position = buffer.position();
             while (readIndex < position) {
                 byte b = buffer.get(readIndex++);
-                if (meetSp.meet(b)) {
+                if (b == ' ' || b == '\t') {
                     w.accept(data, origin.reset(buffer, curStart, readIndex - 1));
                     return CompletedStatus.SUCCESS;
                 }
@@ -72,7 +66,7 @@ public class ChannelStream<T> implements CompletionHandler<Integer, ByteBuffer>,
             while (readIndex + READ_UNTIL_END_LINE.length <= position) {//required bytes
                 for (int i = 0; i < READ_UNTIL_END_LINE.length; i++) {
                     char b = (char) buffer.get(readIndex + i);
-                    if (!READ_UNTIL_END_LINE[i].meet(b)) {
+                    if (READ_UNTIL_END_LINE[i]!=b) {
                         //匹配失败，当前字节数提升1
                         readIndex += 1;
                         continue OUT;

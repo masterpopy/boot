@@ -36,7 +36,7 @@ public class IndexAction extends BaseController {
     public Map hello(String obj) {
         Map result = new HashMap();
         for (int i = 0; i < 200; i++) {
-            result.put(i,"efg");
+            result.put(i,obj);
         }
         return result;
     }

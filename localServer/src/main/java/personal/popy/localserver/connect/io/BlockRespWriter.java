@@ -4,10 +4,29 @@ import personal.popy.localserver.connect.buffer.ResponseWriter;
 import personal.popy.localserver.servlet.HttpExchanger;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class BlockRespWriter implements ResponseWriter {
 
     private ByteBuffer buffer;
+
+    private static final List<AtomicInteger> ints = new ArrayList<>(40);
+
+    private static ThreadLocal<AtomicInteger> s = ThreadLocal.withInitial(() -> {
+        AtomicInteger i = new AtomicInteger();
+        BlockRespWriter.ints.add(i);
+        return i;
+    });
+
+    public int cal() {
+        int i = 0;
+        for (AtomicInteger anInt : ints) {
+            i += anInt.get();
+        }
+        return i;
+    }
 
     public BlockRespWriter() {
 
@@ -20,7 +39,11 @@ public class BlockRespWriter implements ResponseWriter {
         }
         buffer.flip();
         try {
+            long time = System.currentTimeMillis();
             exchanger.getChannel().write(buffer).get();
+            AtomicInteger atomicInteger = s.get();
+            int l = (int) (System.currentTimeMillis() - time);
+            atomicInteger.set(l+atomicInteger.get());
         } catch (Exception e) {
             e.printStackTrace();
         }

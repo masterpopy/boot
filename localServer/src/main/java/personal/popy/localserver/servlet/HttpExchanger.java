@@ -2,7 +2,6 @@ package personal.popy.localserver.servlet;
 
 import personal.popy.localserver.connect.StreamHandler;
 import personal.popy.localserver.connect.buffer.ResponseWriter;
-import personal.popy.localserver.connect.io.BlockRespWriter;
 import personal.popy.localserver.data.ProcessBuffer;
 import personal.popy.localserver.lifecycle.HttpProcessor;
 import personal.popy.localserver.lifecycle.ServerContext;
@@ -28,7 +27,7 @@ public class HttpExchanger implements StreamHandler<HttpReqEntity>, Runnable {
     private HttpRequestProtocol protocol;
     private HttpProcessor processor;
 
-    private ResponseWriter task = new BlockRespWriter();
+    private ResponseWriter task = ResponseWriter.newBlock();
     private static final byte[] ACK = "HTTP/1.1 100 \r\n\r\n".getBytes(StandardCharsets.ISO_8859_1);
 
     //public static final Charset DEFAULT_URI_CHARSET = StandardCharsets.UTF_8;
