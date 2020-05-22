@@ -2,7 +2,6 @@ package personal.popy.localserver.executor;
 
 import com.lmax.disruptor.WorkHandler;
 import com.lmax.disruptor.dsl.Disruptor;
-import personal.popy.localserver.data.StaticBuffer;
 import personal.popy.localserver.exception.ServerException;
 
 import java.util.Collection;
@@ -37,8 +36,8 @@ public class DisruptorExecutor implements ExecutorService {
     @Override
     public void shutdown() {
         System.out.println("已处理：" + max);
-        System.out.println("1池大小：" + StaticBuffer.buffered.bufferBytes.size());
-        System.out.println("8池大小：" + StaticBuffer.buffered.bufferBytes8.size());
+
+
         disruptor.shutdown();
     }
 

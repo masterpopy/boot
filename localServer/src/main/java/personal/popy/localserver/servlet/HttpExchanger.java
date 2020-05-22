@@ -3,6 +3,7 @@ package personal.popy.localserver.servlet;
 import personal.popy.localserver.connect.StreamHandler;
 import personal.popy.localserver.connect.buffer.ResponseWriter;
 import personal.popy.localserver.connect.io.BlockRespWriter;
+import personal.popy.localserver.data.ProcessBuffer;
 import personal.popy.localserver.data.StaticBuffer;
 import personal.popy.localserver.lifecycle.HttpProcessor;
 import personal.popy.localserver.lifecycle.ServerContext;
@@ -20,8 +21,10 @@ public class HttpExchanger implements StreamHandler<HttpReqEntity>, Runnable {
     private AsynchronousSocketChannel channel;
     private RequestImpl request;
     private ResponseImpl response;
-    private ByteBuffer readByteBuffer;
 
+
+    private ProcessBuffer buf;
+    private ByteBuffer readBuf;
 
     private HttpRequestProtocol protocol;
     private HttpProcessor processor;
@@ -37,7 +40,8 @@ public class HttpExchanger implements StreamHandler<HttpReqEntity>, Runnable {
         this.channel = channel;
         this.request = new RequestImpl(this);
         this.protocol = new HttpRequestProtocol(this);
-        readByteBuffer = StaticBuffer.allocByteBuffer();
+        this.readBuf = StaticBuffer.allocByteBuffer();
+        this.buf = ProcessBuffer.alloc();
     }
 
 
@@ -81,21 +85,26 @@ public class HttpExchanger implements StreamHandler<HttpReqEntity>, Runnable {
 
     public void commit() {
         //commit
-        if (readByteBuffer != null) {
-            readByteBuffer.compact();
+
+        if (readBuf.hasRemaining()) {
+            readBuf.compact();
+        } else {
+            readBuf.clear();
         }
         request.recycle();
         response = null;
+
+
+
         task.end(this, null);
+        end();
+        getServer().getConnectionContext().executeWork(this);
     }
 
 
     @Override
     public void success(HttpReqEntity entity) {
-        if (!readByteBuffer.hasRemaining()) {
-            StaticBuffer.saveByteBuffer(readByteBuffer);
-            readByteBuffer = null;
-        }
+
         //write(ByteBuffer.wrap(ACK));//send ack
         getRequest().doServlet(entity);
     }
@@ -103,18 +112,7 @@ public class HttpExchanger implements StreamHandler<HttpReqEntity>, Runnable {
 
     @Override
     public void require(ByteBuffer b, CompletionHandler<Integer, ByteBuffer> c) {
-        if (!b.hasRemaining()) {
-            //todo
-            if (b.capacity() == 1024) {
-                ByteBuffer byteBuffer = StaticBuffer.allocByteBuffer8();
-                byteBuffer.put(b);
-                b = byteBuffer;
-            } else {
-                createResponse().sendError(304);
-                return;
-            }
-
-        }
+        //todo buf size
         if (!channel.isOpen()) {
             System.out.println("closed");
             return;
@@ -136,21 +134,31 @@ public class HttpExchanger implements StreamHandler<HttpReqEntity>, Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        StaticBuffer.saveByteBuffer(readByteBuffer);
+        StaticBuffer.saveByteBuffer(readBuf);
+        readBuf = null;
+        end();
+        buf.save();
         //System.out.println("closed happened");
     }
 
     @Override
     public void run() {
         if (channel.isOpen()) {
-            if (readByteBuffer == null) {
-                readByteBuffer = StaticBuffer.allocByteBuffer();
-            }
-            getHttpRequestProtocol().asyncParse(readByteBuffer);
+            getHttpRequestProtocol().asyncParse(readBuf);
         }
     }
 
     public AsynchronousSocketChannel getChannel() {
         return channel;
+    }
+
+    public ProcessBuffer getBuf() {
+        return buf;
+    }
+
+    public void end() {
+        if (buf != null) {
+            buf.clear();
+        }
     }
 }

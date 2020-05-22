@@ -1,6 +1,6 @@
 package personal.popy.localserver.wrapper;
 
-import personal.popy.localserver.data.StaticBuffer;
+import personal.popy.localserver.data.ProcessBuffer;
 import personal.popy.localserver.util.UrlDecoder;
 
 import java.nio.CharBuffer;
@@ -52,14 +52,12 @@ public class SliencedBuffer implements Cloneable {
     }
 
     public String ansiString(int start, int length) {
-        CharBuffer cb = StaticBuffer.allocCharBuffer();
+        CharBuffer cb = ProcessBuffer.charBuf.get();
         char[] array = cb.array();
         for (int i = 0; i < length; i++) {
             array[i] = (char) origin[i + start];
         }
-        String s = new String(array, 0, length);
-        StaticBuffer.saveCharBuffer(cb);
-        return s;
+        return new String(array, 0, length);
     }
 
     public String ansiString() {
@@ -139,7 +137,7 @@ public class SliencedBuffer implements Cloneable {
     }
 
     public void decodeUrl(HttpReqEntity en) {
-        CharBuffer cb = StaticBuffer.allocCharBuffer();
+        CharBuffer cb = ProcessBuffer.charBuf.get();
         //todo charset
         while (start < limit) {
             byte b = origin[start];
@@ -158,7 +156,7 @@ public class SliencedBuffer implements Cloneable {
         if (limit - start > 1) { // at least two char
             UrlDecoder.convert(this, cb, StandardCharsets.UTF_8.newDecoder(), en);
         }
-        StaticBuffer.saveCharBuffer(cb);
+        cb.clear();
 
     }
 

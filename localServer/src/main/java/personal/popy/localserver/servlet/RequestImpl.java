@@ -417,7 +417,7 @@ public class RequestImpl implements HttpServletRequest {
 
     @Override
     public boolean isAsyncSupported() {
-        return true;
+        return false;
     }
 
     @Override

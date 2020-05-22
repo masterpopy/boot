@@ -5,7 +5,6 @@ import personal.popy.localserver.connect.buffer.CharBufferWriter;
 import personal.popy.localserver.connect.buffer.Chunked;
 import personal.popy.localserver.connect.buffer.LengthWriter;
 import personal.popy.localserver.connect.buffer.ResponseWriter;
-import personal.popy.localserver.data.StaticBuffer;
 import personal.popy.localserver.exception.ServerException;
 import personal.popy.localserver.source.Child;
 import personal.popy.localserver.source.Parent;
@@ -224,7 +223,7 @@ public class ResponseImpl implements HttpServletResponse, Runnable {
     public ByteBufferStream getOutputStream() {
         checkCommitted();
         if (outputStream == null) {
-            return new ByteBufferStream(this);
+            outputStream = new ByteBufferStream(this);
         }
         return outputStream;
     }
@@ -279,7 +278,8 @@ public class ResponseImpl implements HttpServletResponse, Runnable {
         if (headerSended) return;
         headerSended = true;
         HttpExchanger httpExchanger = getHttpExchanger();
-        ByteBuffer writer = StaticBuffer.allocByteBuffer();
+        //todo 规范获取
+        ByteBuffer writer = httpExchanger.getBuf().getWriterBuf();
         HttpRespEntity httpRespEntity = getHttpRespEntity();
         //prepare response line
         BufferUtil.put(writer, "HTTP/1.1 ");//必须是大写
@@ -301,9 +301,8 @@ public class ResponseImpl implements HttpServletResponse, Runnable {
         httpRespEntity.prepareHeader();
 
         httpRespEntity.headers.getChars(writer);
-        writer.flip();
-        httpExchanger.realWrite(writer);
-        StaticBuffer.saveByteBuffer(writer);
+
+
         if (httpRespEntity.isChunked) {
             responseWriter = new Chunked();
         } else {
@@ -315,29 +314,21 @@ public class ResponseImpl implements HttpServletResponse, Runnable {
 
     public void sendBody() {
         sendHeader();
-        ByteBufferStream outputStream = getOutputStream();
         if (outputStream == null) return;
 
         ByteBuffer ob = outputStream.getOb();
-        if (ob.limit() == ob.capacity() && ob.position() > 0) {
-            ob.flip();
-        }
+        ob.flip();
         responseWriter.doWrite(getHttpExchanger(), ob);
     }
 
     public void end() {
         sendHeader();
-        ByteBufferStream outputStream = getOutputStream();
         if (outputStream == null) return;
 
         ByteBuffer ob = outputStream.getOb();
-        if (ob.limit() == ob.capacity() && ob.position() > 0) {
-            ob.flip();
-        }
-        responseWriter.end(getHttpExchanger(), getOutputStream().getOb());
+        ob.flip();
+        responseWriter.end(getHttpExchanger(), ob);
 
-        StaticBuffer.saveByteBuffer(outputStream.getOb());
-        StaticBuffer.saveCharBuffer(outputStream.getCb());
     }
 
     @Override

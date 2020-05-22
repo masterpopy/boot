@@ -1,6 +1,5 @@
 package personal.popy.localserver.connect.buffer;
 
-import personal.popy.localserver.data.StaticBuffer;
 import personal.popy.localserver.servlet.ResponseImpl;
 
 import javax.servlet.ServletOutputStream;
@@ -24,14 +23,14 @@ public class ByteBufferStream extends ServletOutputStream {
 
     public ByteBufferStream(ResponseImpl response) {
         this.response = response;
-        ob = StaticBuffer.allocByteBuffer();
+        ob = response.getHttpExchanger().getBuf().getStreamBuf();
         encoder = response.getCharset().newEncoder();
     }
 
 
     private void enableCharBuffer() {
         if (cb == null) {
-            cb = StaticBuffer.allocCharBuffer();
+            cb = response.getHttpExchanger().getBuf().getCharBuf().get();
         }
     }
 
