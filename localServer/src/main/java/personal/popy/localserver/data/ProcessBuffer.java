@@ -12,7 +12,7 @@ public final class ProcessBuffer {
 
     public ProcessBuffer() {
         streamBuf = ByteBuffer.allocate(1024 * 4);
-        writerBuf = ByteBuffer.allocate(1024 * 8);
+        writerBuf = ByteBuffer.allocateDirect(1024 * 8);
     }
 
 

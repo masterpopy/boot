@@ -15,7 +15,7 @@ import java.util.concurrent.ExecutorService;
 public class ConnectionContext extends EnvAwire implements CompletionHandler<AsynchronousSocketChannel, Void> {
     private int port = 8080;
 
-    private ExecutorService worker = ExecutorFactory.newInstance(40);
+    private ExecutorService worker = ExecutorFactory.newInstance(20);
 
     private ExecutorService ioExecutor = worker;
 

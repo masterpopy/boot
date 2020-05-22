@@ -13,7 +13,6 @@ public class Headers extends FastList<String> {
     public void getChars(ByteBuffer cb) {
         for (int i = 0; i < size; i++) {
             Node node = table[i];
-            int len = node.name.length()+2+((String) node.value).length()+2;
             BufferUtil.put(cb, node.name);
             BufferUtil.put(cb, ": ");
             BufferUtil.put(cb, (String) node.value);
