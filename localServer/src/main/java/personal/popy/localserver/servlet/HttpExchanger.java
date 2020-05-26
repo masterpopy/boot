@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
-import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -29,7 +28,7 @@ public class HttpExchanger implements StreamHandler<HttpReqEntity>, Runnable {
     private HttpProcessor processor;
 
     private ResponseWriter task = ResponseWriter.newBlock();
-    private static final byte[] ACK = "HTTP/1.1 100 \r\n\r\n".getBytes(StandardCharsets.ISO_8859_1);
+//    private static final byte[] ACK = "HTTP/1.1 100 \r\n\r\n".getBytes(StandardCharsets.ISO_8859_1);
 
     //public static final Charset DEFAULT_URI_CHARSET = StandardCharsets.UTF_8;
     //public static final Charset DEFAULT_BODY_CHARSET = StandardCharsets.ISO_8859_1;

@@ -7,11 +7,7 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.StandardCharsets;
 
-public class SliencedBuffer implements Cloneable {
-
-    public SliencedBuffer(ByteBuffer origin, int start, int limit) {
-        reset(origin, start, limit);
-    }
+public class SliencedBuffer {
 
     public SliencedBuffer() {
     }
@@ -33,7 +29,6 @@ public class SliencedBuffer implements Cloneable {
         this.limit = limit;
         this.origin = origin;
         length = limit - start;
-        stringValue = null;
         return this;
     }
 
@@ -41,8 +36,6 @@ public class SliencedBuffer implements Cloneable {
     private int limit;
     private int length;
     private ByteBuffer origin;
-    private String stringValue;
-
 
 
     public String ansiString(int start, int length) {
@@ -72,14 +65,6 @@ public class SliencedBuffer implements Cloneable {
         return ret;
     }
 
-    public SliencedBuffer setStart(int start) {
-        this.start = start;
-        stringValue = null;
-        return this;
-    }
-
-
-
     public void decodeUrl(HttpReqEntity en) {
         CharBuffer cb = ProcessBuffer.charBuf.get();
         //todo charset
@@ -103,8 +88,6 @@ public class SliencedBuffer implements Cloneable {
         cb.clear();
 
     }
-
-
 
 
     public static int parseInt(byte[] s, int beginIndex, int endIndex, int radix) throws NumberFormatException {

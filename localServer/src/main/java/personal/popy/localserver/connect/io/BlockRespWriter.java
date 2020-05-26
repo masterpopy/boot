@@ -20,12 +20,12 @@ public class BlockRespWriter implements ResponseWriter {
         return i;
     });
 
-    public static void cal() {
+    public static int cal() {
         int i = 0;
         for (AtomicInteger anInt : ints) {
             i += anInt.get();
         }
-        System.out.println(i);
+        return i;
     }
 
     public BlockRespWriter() {
