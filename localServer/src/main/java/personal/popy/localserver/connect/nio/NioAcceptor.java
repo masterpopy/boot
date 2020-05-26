@@ -7,10 +7,22 @@ import java.nio.channels.SocketChannel;
 public class NioAcceptor {
     ServerSocketChannel serverSocket;
 
-    public void run() {
-        SocketChannel channel;
+    public NioAcceptor(ServerSocketChannel serverSocket) {
+        this.serverSocket = serverSocket;
+        init();
+    }
+
+    private void init() {
         try {
-            channel = serverSocket.accept();
+            serverSocket.configureBlocking(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void run() {
+        try {
+           SocketChannel channel = serverSocket.accept();
         } catch (IOException e) {
             e.printStackTrace();
         }

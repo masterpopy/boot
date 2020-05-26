@@ -9,6 +9,7 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CoderResult;
+import java.nio.charset.CodingErrorAction;
 
 public class ByteBufferStream extends ServletOutputStream {
 
@@ -24,7 +25,7 @@ public class ByteBufferStream extends ServletOutputStream {
     public ByteBufferStream(ResponseImpl response) {
         this.response = response;
         ob = response.getHttpExchanger().getBuf().getStreamBuf();
-        encoder = response.getCharset().newEncoder();
+        encoder = response.getCharset().newEncoder().onUnmappableCharacter(CodingErrorAction.REPORT).onMalformedInput(CodingErrorAction.REPORT);
     }
 
 
@@ -72,7 +73,24 @@ public class ByteBufferStream extends ServletOutputStream {
         }
     }
 
-    public void write(String s, int off, int len) throws IOException {
+    void write(char s) throws IOException {
+        enableCharBuffer();
+        cb.put(s);
+        encode();
+    }
+
+    void write(char[] s, int off, int len) throws IOException {
+        enableCharBuffer();
+        while (len > 0) {
+            int writebytes = Math.min(len, cb.capacity());
+            cb.put(s, off, writebytes);
+            encode();
+            len -= cb.capacity();
+            off += writebytes;
+        }
+    }
+
+    void write(String s, int off, int len) throws IOException {
         enableCharBuffer();
         while (len > 0) {
             int capacity = cb.capacity();
@@ -107,17 +125,6 @@ public class ByteBufferStream extends ServletOutputStream {
         return false;
     }
 
-
-    public void write(char[] s, int off, int len) throws IOException {
-        enableCharBuffer();
-        while (len > 0) {
-            int writebytes = Math.min(len, cb.capacity());
-            cb.put(s, off, writebytes);
-            encode();
-            len -= cb.capacity();
-            off += writebytes;
-        }
-    }
 
     @Override
     public void flush() {

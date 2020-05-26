@@ -1,5 +1,7 @@
 package personal.popy.localserver.data;
 
+import java.util.function.Consumer;
+
 public class SynchronizedStack<T> {
     public static final int DEFAULT_SIZE = 128;
     private static final int DEFAULT_LIMIT = -1;
@@ -80,5 +82,11 @@ public class SynchronizedStack<T> {
 
     public synchronized int size() {
         return index + 1;
+    }
+
+    public void each(Consumer<T> s) {
+        for (int i = 0; i < index; i++) {
+            s.accept((T) stack[index]);
+        }
     }
 }

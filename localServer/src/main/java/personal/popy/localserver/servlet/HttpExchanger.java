@@ -14,6 +14,7 @@ import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class HttpExchanger implements StreamHandler<HttpReqEntity>, Runnable {
     private AsynchronousSocketChannel channel;
@@ -32,6 +33,7 @@ public class HttpExchanger implements StreamHandler<HttpReqEntity>, Runnable {
 
     //public static final Charset DEFAULT_URI_CHARSET = StandardCharsets.UTF_8;
     //public static final Charset DEFAULT_BODY_CHARSET = StandardCharsets.ISO_8859_1;
+    public static final AtomicInteger suc = new AtomicInteger();
 
     public HttpExchanger(HttpProcessor processor, AsynchronousSocketChannel channel) {
         this.processor = processor;
@@ -39,13 +41,9 @@ public class HttpExchanger implements StreamHandler<HttpReqEntity>, Runnable {
         this.request = new RequestImpl(this);
         this.protocol = new HttpRequestProtocol(this);
         this.readBuf = ByteBuffer.allocateDirect(1024);
-        this.buf = ProcessBuffer.alloc();
     }
 
 
-    public void writeAsnycAndSave(ByteBuffer byteBuffer) {
-        task.doWrite(this, byteBuffer);
-    }
 
     public ServerContext getServer() {
         return processor.getServer();
@@ -74,7 +72,7 @@ public class HttpExchanger implements StreamHandler<HttpReqEntity>, Runnable {
 
     public void realWrite(ByteBuffer byteBuffer) {
         try {
-            writeAsnycAndSave(byteBuffer);
+            task.doWrite(this, byteBuffer);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -83,7 +81,7 @@ public class HttpExchanger implements StreamHandler<HttpReqEntity>, Runnable {
 
     public void commit() {
         //commit
-
+        suc.incrementAndGet();
         if (readBuf.hasRemaining()) {
             readBuf.compact();
         } else {
@@ -139,9 +137,17 @@ public class HttpExchanger implements StreamHandler<HttpReqEntity>, Runnable {
 
     @Override
     public void run() {
+        doParse();
+    }
+
+    public void doParse() {
         if (channel.isOpen()) {
             getHttpRequestProtocol().asyncParse(readBuf);
         }
+    }
+
+    public void doRequest() {
+
     }
 
     public AsynchronousSocketChannel getChannel() {

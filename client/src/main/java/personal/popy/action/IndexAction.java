@@ -2,6 +2,7 @@ package personal.popy.action;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.async.WebAsyncTask;
 import personal.popy.entity.Dept;
+import personal.popy.localserver.servlet.RequestImpl;
 import personal.popy.service.DeptService;
 
 import javax.servlet.AsyncContext;
@@ -35,10 +37,18 @@ public class IndexAction extends BaseController {
     @ResponseBody
     public Map hello(String obj) {
         Map result = new HashMap();
-        for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 2; i++) {
             result.put(i,obj);
         }
         return result;
+    }
+
+    @GetMapping("cal")
+    public void cal(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String cal = ((RequestImpl) request).getExchanger().getServer().getConnectionContext().cal();
+        response.setCharacterEncoding("utf-8");
+        response.setContentType(MediaType.TEXT_PLAIN_VALUE);
+        response.getWriter().println(cal);
     }
 
     @RequestMapping("dept/{id}")

@@ -432,7 +432,7 @@ public class RequestImpl implements HttpServletRequest,Runnable {
 
     public void doServlet(HttpReqEntity entity) {
         this.entity = entity;
-        run();
+        getExchanger().getServer().getConnectionContext().executeWork(this);
     }
 
     @Override

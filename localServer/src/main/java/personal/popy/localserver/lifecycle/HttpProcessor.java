@@ -19,15 +19,14 @@ public class HttpProcessor extends EnvAwire implements Processor {
     }
 
     @Override
-    public void processNewConnection(AsynchronousSocketChannel result) {
+    public void processNewConnection(AsynchronousSocketChannel result, ConnectionContext connectionContext) {
         HttpExchanger pop = stack.pop();
         if (pop == null) {
             pop = new HttpExchanger(this, result);
         } else {
             pop.setChannel(result);
         }
-
-        pop.run();
+        connectionContext.executeWork(pop);
     }
 
 

@@ -11,6 +11,10 @@ public class CharBufferWriter extends Writer {
         this.bs = cb;
     }
 
+    @Override
+    public void write(int c) throws IOException {
+        bs.write((char) c);
+    }
 
     @Override
     public void write(char[] cbuf, int off, int len) throws IOException {

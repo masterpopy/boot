@@ -20,12 +20,12 @@ public class BlockRespWriter implements ResponseWriter {
         return i;
     });
 
-    public int cal() {
+    public static void cal() {
         int i = 0;
         for (AtomicInteger anInt : ints) {
             i += anInt.get();
         }
-        return i;
+        System.out.println(i);
     }
 
     public BlockRespWriter() {
@@ -41,9 +41,9 @@ public class BlockRespWriter implements ResponseWriter {
         try {
             long time = System.currentTimeMillis();
             exchanger.getChannel().write(buffer).get();
-            AtomicInteger atomicInteger = s.get();
+            AtomicInteger i = s.get();
             int l = (int) (System.currentTimeMillis() - time);
-            atomicInteger.set(l+atomicInteger.get());
+            i.set(l + i.get());
         } catch (Exception e) {
             e.printStackTrace();
         }

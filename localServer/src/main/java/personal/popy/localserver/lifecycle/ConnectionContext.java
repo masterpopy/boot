@@ -1,6 +1,7 @@
 package personal.popy.localserver.lifecycle;
 
 import personal.popy.localserver.connect.AioAcceptor;
+import personal.popy.localserver.executor.DisruptorExecutor;
 import personal.popy.localserver.executor.ExecutorFactory;
 import personal.popy.localserver.source.Single;
 
@@ -15,9 +16,9 @@ import java.util.concurrent.ExecutorService;
 public class ConnectionContext extends EnvAwire implements CompletionHandler<AsynchronousSocketChannel, Void> {
     private int port = 8080;
 
-    private ExecutorService worker = ExecutorFactory.newInstance(20);
+    private ExecutorService worker = ExecutorFactory.newInstance(40);
 
-    private ExecutorService ioExecutor = worker;
+    private ExecutorService ioExecutor = ExecutorFactory.newInstance(5);
 
     public void start() throws Exception {
         worker.execute(()->{});
@@ -29,13 +30,9 @@ public class ConnectionContext extends EnvAwire implements CompletionHandler<Asy
         acceptor.run();
     }
 
-    public ExecutorService getWorker() {
-        return worker;
-    }
-
     @Override
     public void completed(AsynchronousSocketChannel result, Void attachment) {
-        server.getProcessor().processNewConnection(result);
+        server.getProcessor().processNewConnection(result, this);
     }
 
 
@@ -62,4 +59,8 @@ public class ConnectionContext extends EnvAwire implements CompletionHandler<Asy
         return port;
     }
 
+    public String cal() {
+        return ((DisruptorExecutor) worker).cal() + "\n" +
+        ((DisruptorExecutor) ioExecutor).cal();
+    }
 }
