@@ -1,14 +1,9 @@
 package personal.popy.localserver.data;
 
-import java.util.AbstractList;
-import java.util.AbstractMap;
-import java.util.AbstractSet;
 import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Set;
 
-public class FastList<V> extends AbstractMap<String, V> {
+public class FastList<V> {
 
     Node[] table;
     int size;
@@ -22,50 +17,6 @@ public class FastList<V> extends AbstractMap<String, V> {
         this(16);
     }
 
-    @Override
-    public Set<Entry<String, V>> entrySet() {
-        return new EntrySet();
-    }
-
-    private class EntrySet extends AbstractSet<Entry<String, V>> {
-
-        @Override
-        public Iterator<Entry<String, V>> iterator() {
-            return (Iterator<Entry<String, V>>) new NodeList(0, size, table);
-        }
-
-        @Override
-        public int size() {
-            return size;
-        }
-    }
-
-    static class NodeList extends AbstractList<Node> {
-        NodeList(int start, int end, Node[] table) {
-            this.start = start;
-            this.end = end;
-            this.size = end - start;
-            this.table = table;
-        }
-
-        int start;
-        int end;
-        int size;
-        Node[] table;
-
-        @Override
-        public Node get(int index) {
-            return table[start + index];
-        }
-
-        @Override
-        public int size() {
-            return size;
-        }
-    }
-
-
-    @Override
     public V get(Object key) {
         return get((String) key);
     }
@@ -108,7 +59,6 @@ public class FastList<V> extends AbstractMap<String, V> {
         return null;
     }
 
-    @Override
     public void clear() {
         for (int i = 0; i < size; i++) {
             table[i] = null;

@@ -96,6 +96,7 @@ public class DisruptorExecutor implements ExecutorService {
 
     @Override
     public void execute(Runnable command) {
+        System.out.println(Thread.currentThread().getName());
         long next = disruptor.getRingBuffer().next();
         RunEvent runEvent = disruptor.get(next);
         runEvent.start = System.currentTimeMillis();

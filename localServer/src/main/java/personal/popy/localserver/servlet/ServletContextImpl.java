@@ -2,26 +2,18 @@ package personal.popy.localserver.servlet;
 
 import personal.popy.localserver.data.FastList;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.*;
 import javax.servlet.descriptor.JspConfigDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.EventListener;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class ServletContextImpl implements ServletContext, ServletConfig {
     private String contextPath = "";
     private Servlet servlet;
     private DynamicImpl dynamic = new DynamicImpl();
-    private FastList<String> parameters = new FastList<>();
+    private Hashtable<String,String> parameters = new Hashtable<>();
     private FastList<Object> attr = new FastList<>();
 
     @Override
@@ -31,12 +23,6 @@ public class ServletContextImpl implements ServletContext, ServletConfig {
 
     @Override
     public ServletContext getContext(String uriPath) {
-        try {
-            InitialContext c = new InitialContext();
-            c.lookup("");
-        } catch (NamingException e) {
-            e.printStackTrace();
-        }
         if (uriPath.startsWith(contextPath))
             return this;
         return null;
@@ -168,12 +154,12 @@ public class ServletContextImpl implements ServletContext, ServletConfig {
 
     @Override
     public Enumeration<String> getInitParameterNames() {
-        return parameters.names();
+        return parameters.keys();
     }
 
     @Override
     public boolean setInitParameter(String name, String value) {
-        parameters.addIfNotExits(name, value);
+        parameters.put(name, value);
         return true;
     }
 
