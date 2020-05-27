@@ -6,14 +6,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import personal.popy.localserver.connect.io.BlockRespWriter;
+import personal.popy.localserver.executor.DisruptorExecutor;
 import personal.popy.localserver.lifecycle.HttpProcessor;
-import personal.popy.localserver.servlet.HttpExchanger;
+import personal.popy.localserver.servlet.ResponseImpl;
 import personal.popy.localserver.util.TimeCal;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 @Controller
 @RequestMapping("action")
@@ -39,11 +41,14 @@ public class IndexAction extends BaseController {
             read.add(s.getTime());
             write.add(((BlockRespWriter) s.getTask()).getTime());
         });
+        ExecutorService worker = ((ResponseImpl) response).getHttpExchanger().getServer().getConnectionContext().getWorker();
+        double cal1 = ((DisruptorExecutor) worker).cal();
         response.setCharacterEncoding("utf-8");
         response.setContentType(MediaType.TEXT_PLAIN_VALUE);
-        String cal = "平均read时间： " + read.get(HttpExchanger.suc.get()) +
-                ", 平均servlet时间：" + servlet.get(HttpExchanger.suc.get()) +
-                ", 平均阻塞write： " + write.get(HttpExchanger.suc.get()) ;
+        String cal = "平均read时间： " + read.get() +
+                ", 平均servlet时间：" + servlet.get() +
+                ", 平均阻塞write： " + write.get() +
+                ", 平均等待队列时间： " + cal1;
         response.getWriter().println(cal);
     }
 

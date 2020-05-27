@@ -3,6 +3,7 @@ package personal.popy.localserver.executor;
 import com.lmax.disruptor.WorkHandler;
 import com.lmax.disruptor.dsl.Disruptor;
 import personal.popy.localserver.exception.ServerException;
+import personal.popy.localserver.util.TimeCal;
 
 import java.util.Collection;
 import java.util.List;
@@ -96,9 +97,18 @@ public class DisruptorExecutor implements ExecutorService {
     public void execute(Runnable command) {
         long next = disruptor.getRingBuffer().next();
         RunEvent runEvent = disruptor.get(next);
+        runEvent.timeStart();
         runEvent.runnable = command;
         disruptor.getRingBuffer().publish(next);
         max = next;
+    }
+
+    public double cal() {
+        TimeCal c = new TimeCal();
+        for (int i = 0; i < BUFFER_SIZE; i++) {
+            c.add(disruptor.get(i).getTime());
+        }
+        return c.get();
     }
 
 }

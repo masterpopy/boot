@@ -1,5 +1,7 @@
 package personal.popy.localserver.util;
 
+import personal.popy.localserver.servlet.HttpExchanger;
+
 public class TimeCal {
     private long nanoTime;
 
@@ -7,8 +9,8 @@ public class TimeCal {
         this.nanoTime += nanoTime;
     }
 
-    public double get(int r) {
-        double v = ((double) nanoTime) / r;
+    public double get() {
+        double v = ((double) nanoTime) / HttpExchanger.suc.get();
         return  v / 1000000;
     }
 }

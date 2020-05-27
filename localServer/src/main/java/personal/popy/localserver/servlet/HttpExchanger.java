@@ -94,8 +94,6 @@ public class HttpExchanger extends TimeMonitor implements StreamHandler<HttpReqE
 
 
         task.end(this, null);
-        end();
-        getServer().getConnectionContext().executeWork(this);
     }
 
 
@@ -134,6 +132,8 @@ public class HttpExchanger extends TimeMonitor implements StreamHandler<HttpReqE
         } catch (IOException e) {
             e.printStackTrace();
         }
+        channel = null;
+        end();
         getProcessor().endRequest(this);
         //System.out.println("closed happened");
     }

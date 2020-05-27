@@ -2,11 +2,12 @@ package personal.popy.localserver.executor;
 
 import personal.popy.localserver.util.TimeMonitor;
 
-public class RunEvent {
+public class RunEvent extends TimeMonitor {
     public Runnable runnable;
 
 
     public void run() {
+        timeEnd();
         if (runnable instanceof TimeMonitor) {
             TimeMonitor stage = ((TimeMonitor) runnable);
             stage.timeStart();

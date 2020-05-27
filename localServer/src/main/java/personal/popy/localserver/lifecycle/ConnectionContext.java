@@ -17,7 +17,7 @@ public class ConnectionContext extends EnvAwire implements CompletionHandler<Asy
 
     private ExecutorService worker = ExecutorFactory.newInstance(40);
 
-    private ExecutorService ioExecutor = ExecutorFactory.newInstance(5);
+    private ExecutorService ioExecutor = ExecutorFactory.newInstance(10);
 
     public void start() throws Exception {
         worker.execute(() -> {
@@ -36,6 +36,9 @@ public class ConnectionContext extends EnvAwire implements CompletionHandler<Asy
         server.getProcessor().processNewConnection(result, this);
     }
 
+    public ExecutorService getWorker() {
+        return worker;
+    }
 
     public void stop() {
         ioExecutor.shutdown();

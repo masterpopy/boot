@@ -36,7 +36,7 @@ public class HttpProcessor extends EnvAwire implements Processor {
     }
 
     public void endRequest(HttpExchanger exchanger) {
-        exchanger.end();
+
         stack.push(exchanger);
     }
 
