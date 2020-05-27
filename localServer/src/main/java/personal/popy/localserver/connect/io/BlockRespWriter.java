@@ -51,7 +51,7 @@ public class BlockRespWriter extends TimeMonitor implements ResponseWriter {
             flush(exchanger);
             buffer = null;
             exchanger.end();
-            exchanger.getServer().getConnectionContext().executeWork(exchanger);
+            exchanger.doParse();
         }
     }
 

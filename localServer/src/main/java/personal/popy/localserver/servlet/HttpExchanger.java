@@ -16,7 +16,7 @@ import java.nio.channels.CompletionHandler;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class HttpExchanger extends TimeMonitor implements StreamHandler<HttpReqEntity>, HttpWorker {
+public class HttpExchanger extends TimeMonitor implements StreamHandler<HttpReqEntity> {
     private AsynchronousSocketChannel channel;
     private RequestImpl request;
     private ResponseImpl response;
@@ -133,13 +133,10 @@ public class HttpExchanger extends TimeMonitor implements StreamHandler<HttpReqE
         //System.out.println("closed happened");
     }
 
-    @Override
-    public void run() {
-        doParse();
-    }
 
     public void doParse() {
         if (channel.isOpen()) {
+            timeStart();
             getHttpRequestProtocol().asyncParse(readBuf);
         }
     }

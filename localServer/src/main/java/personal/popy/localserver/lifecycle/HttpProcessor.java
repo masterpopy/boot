@@ -26,7 +26,7 @@ public class HttpProcessor extends EnvAwire implements Processor {
         } else {
             pop.setChannel(result);
         }
-        connectionContext.executeWork(pop);
+        pop.doParse();
     }
 
 

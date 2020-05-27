@@ -6,7 +6,6 @@ import personal.popy.localserver.connect.buffer.Chunked;
 import personal.popy.localserver.connect.buffer.LengthWriter;
 import personal.popy.localserver.connect.buffer.ResponseWriter;
 import personal.popy.localserver.exception.ServerException;
-import personal.popy.localserver.lifecycle.HttpWorker;
 import personal.popy.localserver.source.Child;
 import personal.popy.localserver.source.Parent;
 import personal.popy.localserver.util.BufferUtil;
@@ -20,7 +19,7 @@ import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Locale;
 
-public class ResponseImpl implements HttpServletResponse, HttpWorker {
+public class ResponseImpl implements HttpServletResponse {
 
     private PrintWriter printWriter;
 
@@ -39,9 +38,6 @@ public class ResponseImpl implements HttpServletResponse, HttpWorker {
         this.entity = new HttpRespEntity();
     }
 
-    /*private void execute(Runnable runnable) {
-        getHttpExchanger().getHttpProcessor().getConnectionContext().executeIO(runnable);
-    }*/
 
     @Parent
     public HttpExchanger getHttpExchanger() {
@@ -368,7 +364,6 @@ public class ResponseImpl implements HttpServletResponse, HttpWorker {
         return null;
     }
 
-    @Override
     public void run() {
         checkCommitted();
         if (!headerSended) {

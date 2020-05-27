@@ -12,7 +12,7 @@ public class TimeMonitor {
 
     public void timeEnd() {
         if (!started) {
-//            new RuntimeException().printStackTrace();
+
             return;
         }
         time += System.nanoTime() - start;

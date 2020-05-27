@@ -117,7 +117,7 @@ public class ChannelStream implements CompletionHandler<Integer, ByteBuffer>, Ht
             closed();
             return;
         }
-        handler.exe(this);
+        parse(attachment);
     }
 
 

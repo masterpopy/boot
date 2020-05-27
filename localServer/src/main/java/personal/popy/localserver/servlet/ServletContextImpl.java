@@ -286,7 +286,7 @@ public class ServletContextImpl implements ServletContext, ServletConfig {
 
     @Override
     public ServletRegistration.Dynamic addJspFile(String servletName, String jspFile) {
-        return null;
+        return dynamic;
     }
 
     @Override
