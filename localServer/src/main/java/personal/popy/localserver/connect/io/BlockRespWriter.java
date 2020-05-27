@@ -57,7 +57,10 @@ public class BlockRespWriter extends TimeMonitor implements ResponseWriter, Comp
 
     public void end(HttpExchanger exchanger, ByteBuffer b) {
         if (buffer != null) {
+//            AsynchronousSocketChannel channel = exchanger.getChannel();
             flush(exchanger, false);
+            /*ServerContext server = exchanger.getServer();
+            server.getProcessor().processNewConnection(channel, server.getConnectionContext());*/
         }
     }
 

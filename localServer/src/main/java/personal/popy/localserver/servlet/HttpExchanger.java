@@ -9,7 +9,6 @@ import personal.popy.localserver.source.Child;
 import personal.popy.localserver.util.TimeMonitor;
 import personal.popy.localserver.wrapper.HttpReqEntity;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
@@ -127,11 +126,6 @@ public class HttpExchanger extends TimeMonitor implements StreamHandler<HttpReqE
 
     @Override
     public void closed() {
-        try {
-            channel.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         channel = null;
         end();
         getProcessor().endRequest(this);
