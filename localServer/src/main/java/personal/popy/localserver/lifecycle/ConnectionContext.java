@@ -17,7 +17,7 @@ public class ConnectionContext extends EnvAwire implements CompletionHandler<Asy
 
     private ExecutorService worker = ExecutorFactory.newInstance(20);
 
-    private ExecutorService ioExecutor = ExecutorFactory.newInstance(1);
+    private ExecutorService ioExecutor = ExecutorFactory.newIo();
 
     public void start() throws Exception {
         worker.execute(() -> {

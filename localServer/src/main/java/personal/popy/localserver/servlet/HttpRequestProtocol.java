@@ -22,8 +22,7 @@ public class HttpRequestProtocol {
 
     public void asyncParse(ByteBuffer readByteBuffer) {
         stream.reset();
-        stream.parse(readByteBuffer);
+        stream.require(readByteBuffer);
     }
-
 
 }

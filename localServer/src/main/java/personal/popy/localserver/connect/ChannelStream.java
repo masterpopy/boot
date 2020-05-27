@@ -135,7 +135,7 @@ public class ChannelStream implements CompletionHandler<Integer, ByteBuffer>, Ht
             CompletedStatus exe = cur.completed(buffer.position() - curStart, buffer);
             switch (exe) {
                 case REQUIRE_MORE_DATA:
-                    require(buffer, this);
+                    require(buffer);
                     return;
                 case SUCCESS:
                     curStart = readIndex;// must be here
@@ -167,8 +167,8 @@ public class ChannelStream implements CompletionHandler<Integer, ByteBuffer>, Ht
     }
 
 
-    public void require(ByteBuffer b, CompletionHandler<Integer, ByteBuffer> c) {
-        handler.require(b, c);
+    public void require(ByteBuffer b) {
+        handler.require(b, this);
     }
 
     public void error() {

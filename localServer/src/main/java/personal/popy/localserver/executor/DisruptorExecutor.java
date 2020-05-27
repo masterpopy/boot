@@ -6,7 +6,6 @@ import com.lmax.disruptor.WorkHandler;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import personal.popy.localserver.exception.ServerException;
-import personal.popy.localserver.lifecycle.HttpWorker;
 import personal.popy.localserver.util.TimeCal;
 
 import java.util.Collection;
@@ -17,7 +16,7 @@ public class DisruptorExecutor implements ExecutorService {
     public static final WorkHandler<RunEvent> runEventWorkHandler = RunEvent::run;
     private Disruptor<RunEvent> disruptor;
     private long max;
-    private static int BUFFER_SIZE = 1024*64;
+    private static int BUFFER_SIZE = 1024 * 64;
 
     public DisruptorExecutor(int threadCnt) {
         disruptor = newDisruptor(threadCnt);
@@ -99,18 +98,13 @@ public class DisruptorExecutor implements ExecutorService {
 
     @Override
     public void execute(Runnable command) {
-        if (command instanceof HttpWorker) {
-            RingBuffer<RunEvent> ringBuffer = disruptor.getRingBuffer();
-            long next = ringBuffer.next();
-            RunEvent runEvent = disruptor.get(next);
-            runEvent.timeStart();
-            runEvent.runnable = command;
-            ringBuffer.publish(next);
-            max = next;
-        } else {
-            command.run();
-        }
-
+        RingBuffer<RunEvent> ringBuffer = disruptor.getRingBuffer();
+        long next = ringBuffer.next();
+        RunEvent runEvent = disruptor.get(next);
+        runEvent.timeStart();
+        runEvent.runnable = command;
+        ringBuffer.publish(next);
+        max = next;
     }
 
     public double cal() {
