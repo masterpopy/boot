@@ -43,7 +43,9 @@ public class HttpExchanger extends TimeMonitor implements StreamHandler<HttpReqE
         this.readBuf = ByteBuffer.allocateDirect(1024);
     }
 
-
+    public ResponseWriter getTask() {
+        return task;
+    }
 
     public ServerContext getServer() {
         return processor.getServer();
