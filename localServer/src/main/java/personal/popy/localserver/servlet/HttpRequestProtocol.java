@@ -7,10 +7,10 @@ import java.nio.ByteBuffer;
 
 public class HttpRequestProtocol {
 
-    private ChannelStream<HttpReqEntity> stream;
+    private ChannelStream stream;
 
     public HttpRequestProtocol(HttpExchanger exchanger) {
-        stream = new ChannelStream<>();
+        stream = new ChannelStream();
         stream.setData(new HttpReqEntity());
         stream.readToSpace((e, s) -> e.method = s.getLong())
                 .readToSpace((e, s) -> s.decodeUrl(e))

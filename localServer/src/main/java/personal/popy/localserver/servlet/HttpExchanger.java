@@ -4,6 +4,7 @@ import personal.popy.localserver.connect.StreamHandler;
 import personal.popy.localserver.connect.buffer.ResponseWriter;
 import personal.popy.localserver.data.ProcessBuffer;
 import personal.popy.localserver.lifecycle.HttpProcessor;
+import personal.popy.localserver.lifecycle.HttpWorker;
 import personal.popy.localserver.lifecycle.ServerContext;
 import personal.popy.localserver.source.Child;
 import personal.popy.localserver.util.TimeMonitor;
@@ -15,7 +16,7 @@ import java.nio.channels.CompletionHandler;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class HttpExchanger extends TimeMonitor implements StreamHandler<HttpReqEntity>, Runnable {
+public class HttpExchanger extends TimeMonitor implements StreamHandler<HttpReqEntity>, HttpWorker {
     private AsynchronousSocketChannel channel;
     private RequestImpl request;
     private ResponseImpl response;
@@ -161,5 +162,13 @@ public class HttpExchanger extends TimeMonitor implements StreamHandler<HttpReqE
 
     public void setChannel(AsynchronousSocketChannel channel) {
         this.channel = channel;
+    }
+
+    public ByteBuffer getReadBuf() {
+        return readBuf;
+    }
+
+    public void exe(HttpWorker runnable) {
+        getServer().getConnectionContext().executeWork(runnable);
     }
 }

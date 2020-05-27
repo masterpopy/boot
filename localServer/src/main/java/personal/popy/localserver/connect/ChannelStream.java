@@ -2,6 +2,9 @@ package personal.popy.localserver.connect;
 
 import personal.popy.localserver.action.CompletedStatus;
 import personal.popy.localserver.action.ReadAction;
+import personal.popy.localserver.lifecycle.HttpWorker;
+import personal.popy.localserver.servlet.HttpExchanger;
+import personal.popy.localserver.wrapper.HttpReqEntity;
 import personal.popy.localserver.wrapper.SliencedBuffer;
 
 import java.nio.ByteBuffer;
@@ -10,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-public class ChannelStream<T> implements CompletionHandler<Integer, ByteBuffer>, StreamHandler<T> {
+public class ChannelStream implements CompletionHandler<Integer, ByteBuffer>, HttpWorker {
     private List<ReadAction> stream = new ArrayList<>(5);
 
     //传输处理成功后的buff
@@ -21,12 +24,12 @@ public class ChannelStream<T> implements CompletionHandler<Integer, ByteBuffer>,
     private int readIndex;
     //当前stream处理时buff的起始位置
     private int curStart;
-    private T data;
+    private HttpReqEntity data;
 
-    private StreamHandler<T> handler;
+    private HttpExchanger handler;
 
 
-    public void setHandler(StreamHandler<T> handler) {
+    public void setHandler(HttpExchanger handler) {
         this.handler = handler;
     }
 
@@ -40,11 +43,11 @@ public class ChannelStream<T> implements CompletionHandler<Integer, ByteBuffer>,
         origin = new SliencedBuffer();
     }
 
-    public void setData(T data) {
+    public void setData(HttpReqEntity data) {
         this.data = data;
     }
 
-    public ChannelStream<T> readToSpace(BiConsumer<T, SliencedBuffer> w) {
+    public ChannelStream readToSpace(BiConsumer<HttpReqEntity, SliencedBuffer> w) {
         stream.add(((result, buffer) -> {
             int position = buffer.position();
             while (readIndex < position) {
@@ -59,7 +62,7 @@ public class ChannelStream<T> implements CompletionHandler<Integer, ByteBuffer>,
         return this;
     }
 
-    public ChannelStream<T> readToLine(BiConsumer<T, SliencedBuffer> w) {
+    public ChannelStream readToLine(BiConsumer<HttpReqEntity, SliencedBuffer> w) {
         stream.add(((result, buffer) -> {
             int position = buffer.position();
             OUT:
@@ -90,7 +93,7 @@ public class ChannelStream<T> implements CompletionHandler<Integer, ByteBuffer>,
     }
 
 
-    public ChannelStream<T> loop() {
+    public ChannelStream loop() {
         stream.add((result, buffer) -> {
             if (result < 2) { //require
                 return CompletedStatus.REQUIRE_MORE_DATA;
@@ -114,7 +117,7 @@ public class ChannelStream<T> implements CompletionHandler<Integer, ByteBuffer>,
             closed();
             return;
         }
-        parse(attachment);
+        handler.exe(this);
     }
 
 
@@ -159,24 +162,25 @@ public class ChannelStream<T> implements CompletionHandler<Integer, ByteBuffer>,
         processIndex = 0;
     }
 
-    @Override
-    public void success(T t) {
+    public void success(HttpReqEntity t) {
         handler.success(t);
     }
 
 
-    @Override
     public void require(ByteBuffer b, CompletionHandler<Integer, ByteBuffer> c) {
         handler.require(b, c);
     }
 
-    @Override
     public void error() {
         handler.error();
     }
 
-    @Override
     public void closed() {
         handler.closed();
+    }
+
+    @Override
+    public void run() {
+        parse(handler.getReadBuf());
     }
 }

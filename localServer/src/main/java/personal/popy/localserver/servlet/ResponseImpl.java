@@ -6,6 +6,7 @@ import personal.popy.localserver.connect.buffer.Chunked;
 import personal.popy.localserver.connect.buffer.LengthWriter;
 import personal.popy.localserver.connect.buffer.ResponseWriter;
 import personal.popy.localserver.exception.ServerException;
+import personal.popy.localserver.lifecycle.HttpWorker;
 import personal.popy.localserver.source.Child;
 import personal.popy.localserver.source.Parent;
 import personal.popy.localserver.util.BufferUtil;
@@ -19,7 +20,7 @@ import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Locale;
 
-public class ResponseImpl implements HttpServletResponse, Runnable {
+public class ResponseImpl implements HttpServletResponse, HttpWorker {
 
     private PrintWriter printWriter;
 

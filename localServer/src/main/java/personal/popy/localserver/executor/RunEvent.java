@@ -7,6 +7,7 @@ public class RunEvent extends TimeMonitor {
 
 
     public void run() {
+        if (runnable == null) return;
         timeEnd();
         if (runnable instanceof TimeMonitor) {
             TimeMonitor stage = ((TimeMonitor) runnable);

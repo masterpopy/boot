@@ -15,9 +15,9 @@ import java.util.concurrent.ExecutorService;
 public class ConnectionContext extends EnvAwire implements CompletionHandler<AsynchronousSocketChannel, Void> {
     private int port = 8080;
 
-    private ExecutorService worker = ExecutorFactory.newInstance(40);
+    private ExecutorService worker = ExecutorFactory.newInstance(20);
 
-    private ExecutorService ioExecutor = ExecutorFactory.newInstance(10);
+    private ExecutorService ioExecutor = ExecutorFactory.newInstance(1);
 
     public void start() throws Exception {
         worker.execute(() -> {
@@ -45,7 +45,7 @@ public class ConnectionContext extends EnvAwire implements CompletionHandler<Asy
         worker.shutdown();
     }
 
-    public void executeWork(Runnable runnable) {
+    public void executeWork(HttpWorker runnable) {
         worker.execute(runnable);
     }
 

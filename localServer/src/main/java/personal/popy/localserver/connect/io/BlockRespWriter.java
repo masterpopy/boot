@@ -5,39 +5,30 @@ import personal.popy.localserver.servlet.HttpExchanger;
 import personal.popy.localserver.util.TimeMonitor;
 
 import java.nio.ByteBuffer;
-import java.nio.channels.CompletionHandler;
 import java.util.concurrent.Future;
 
-public class BlockRespWriter extends TimeMonitor implements ResponseWriter, CompletionHandler<Integer, HttpExchanger> {
+public class BlockRespWriter extends TimeMonitor implements ResponseWriter {
 
     private ByteBuffer buffer;
-
 
     public BlockRespWriter() {
 
     }
 
-
-    private void flush(HttpExchanger exchanger, boolean block) {
+    private void flush(HttpExchanger exchanger) {
         if (buffer.position() == 0) {
             return;
         }
         buffer.flip();
         try {
             timeStart();
-
-            if (block) {
-                Future<Integer> write = exchanger.getChannel().write(buffer);
-                write.get();
-                buffer.clear();
-            } else {
-                exchanger.getChannel().write(buffer, exchanger, this);
-            }
+            Future<Integer> write = exchanger.getChannel().write(buffer);
+            write.get();
             timeEnd();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        buffer.clear();
     }
 
     public void doWrite(HttpExchanger exchanger, ByteBuffer b) {
@@ -50,29 +41,18 @@ public class BlockRespWriter extends TimeMonitor implements ResponseWriter, Comp
             b.limit(remaining);
             buffer.put(b);
             b.limit(limit);
-            flush(exchanger, true);
+            flush(exchanger);
         }
         buffer.put(b);
     }
 
     public void end(HttpExchanger exchanger, ByteBuffer b) {
         if (buffer != null) {
-//            AsynchronousSocketChannel channel = exchanger.getChannel();
-            flush(exchanger, false);
-            /*ServerContext server = exchanger.getServer();
-            server.getProcessor().processNewConnection(channel, server.getConnectionContext());*/
+            flush(exchanger);
+            buffer = null;
+            exchanger.end();
+            exchanger.getServer().getConnectionContext().executeWork(exchanger);
         }
     }
 
-    @Override
-    public void completed(Integer result, HttpExchanger exchanger) {
-        exchanger.end();
-        buffer = null;
-        exchanger.getServer().getConnectionContext().executeWork(exchanger);
-    }
-
-    @Override
-    public void failed(Throwable exc, HttpExchanger attachment) {
-        exc.printStackTrace();
-    }
 }

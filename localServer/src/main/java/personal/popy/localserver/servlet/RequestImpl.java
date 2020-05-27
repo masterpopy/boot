@@ -3,6 +3,7 @@ package personal.popy.localserver.servlet;
 import personal.popy.localserver.data.FastList;
 import personal.popy.localserver.data.Node;
 import personal.popy.localserver.lifecycle.ConnectionContext;
+import personal.popy.localserver.lifecycle.HttpWorker;
 import personal.popy.localserver.util.TimeMonitor;
 import personal.popy.localserver.wrapper.HttpReqEntity;
 
@@ -22,7 +23,7 @@ import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
 
-public class RequestImpl extends TimeMonitor implements HttpServletRequest, Runnable {
+public class RequestImpl extends TimeMonitor implements HttpServletRequest, HttpWorker {
 
 
     private final HttpExchanger exchanger;
@@ -432,12 +433,13 @@ public class RequestImpl extends TimeMonitor implements HttpServletRequest, Runn
 
     public void doServlet(HttpReqEntity entity) {
         this.entity = entity;
-        getExchanger().getServer().getConnectionContext().executeWork(this);
+        run();
     }
 
     @Override
     public void run() {
         try {
+            timeStart();
             ResponseImpl response = exchanger.createResponse();
             getServletContext().getServlet(getRequestURI()).service(this, response);
             timeEnd();

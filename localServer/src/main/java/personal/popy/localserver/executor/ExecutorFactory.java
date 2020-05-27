@@ -1,9 +1,10 @@
 package personal.popy.localserver.executor;
 
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ExecutorFactory {
     public static ExecutorService newInstance(int threadCnt) {
-        return new DisruptorExecutor(threadCnt);
+        return Executors.newFixedThreadPool(threadCnt);
     }
 }
