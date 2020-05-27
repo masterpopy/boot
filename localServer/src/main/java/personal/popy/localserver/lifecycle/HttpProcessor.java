@@ -14,7 +14,7 @@ public class HttpProcessor extends EnvAwire implements Processor {
 
     private ServletContext servletContext = new ServletContextImpl();
 
-    private static final SynchronizedStack<HttpExchanger> stack = new SynchronizedStack<>(128,500);
+    public static final SynchronizedStack<HttpExchanger> stack = new SynchronizedStack<>(128,500);
     public HttpProcessor() {
     }
 

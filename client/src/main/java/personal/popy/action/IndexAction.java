@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.async.WebAsyncTask;
 import personal.popy.entity.Dept;
-import personal.popy.localserver.servlet.RequestImpl;
+import personal.popy.localserver.lifecycle.HttpProcessor;
+import personal.popy.localserver.servlet.HttpExchanger;
+import personal.popy.localserver.util.TimeCal;
 import personal.popy.service.DeptService;
 
 import javax.servlet.AsyncContext;
@@ -29,7 +31,7 @@ public class IndexAction extends BaseController {
     @Autowired
     DeptService service;
 
-    public String getOne(){
+    public String getOne() {
         return "one";
     }
 
@@ -38,16 +40,22 @@ public class IndexAction extends BaseController {
     public Map hello(String obj) {
         Map result = new HashMap();
         for (int i = 0; i < 2; i++) {
-            result.put(i,obj);
+            result.put(i, obj);
         }
         return result;
     }
 
     @GetMapping("cal")
     public void cal(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String cal = ((RequestImpl) request).getExchanger().getServer().getConnectionContext().cal();
+        TimeCal read = new TimeCal();
+        TimeCal servlet = new TimeCal();
+        HttpProcessor.stack.each((s) -> {
+            servlet.add(s.getRequest().getTime());
+            read.add(s.getTime());
+        });
         response.setCharacterEncoding("utf-8");
         response.setContentType(MediaType.TEXT_PLAIN_VALUE);
+        String cal = "平均read时间： " + read.get(HttpExchanger.suc.get()) + ", 平均servlet时间：" + servlet.get(HttpExchanger.suc.get());
         response.getWriter().println(cal);
     }
 
@@ -103,8 +111,6 @@ public class IndexAction extends BaseController {
         };
         return new WebAsyncTask<>(callable);
     }
-
-
 
 
 }

@@ -86,7 +86,7 @@ public class SynchronizedStack<T> {
 
     public void each(Consumer<T> s) {
         for (int i = 0; i < index; i++) {
-            s.accept((T) stack[index]);
+            s.accept((T) stack[i]);
         }
     }
 }

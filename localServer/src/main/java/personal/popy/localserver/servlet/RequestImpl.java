@@ -3,6 +3,7 @@ package personal.popy.localserver.servlet;
 import personal.popy.localserver.data.FastList;
 import personal.popy.localserver.data.Node;
 import personal.popy.localserver.lifecycle.ConnectionContext;
+import personal.popy.localserver.util.TimeMonitor;
 import personal.popy.localserver.wrapper.HttpReqEntity;
 
 import javax.servlet.*;
@@ -21,7 +22,7 @@ import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
 
-public class RequestImpl implements HttpServletRequest,Runnable {
+public class RequestImpl extends TimeMonitor implements HttpServletRequest, Runnable {
 
 
     private final HttpExchanger exchanger;
@@ -29,7 +30,6 @@ public class RequestImpl implements HttpServletRequest,Runnable {
     private FastList<Object> attributes = new FastList<>();
 
     private SessionImpl session;
-
 
     public RequestImpl(HttpExchanger exchanger) {
         this.exchanger = exchanger;
@@ -440,9 +440,11 @@ public class RequestImpl implements HttpServletRequest,Runnable {
         try {
             ResponseImpl response = exchanger.createResponse();
             getServletContext().getServlet(getRequestURI()).service(this, response);
+            timeEnd();
             response.doResponse();
         } catch (ServletException | IOException e) {
             e.printStackTrace();
         }
     }
+
 }

@@ -1,18 +1,21 @@
 package personal.popy.localserver.executor;
 
+import personal.popy.localserver.util.TimeMonitor;
+
 public class RunEvent {
     public Runnable runnable;
-    public int totaltime=0;
-    public long start=0;
 
-    public int runtime=0;
 
     public void run() {
-        long l = System.currentTimeMillis();
-        runnable.run();
-        runnable = null;
-        long l1 = System.currentTimeMillis();
-        this.totaltime += (l1 - start);
-        this.runtime += (l1 - l);
+        if (runnable instanceof TimeMonitor) {
+            TimeMonitor stage = ((TimeMonitor) runnable);
+            stage.timeStart();
+            runnable.run();
+            runnable = null;
+        } else {
+            runnable.run();
+            runnable = null;
+        }
+
     }
 }

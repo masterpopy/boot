@@ -6,6 +6,7 @@ import personal.popy.localserver.data.ProcessBuffer;
 import personal.popy.localserver.lifecycle.HttpProcessor;
 import personal.popy.localserver.lifecycle.ServerContext;
 import personal.popy.localserver.source.Child;
+import personal.popy.localserver.util.TimeMonitor;
 import personal.popy.localserver.wrapper.HttpReqEntity;
 
 import java.io.IOException;
@@ -15,7 +16,7 @@ import java.nio.channels.CompletionHandler;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class HttpExchanger implements StreamHandler<HttpReqEntity>, Runnable {
+public class HttpExchanger extends TimeMonitor implements StreamHandler<HttpReqEntity>, Runnable {
     private AsynchronousSocketChannel channel;
     private RequestImpl request;
     private ResponseImpl response;
@@ -32,7 +33,7 @@ public class HttpExchanger implements StreamHandler<HttpReqEntity>, Runnable {
 
     //public static final Charset DEFAULT_URI_CHARSET = StandardCharsets.UTF_8;
     //public static final Charset DEFAULT_BODY_CHARSET = StandardCharsets.ISO_8859_1;
-    public static final AtomicInteger suc = new AtomicInteger();
+    public static final AtomicInteger suc = new AtomicInteger(1);
 
     public HttpExchanger(HttpProcessor processor, AsynchronousSocketChannel channel) {
         this.processor = processor;
@@ -102,6 +103,7 @@ public class HttpExchanger implements StreamHandler<HttpReqEntity>, Runnable {
             buf = ProcessBuffer.alloc();
         }
         //write(ByteBuffer.wrap(ACK));//send ack
+        super.timeEnd();
         getRequest().doServlet(entity);
     }
 
@@ -145,9 +147,6 @@ public class HttpExchanger implements StreamHandler<HttpReqEntity>, Runnable {
         }
     }
 
-    public void doRequest() {
-
-    }
 
     public AsynchronousSocketChannel getChannel() {
         return channel;
