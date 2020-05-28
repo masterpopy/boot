@@ -1,6 +1,5 @@
 package personal.popy.localserver.servlet;
 
-import personal.popy.localserver.connect.StreamHandler;
 import personal.popy.localserver.connect.buffer.ResponseWriter;
 import personal.popy.localserver.data.ProcessBuffer;
 import personal.popy.localserver.lifecycle.HttpProcessor;
@@ -16,7 +15,7 @@ import java.nio.channels.CompletionHandler;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class HttpExchanger extends TimeMonitor implements StreamHandler<HttpReqEntity>, HttpWorker {
+public class HttpExchanger extends TimeMonitor implements  HttpWorker {
     private AsynchronousSocketChannel channel;
     private RequestImpl request;
     private ResponseImpl response;
@@ -97,7 +96,6 @@ public class HttpExchanger extends TimeMonitor implements StreamHandler<HttpReqE
     }
 
 
-    @Override
     public void success(HttpReqEntity entity) {
         //write(ByteBuffer.wrap(ACK));//send ack
         super.timeEnd();
@@ -109,7 +107,6 @@ public class HttpExchanger extends TimeMonitor implements StreamHandler<HttpReqE
         buf.clear();
     }
 
-    @Override
     public void require(ByteBuffer b, CompletionHandler<Integer, ByteBuffer> c) {
         //todo buf size
         if (!channel.isOpen()) {
@@ -120,13 +117,11 @@ public class HttpExchanger extends TimeMonitor implements StreamHandler<HttpReqE
     }
 
 
-    @Override
     public void error() {
         closed();
         System.out.println("error happened");
     }
 
-    @Override
     public void closed() {
         channel = null;
         end();

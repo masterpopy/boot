@@ -15,7 +15,7 @@ public class BlockRespWriter extends TimeMonitor implements ResponseWriter {
 
     }
 
-    private void flush(HttpExchanger exchanger, boolean end) {
+    private void flush(HttpExchanger exchanger) {
         if (buffer.position() == 0) {
             return;
         }
@@ -34,7 +34,6 @@ public class BlockRespWriter extends TimeMonitor implements ResponseWriter {
     public void doWrite(HttpExchanger exchanger, ByteBuffer b) {
         if (buffer == null) {
             buffer = exchanger.getBuf().getWriterBuf();
-
         }
         int remaining = buffer.remaining();
         if (remaining < b.remaining()) {
@@ -42,14 +41,14 @@ public class BlockRespWriter extends TimeMonitor implements ResponseWriter {
             b.limit(remaining);
             buffer.put(b);
             b.limit(limit);
-            flush(exchanger, false);
+            flush(exchanger);
         }
         buffer.put(b);
     }
 
     public void end(HttpExchanger exchanger, ByteBuffer b) {
         if (buffer != null) {
-            flush(exchanger, true);
+            flush(exchanger);
             buffer = null;
             exchanger.doParse();
         }
