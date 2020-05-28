@@ -31,7 +31,7 @@ public class ByteBufferStream extends ServletOutputStream {
 
     private void enableCharBuffer() {
         if (cb == null) {
-            cb = response.getHttpExchanger().getBuf().getCharBuf().get();
+            cb = response.getHttpExchanger().getBuf().getCharBuf();
         }
     }
 

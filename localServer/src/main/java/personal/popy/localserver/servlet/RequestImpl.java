@@ -439,6 +439,8 @@ public class RequestImpl extends TimeMonitor implements HttpServletRequest, Http
     @Override
     public void run() {
         try {
+            timeStart();
+            exchanger.refreshBuf();
             ResponseImpl response = exchanger.createResponse();
             getServletContext().getServlet(getRequestURI()).service(this, response);
             timeEnd();

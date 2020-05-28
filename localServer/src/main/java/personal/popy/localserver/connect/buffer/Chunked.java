@@ -5,8 +5,8 @@ import personal.popy.localserver.servlet.HttpExchanger;
 import java.nio.ByteBuffer;
 
 public class Chunked implements ResponseWriter{
-    private static final byte[] LAST_CHUNK_BYTES = {(byte) '0', (byte) '\r', (byte) '\n'};
-    private static final byte[] CRLF_BYTES = {(byte) '\r', (byte) '\n'};
+    /*private static final byte[] LAST_CHUNK_BYTES = {(byte) '0', (byte) '\r', (byte) '\n'};
+    private static final byte[] CRLF_BYTES = {(byte) '\r', (byte) '\n'};*/
     private static final byte[] END_CHUNK_BYTES =
             {(byte) '0', (byte) '\r', (byte) '\n', (byte) '\r', (byte) '\n'};
 
@@ -23,8 +23,8 @@ public class Chunked implements ResponseWriter{
     protected final ByteBuffer chunkHeader = ByteBuffer.allocate(10);
 
 
-    protected final ByteBuffer lastChunk = ByteBuffer.wrap(LAST_CHUNK_BYTES);
-    protected final ByteBuffer crlfChunk = ByteBuffer.wrap(CRLF_BYTES);
+    /*protected final ByteBuffer lastChunk = ByteBuffer.wrap(LAST_CHUNK_BYTES);
+    protected final ByteBuffer crlfChunk = ByteBuffer.wrap(CRLF_BYTES)*/;
     /**
      * End chunk.
      */

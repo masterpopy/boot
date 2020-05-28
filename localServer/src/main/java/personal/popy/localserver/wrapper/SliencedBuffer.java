@@ -1,6 +1,5 @@
 package personal.popy.localserver.wrapper;
 
-import personal.popy.localserver.data.ProcessBuffer;
 import personal.popy.localserver.util.UrlDecoder;
 
 import java.nio.ByteBuffer;
@@ -8,6 +7,7 @@ import java.nio.CharBuffer;
 import java.nio.charset.StandardCharsets;
 
 public class SliencedBuffer {
+    private static final ThreadLocal<CharBuffer> tcb = ThreadLocal.withInitial(()->CharBuffer.allocate(1024));
 
     public SliencedBuffer() {
     }
@@ -39,10 +39,10 @@ public class SliencedBuffer {
 
 
     public String ansiString(int start, int length) {
-        CharBuffer cb = ProcessBuffer.charBuf.get();
+        CharBuffer cb = tcb.get();
         char[] array = cb.array();
         for (int i = 0; i < length; i++) {
-            array[i] = (char) origin.get(i+start);
+            array[i] = (char) origin.get(i + start);
         }
         return new String(array, 0, length);
     }
@@ -66,7 +66,7 @@ public class SliencedBuffer {
     }
 
     public void decodeUrl(HttpReqEntity en) {
-        CharBuffer cb = ProcessBuffer.charBuf.get();
+        CharBuffer cb = tcb.get();
         //todo charset
         while (start < limit) {
             byte b = origin.get(start);

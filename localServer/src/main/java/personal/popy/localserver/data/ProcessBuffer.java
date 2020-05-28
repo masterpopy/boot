@@ -2,17 +2,20 @@ package personal.popy.localserver.data;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public final class ProcessBuffer {
     private final ByteBuffer streamBuf;//4kb
     private final ByteBuffer writerBuf;//8kb
 
-    public static final ThreadLocal<CharBuffer> charBuf = ThreadLocal.withInitial(() -> CharBuffer.allocate(1024));
+    private final CharBuffer charBuf;
 
-
+    private Future realWriteTask;
     public ProcessBuffer() {
         streamBuf = ByteBuffer.allocate(1024 * 4);
         writerBuf = ByteBuffer.allocateDirect(1024 * 8);
+        charBuf = CharBuffer.allocate(1024);
     }
 
 
@@ -21,31 +24,30 @@ public final class ProcessBuffer {
     }
 
     public ByteBuffer getWriterBuf() {
+        if (realWriteTask != null) {
+            try {
+                realWriteTask.get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+            realWriteTask = null;
+            writerBuf.clear();
+        }
         return writerBuf;
     }
 
-    public ThreadLocal<CharBuffer> getCharBuf() {
+    public CharBuffer getCharBuf() {
         return charBuf;
     }
 
-    private static final SynchronizedStack<ProcessBuffer> stack = new SynchronizedStack<>();
-
-
-    public static ProcessBuffer alloc() {
-        ProcessBuffer pop = stack.pop();
-        if (pop == null) {
-            return new ProcessBuffer();
-        }
-        return pop;
-    }
-
-    public void save() {
-        clear();
-        stack.push(this);
-    }
 
     public void clear() {
         writerBuf.clear();
         streamBuf.clear();
+        charBuf.clear();
+    }
+
+    public void setRealWriteTask(Future realWriteTask) {
+        this.realWriteTask = realWriteTask;
     }
 }

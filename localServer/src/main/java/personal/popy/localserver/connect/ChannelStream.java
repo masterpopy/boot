@@ -181,6 +181,8 @@ public class ChannelStream implements CompletionHandler<Integer, ByteBuffer>, Ht
 
     @Override
     public void run() {
+        //TODO 如果readbuf有剩余，则交给IO线程去做
+        //不能这样用，write阻塞太久不行
         parse(handler.getReadBuf());
     }
 }

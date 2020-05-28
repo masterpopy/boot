@@ -9,6 +9,6 @@ public class ExecutorFactory {
     }
 
     public static ExecutorService newIo() {
-        return Executors.newSingleThreadExecutor();
+        return Executors.newFixedThreadPool(5);
     }
 }

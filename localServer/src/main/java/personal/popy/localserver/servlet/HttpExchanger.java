@@ -16,12 +16,12 @@ import java.nio.channels.CompletionHandler;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class HttpExchanger extends TimeMonitor implements StreamHandler<HttpReqEntity> {
+public class HttpExchanger extends TimeMonitor implements StreamHandler<HttpReqEntity>, HttpWorker {
     private AsynchronousSocketChannel channel;
     private RequestImpl request;
     private ResponseImpl response;
 
-
+    public static final ThreadLocal<ProcessBuffer> buffers = ThreadLocal.withInitial(ProcessBuffer::new);
     private ProcessBuffer buf;
     private ByteBuffer readBuf;
 
@@ -99,14 +99,15 @@ public class HttpExchanger extends TimeMonitor implements StreamHandler<HttpReqE
 
     @Override
     public void success(HttpReqEntity entity) {
-        if (buf == null) {
-            buf = ProcessBuffer.alloc();
-        }
         //write(ByteBuffer.wrap(ACK));//send ack
         super.timeEnd();
         getRequest().doServlet(entity);
     }
 
+    public void refreshBuf() {
+        buf = buffers.get();
+        buf.clear();
+    }
 
     @Override
     public void require(ByteBuffer b, CompletionHandler<Integer, ByteBuffer> c) {
@@ -151,10 +152,7 @@ public class HttpExchanger extends TimeMonitor implements StreamHandler<HttpReqE
     }
 
     public void end() {
-        if (buf != null) {
-            buf.save();
-            buf = null;
-        }
+
     }
 
     public void setChannel(AsynchronousSocketChannel channel) {
@@ -167,5 +165,10 @@ public class HttpExchanger extends TimeMonitor implements StreamHandler<HttpReqE
 
     public void exe(HttpWorker runnable) {
         getServer().getConnectionContext().executeWork(runnable);
+    }
+
+    @Override
+    public void run() {
+        doParse();
     }
 }
