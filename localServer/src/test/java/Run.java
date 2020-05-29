@@ -16,7 +16,12 @@ public class Run {
 
     @Test
     public void run1() throws Throwable {
-        System.out.println("255".compareTo("254"));
+        //返回java虚拟机中的内存总量
+        long totalMemory = Runtime.getRuntime().totalMemory();
+        //返回java虚拟机试图使用的最大内存量
+        long maxMemory = Runtime.getRuntime().maxMemory();
+        System.out.println("Total_Memory(-Xms ) =  "+ totalMemory + " 字节  " + (totalMemory / (double)1024/1024)+"MB");
+        System.out.println("Max_Memory(-Xmx ) =  "+ maxMemory + " 字节  " + (maxMemory / (double)1024/1024)+"MB");
     }
 
 

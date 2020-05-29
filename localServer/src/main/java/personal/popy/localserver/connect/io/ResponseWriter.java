@@ -1,6 +1,5 @@
-package personal.popy.localserver.connect.buffer;
+package personal.popy.localserver.connect.io;
 
-import personal.popy.localserver.connect.io.BlockRespWriter;
 import personal.popy.localserver.servlet.HttpExchanger;
 
 import java.nio.ByteBuffer;

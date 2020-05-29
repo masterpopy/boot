@@ -1,6 +1,6 @@
 package personal.popy.localserver.servlet;
 
-import personal.popy.localserver.connect.ChannelStream;
+import personal.popy.localserver.connect.aio.ChannelStream;
 import personal.popy.localserver.wrapper.HttpReqEntity;
 
 import java.nio.ByteBuffer;

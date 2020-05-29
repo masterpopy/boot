@@ -1,6 +1,6 @@
 package personal.popy.localserver.servlet;
 
-import personal.popy.localserver.connect.buffer.ResponseWriter;
+import personal.popy.localserver.connect.io.ResponseWriter;
 import personal.popy.localserver.data.ProcessBuffer;
 import personal.popy.localserver.lifecycle.HttpProcessor;
 import personal.popy.localserver.lifecycle.HttpWorker;

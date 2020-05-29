@@ -1,4 +1,4 @@
-package personal.popy.localserver.connect.buffer;
+package personal.popy.localserver.connect.io;
 
 import personal.popy.localserver.servlet.ResponseImpl;
 

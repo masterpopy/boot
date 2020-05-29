@@ -90,59 +90,6 @@ public class SliencedBuffer {
     }
 
 
-    public static int parseInt(byte[] s, int beginIndex, int endIndex, int radix) throws NumberFormatException {
-        if (beginIndex >= 0 && beginIndex <= endIndex && endIndex <= s.length) {
-            if (radix < 2) {
-                throw new NumberFormatException("radix " + radix + " less than Character.MIN_RADIX");
-            } else if (radix > 36) {
-                throw new NumberFormatException("radix " + radix + " greater than Character.MAX_RADIX");
-            } else {
-                boolean negative = false;
-                int i = beginIndex;
-                int limit = -2147483647;
-                if (beginIndex >= endIndex) {
-                    throw new NumberFormatException("");
-                } else {
-                    byte firstChar = s[beginIndex];
-                    if (firstChar < '0') {
-                        if (firstChar == '-') {
-                            negative = true;
-                            limit = -2147483648;
-                        } else if (firstChar != '+') {
-                            throw new NumberFormatException();
-                        }
-
-                        i = beginIndex + 1;
-                        if (i == endIndex) {
-                            throw new NumberFormatException();
-                        }
-                    }
-
-                    int multmin = limit / radix;
-
-                    int result;
-                    int digit;
-                    for (result = 0; i < endIndex; result -= digit) {
-                        digit = Character.digit(s[i], radix);
-                        if (digit < 0 || result < multmin) {
-                            throw new NumberFormatException();
-                        }
-
-                        result *= radix;
-                        if (result < limit + digit) {
-                            throw new NumberFormatException();
-                        }
-                        ++i;
-                    }
-
-                    return negative ? result : -result;
-                }
-            }
-        } else {
-            throw new IndexOutOfBoundsException();
-        }
-    }
-
     public int getLength() {
         return length;
     }

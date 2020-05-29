@@ -1,6 +1,6 @@
 package personal.popy.localserver.lifecycle;
 
-import personal.popy.localserver.connect.AioAcceptor;
+import personal.popy.localserver.connect.aio.AioAcceptor;
 import personal.popy.localserver.executor.ExecutorFactory;
 import personal.popy.localserver.source.Single;
 

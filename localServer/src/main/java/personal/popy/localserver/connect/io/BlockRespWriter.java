@@ -1,6 +1,5 @@
 package personal.popy.localserver.connect.io;
 
-import personal.popy.localserver.connect.buffer.ResponseWriter;
 import personal.popy.localserver.servlet.HttpExchanger;
 import personal.popy.localserver.util.TimeMonitor;
 

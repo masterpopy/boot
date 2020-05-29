@@ -2,8 +2,8 @@ package personal.popy.localserver.util;
 
 public class TimeMonitor {
     private long time;
-    private volatile long start;
-    private volatile boolean started;
+    private long start;
+    private boolean started;
 
     public void timeStart() {
         this.start = System.nanoTime();
