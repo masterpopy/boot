@@ -1,20 +1,13 @@
 package personal.popy.action;
 
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import personal.popy.localserver.connect.io.BlockRespWriter;
-import personal.popy.localserver.lifecycle.HttpProcessor;
-import personal.popy.localserver.servlet.ResponseImpl;
-import personal.popy.localserver.util.TimeCal;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.HashMap;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
 
 @Controller
 @RequestMapping("action")
@@ -22,15 +15,13 @@ public class IndexAction extends BaseController {
 
     @GetMapping("index")
     @ResponseBody
-    public Map hello(String obj) {
-        Map result = new HashMap();
-        for (int i = 0; i < 200; i++) {
-            result.put(i, obj);
-        }
-        return result;
+    public Map hello(HttpServletRequest request) {
+        request.getSession();
+
+        return Collections.emptyMap();
     }
 
-    @GetMapping("cal")
+   /* @GetMapping("cal")
     public void cal(HttpServletResponse response) throws IOException {
         TimeCal read = new TimeCal();
         TimeCal servlet = new TimeCal();
@@ -48,7 +39,7 @@ public class IndexAction extends BaseController {
                 ", 平均servlet时间：" + servlet.get() +
                 ", 平均阻塞write： " + write.get();
         response.getWriter().println(cal);
-    }
+    }*/
 
 
 

@@ -1,4 +1,5 @@
 import org.junit.Test;
+import personal.popy.localserver.executor.FastLock;
 
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanFeatureInfo;
@@ -11,6 +12,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Run {
 
@@ -26,8 +29,27 @@ public class Run {
 
 
     @Test
-    public void runResponse() {
-        System.out.println("\u670D\u52A1");
+    public void runResponse() throws Exception {
+        ExecutorService e = Executors.newFixedThreadPool(30);
+        IntRun intRun = new IntRun();
+        for (int i = 0; i < 1024; i++) {
+            e.execute(intRun);
+        }
+        Thread.sleep(50);
+        System.out.println(intRun.i);
+    }
+
+    private static class IntRun implements Runnable{
+
+
+        private FastLock f = new FastLock();
+        private int i;
+        @Override
+        public void run() {
+            f.lock();
+            i++;
+            f.unlock();
+        }
     }
 
     private class domains {
