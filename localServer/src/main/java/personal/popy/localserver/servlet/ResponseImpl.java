@@ -324,7 +324,7 @@ public class ResponseImpl implements HttpServletResponse {
 
         ByteBuffer ob = outputStream.getOb();
         ob.flip();
-        responseWriter.end(getHttpExchanger(), ob);
+        responseWriter.doEnd(getHttpExchanger(), ob);
 
     }
 

@@ -7,7 +7,7 @@ import java.nio.CharBuffer;
 import java.nio.charset.StandardCharsets;
 
 public class SliencedBuffer {
-    private static final ThreadLocal<CharBuffer> tcb = ThreadLocal.withInitial(()->CharBuffer.allocate(1024));
+    private static final ThreadLocal<CharBuffer> tcb = ThreadLocal.withInitial(() -> CharBuffer.allocate(1024));
 
     public SliencedBuffer() {
     }
@@ -24,7 +24,7 @@ public class SliencedBuffer {
         return origin;
     }
 
-    public SliencedBuffer reset(ByteBuffer  origin, int start, int limit) {
+    public SliencedBuffer reset(ByteBuffer origin, int start, int limit) {
         this.start = start;
         this.limit = limit;
         this.origin = origin;
@@ -38,7 +38,7 @@ public class SliencedBuffer {
     private ByteBuffer origin;
 
 
-    public String ansiString(int start, int length) {
+    public String stringValue(int start, int length) {
         CharBuffer cb = tcb.get();
         char[] array = cb.array();
         for (int i = 0; i < length; i++) {
@@ -47,8 +47,8 @@ public class SliencedBuffer {
         return new String(array, 0, length);
     }
 
-    public String ansiString() {
-       return ansiString(0, length);
+    public String stringValue() {
+        return stringValue(0, length);
     }
 
 
@@ -60,7 +60,7 @@ public class SliencedBuffer {
         long ret = 0;
         for (int j = 0; j < i; j++) {
             ret = ret << 8;
-            ret |= Character.toUpperCase(origin.get(j+start));
+            ret |= Character.toUpperCase(origin.get(j + start));
         }
         return ret;
     }

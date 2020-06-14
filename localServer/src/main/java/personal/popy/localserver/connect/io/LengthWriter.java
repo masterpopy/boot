@@ -11,7 +11,7 @@ public class LengthWriter implements ResponseWriter {
     }
 
     @Override
-    public void end(HttpExchanger exchanger, ByteBuffer buffer) {
+    public void doEnd(HttpExchanger exchanger, ByteBuffer buffer) {
         exchanger.realWrite(buffer);
     }
 }

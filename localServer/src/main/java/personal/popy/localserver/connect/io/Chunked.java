@@ -61,7 +61,7 @@ public class Chunked implements ResponseWriter{
     }
 
     @Override
-    public void end(HttpExchanger exchanger, ByteBuffer chunk) {
+    public void doEnd(HttpExchanger exchanger, ByteBuffer chunk) {
         // Write end chunk
         doWrite(exchanger, chunk);
         exchanger.realWrite(endChunk);

@@ -18,7 +18,7 @@ public class HttpReqEntity {
 
     public String encoding;
 
-    public long contentLength=-1L;
+    public long contentLength = -1L;
 
     public static final int GET = 0x474554;
     public static final int POST = 0x504f5354;
@@ -75,7 +75,7 @@ public class HttpReqEntity {
             if (origin.get(start++) == ':') {
                 //head value found;
                 int start1 = bytes.getStart();
-                key = bytes.ansiString(start1, start - start1 - 1);
+                key = bytes.stringValue(start1, start - start1 - 1);
                 break;
             }
 
@@ -86,7 +86,7 @@ public class HttpReqEntity {
             if (!(b == ' ' || b == '\t')) break;
             start++;
         }
-        String value = bytes.ansiString(start, pos - start);
+        String value = bytes.stringValue(start, pos - start);
         //todo content-length check
         headers.add(key, value);
     }
@@ -106,18 +106,18 @@ public class HttpReqEntity {
     }
 
     public void recycle() {
-        uri=null;
-        method=0L;
-        query=null;
-        protocol=null;
+        uri = null;
+        method = 0L;
+        query = null;
+        protocol = null;
         headers.clear();
         parameters.clear();
-        encoding="UTF-8";
+        encoding = "UTF-8";
         contentLength = -1L;
     }
 
     public long getContentLength() {
-        if (contentLength == -1L){
+        if (contentLength == -1L) {
             String s = headers.get("content-length");
             contentLength = Long.parseLong(s);
         }

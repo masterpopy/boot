@@ -8,7 +8,7 @@ public interface ResponseWriter {
 
     void doWrite(HttpExchanger exchanger, ByteBuffer buffer);
 
-    void end(HttpExchanger exchanger, ByteBuffer buffer);
+    void doEnd(HttpExchanger exchanger, ByteBuffer buffer);
 
     static ResponseWriter newBlock() {
         return new BlockRespWriter();

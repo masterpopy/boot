@@ -14,7 +14,7 @@ public class HttpRequestProtocol {
         stream.setData(new HttpReqEntity());
         stream.readToSpace((e, s) -> e.method = s.getLong())
                 .readToSpace((e, s) -> s.decodeUrl(e))
-                .readToLine((e, s) -> e.protocol = s.ansiString())
+                .readToLine((e, s) -> e.protocol = s.stringValue())
                 .readToLine(HttpReqEntity::parseHeader)
                 .loop();
         stream.setHandler(exchanger);

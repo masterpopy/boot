@@ -92,7 +92,7 @@ public class HttpExchanger extends TimeMonitor implements  HttpWorker {
         response = null;
 
 
-        task.end(this, null);
+        task.doEnd(this, null);
     }
 
 

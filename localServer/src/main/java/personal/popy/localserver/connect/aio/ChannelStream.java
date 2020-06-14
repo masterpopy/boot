@@ -104,7 +104,7 @@ public class ChannelStream implements CompletionHandler<Integer, ByteBuffer>, Ht
             }
             ReadAction readAction = stream.get(processIndex - 1);
             //readAction.reset(getStart());
-            readAction.completed(result, buffer);
+            readAction.onData(result, buffer);
             return CompletedStatus.REPEAT;
         });
         return this;
@@ -132,7 +132,7 @@ public class ChannelStream implements CompletionHandler<Integer, ByteBuffer>, Ht
     public void parse(ByteBuffer buffer) {
         for (; processIndex < stream.size(); processIndex++) {
             ReadAction cur = stream.get(processIndex);
-            CompletedStatus exe = cur.completed(buffer.position() - curStart, buffer);
+            CompletedStatus exe = cur.onData(buffer.position() - curStart, buffer);
             switch (exe) {
                 case REQUIRE_MORE_DATA:
                     require(buffer);

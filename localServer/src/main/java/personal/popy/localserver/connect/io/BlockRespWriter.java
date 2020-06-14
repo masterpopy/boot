@@ -45,7 +45,7 @@ public class BlockRespWriter extends TimeMonitor implements ResponseWriter {
         buffer.put(b);
     }
 
-    public void end(HttpExchanger exchanger, ByteBuffer b) {
+    public void doEnd(HttpExchanger exchanger, ByteBuffer b) {
         if (buffer != null) {
             flush(exchanger);
             buffer = null;
