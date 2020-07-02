@@ -15,6 +15,7 @@ public class FastLock {
 
     private volatile Thread owner;
 
+
     public void lock() {
         Thread thread = Thread.currentThread();
 
@@ -25,16 +26,17 @@ public class FastLock {
                     owner = thread;
                 } else {
                     while (waiters.get(i) != null) {
+                        System.out.println("full");
                         Thread.yield();
                     }
                     waiters.set(i, thread);
                     LockSupport.park();
+                    waiters.set(i, null);
                     Thread owner = this.owner;
                     if (owner != null) {
                         System.out.println(1);
                     }
                     this.owner = thread;
-                    waiters.set(i, null);
                 }
                 return;
             }
@@ -55,6 +57,7 @@ public class FastLock {
                         --i;
                         Thread th;
                         while ((th = waiters.get(i)) == null){
+                            System.out.println("null");
                             Thread.yield();
                         }
                         LockSupport.unpark(th);

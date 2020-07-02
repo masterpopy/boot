@@ -5,7 +5,6 @@ import personal.popy.localserver.data.ProcessBuffer;
 import personal.popy.localserver.lifecycle.HttpProcessor;
 import personal.popy.localserver.lifecycle.HttpWorker;
 import personal.popy.localserver.lifecycle.ServerContext;
-import personal.popy.localserver.source.Child;
 import personal.popy.localserver.util.TimeMonitor;
 import personal.popy.localserver.wrapper.HttpReqEntity;
 
@@ -54,7 +53,6 @@ public class HttpExchanger extends TimeMonitor implements  HttpWorker {
         return processor;
     }
 
-    @Child
     public HttpRequestProtocol getHttpRequestProtocol() {
         return protocol;
     }

@@ -13,7 +13,7 @@ public class ServletContextImpl implements ServletContext, ServletConfig {
     private String contextPath = "";
     private Servlet servlet;
     private DynamicImpl dynamic = new DynamicImpl();
-    private Hashtable<String,String> parameters = new Hashtable<>();
+    private Hashtable<String, String> parameters = new Hashtable<>();
     private FastList<Object> attr = new FastList<>();
 
     @Override

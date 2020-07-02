@@ -2,7 +2,6 @@ package personal.popy.localserver.lifecycle;
 
 import personal.popy.localserver.connect.aio.AioAcceptor;
 import personal.popy.localserver.executor.ExecutorFactory;
-import personal.popy.localserver.source.Single;
 
 import java.net.InetSocketAddress;
 import java.nio.channels.AsynchronousChannelGroup;
@@ -11,7 +10,7 @@ import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.util.concurrent.ExecutorService;
 
-@Single
+
 public class ConnectionContext extends EnvAwire implements CompletionHandler<AsynchronousSocketChannel, Void> {
     private int port = 8080;
 

@@ -6,8 +6,6 @@ import personal.popy.localserver.connect.io.Chunked;
 import personal.popy.localserver.connect.io.LengthWriter;
 import personal.popy.localserver.connect.io.ResponseWriter;
 import personal.popy.localserver.exception.ServerException;
-import personal.popy.localserver.source.Child;
-import personal.popy.localserver.source.Parent;
 import personal.popy.localserver.util.BufferUtil;
 import personal.popy.localserver.wrapper.HttpRespEntity;
 
@@ -39,13 +37,11 @@ public class ResponseImpl implements HttpServletResponse {
     }
 
 
-    @Parent
     public HttpExchanger getHttpExchanger() {
         checkCommitted();
         return exchanger;
     }
 
-    @Child
     public HttpRespEntity getHttpRespEntity() {
         checkCommitted();
         return entity;
