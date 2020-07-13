@@ -1,3 +1,5 @@
+import com.lmax.disruptor.RingBuffer;
+import com.lmax.disruptor.SequenceBarrier;
 import org.junit.Test;
 
 import java.io.BufferedReader;
@@ -5,10 +7,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.CoderResult;
-import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,13 +15,8 @@ public class ServerTest {
 
     @Test
     public void test0() throws Exception {
-        String s = "我说呢不是吧";
-        CharBuffer cb = CharBuffer.allocate(8);
-        cb.put(s);
-        cb.flip();
-        ByteBuffer bb = ByteBuffer.allocate(32);
-        CoderResult encode = StandardCharsets.UTF_8.newEncoder().encode(cb, bb, false);
-        System.out.println(encode);
+        RingBuffer buffer = RingBuffer.createSingleProducer(null,200);
+        SequenceBarrier seq = buffer.newBarrier(null);
 
     }
 

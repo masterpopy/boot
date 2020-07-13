@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
-import java.util.Map;
 
 @Controller
 @RequestMapping("action")
@@ -15,10 +13,10 @@ public class IndexAction extends BaseController {
 
     @GetMapping("index")
     @ResponseBody
-    public Map hello(HttpServletRequest request) {
+    public String hello(HttpServletRequest request) {
         request.getSession();
 
-        return Collections.emptyMap();
+        return "123";
     }
 
    /* @GetMapping("cal")

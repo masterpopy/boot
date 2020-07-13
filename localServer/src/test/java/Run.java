@@ -5,9 +5,12 @@ import sun.security.ssl.SSLEngineImpl;
 import javax.net.ssl.SSLContext;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.locks.LockSupport;
 
 public class Run {
 
@@ -23,44 +26,41 @@ public class Run {
 
     @Test
     public void runResponse() throws Exception {
-        ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
-        ThreadFactory threadFactory = Executors.defaultThreadFactory();
-        ExecutorService e = Executors.newFixedThreadPool(30, threadFactory);
-        IntRun intRun = new IntRun();
-        for (int i = 0; i < 1024; i++) {
-            e.execute(intRun);
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        Ints i = new Ints();
+
+        for (int j = 0; j < 1024; j++) {
+            executorService.execute(i);
         }
-        Thread.sleep(50);
+        try {
+            executorService.submit(i).get(50, TimeUnit.MILLISECONDS);
+        } catch (TimeoutException e) {
 
-        /*Field group = threadFactory.getClass().getDeclaredField("group");
-        group.setAccessible(true);
-        Thread[] s = new Thread[30];
-        int enumerate = ((ThreadGroup) group.get(threadFactory)).enumerate(s,false);
-        for (int i = 0; i < enumerate; i++) {
-            ThreadInfo threadInfo = threadMXBean.getThreadInfo(s[i].getId());
-            System.out.print(threadInfo.toString());
-        }*/
-        System.out.println(intRun.i);
+        }
 
+        System.out.println(i.val);
 
+        ThreadMXBean mxBean = ManagementFactory.getThreadMXBean();
+
+        List<Thread> threads = i.lock.getThreads();
+        for (Thread thread : threads) {
+            LockSupport.unpark(thread);
+            System.out.println(mxBean.getThreadInfo(thread.getId()));
+        }
     }
 
-    private static class IntRun implements Runnable {
 
+    private static class Ints implements Runnable {
+        private volatile int val;
+        private FastLock lock = new FastLock();
 
-        private FastLock f = new FastLock();
-        private int i;
 
         @Override
         public void run() {
-            f.lock();
-            i++;
-            f.unlock();
+            lock.lock();
+            val++;
+            lock.unlock();
         }
-    }
-
-    private class type {
-        private String[] attr;
     }
 
 }

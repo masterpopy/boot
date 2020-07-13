@@ -1,73 +1,71 @@
 package personal.popy.localserver.executor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.concurrent.locks.LockSupport;
 
 public class FastLock {
 
-    private static final int LENGTH = 64;
-
+    private AtomicReferenceArray<Thread> threads = new AtomicReferenceArray<>(32);
 
     private AtomicInteger state = new AtomicInteger();
 
-    private AtomicReferenceArray<Thread> waiters = new AtomicReferenceArray<>(LENGTH);
 
-    private volatile Thread owner;
-
+    private AtomicInteger pos = new AtomicInteger(-1);
 
     public void lock() {
         Thread thread = Thread.currentThread();
 
         while (true) {
-            int i = state.get();
-            if (state.compareAndSet(i, i + 1)) {
-                if (i == 0) {
-                    owner = thread;
+            if (state.compareAndSet(0, 1)) {//increase;
+                int i = pos.getAndIncrement();
+                if (i == -1) {
+                    state.set(0);
                 } else {
-                    while (waiters.get(i) != null) {
-                        System.out.println("full");
-                        Thread.yield();
-                    }
-                    waiters.set(i, thread);
+                    threads.set(i, thread);
+                    state.set(0);
                     LockSupport.park();
-                    waiters.set(i, null);
-                    Thread owner = this.owner;
-                    if (owner != null) {
-                        System.out.println(1);
-                    }
-                    this.owner = thread;
+                    state.set(0);
                 }
                 return;
+            } else {
+                Thread.yield();
             }
         }
 
     }
 
-
     public void unlock() {
-        Thread thread = Thread.currentThread();
-        Thread owner = this.owner;
-        if (owner == thread) {
-            this.owner = null;
-            while (true) {
-                int i = state.get();
-                if (state.compareAndSet(i, i - 1)) {
-                    if (i > 1) {
-                        --i;
-                        Thread th;
-                        while ((th = waiters.get(i)) == null){
-                            System.out.println("null");
-                            Thread.yield();
-                        }
-                        LockSupport.unpark(th);
-                    }
-                    return;
-                }
-            }
+        while (true) {
+            if (state.compareAndSet(0, 1)) {
 
-        } else {
-            throw new IllegalMonitorStateException(thread.getName() + ":" + owner);
+                int i = pos.decrementAndGet();
+                if (i >= 0) {
+                    Thread andSet = threads.getAndSet(i, null);
+                    if (andSet == null) {
+                        throw new NullPointerException("null thread");
+                    }
+                    LockSupport.unpark(andSet);
+                } else {
+                    state.set(0);
+                }
+
+                return;
+            } else {
+                Thread.yield();
+            }
         }
+    }
+
+    public List<Thread> getThreads() {
+        ArrayList<Thread> list = new ArrayList<>(32);
+        for (int i = 0; i < 32; i++) {
+            if (threads.get(i) != null) {
+                list.add(threads.get(i));
+            }
+        }
+        return list;
     }
 }
