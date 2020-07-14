@@ -1,11 +1,11 @@
 package personal.popy.localserver.servlet;
 
 import personal.popy.localserver.exception.ServerException;
-import personal.popy.localserver.io.io.ByteBufferStream;
-import personal.popy.localserver.io.io.CharBufferWriter;
-import personal.popy.localserver.io.io.Chunked;
-import personal.popy.localserver.io.io.LengthWriter;
-import personal.popy.localserver.io.io.ResponseWriter;
+import personal.popy.localserver.io.stream.ByteBufferStream;
+import personal.popy.localserver.io.stream.CharBufferWriter;
+import personal.popy.localserver.io.stream.Chunked;
+import personal.popy.localserver.io.stream.LengthWriter;
+import personal.popy.localserver.io.stream.ResponseWriter;
 import personal.popy.localserver.util.BufferUtil;
 import personal.popy.localserver.wrapper.HttpRespEntity;
 

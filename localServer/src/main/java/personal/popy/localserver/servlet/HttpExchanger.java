@@ -1,7 +1,7 @@
 package personal.popy.localserver.servlet;
 
 import personal.popy.localserver.data.ProcessBuffer;
-import personal.popy.localserver.io.io.ResponseWriter;
+import personal.popy.localserver.io.stream.ResponseWriter;
 import personal.popy.localserver.lifecycle.Http11ConnHandler;
 import personal.popy.localserver.lifecycle.HttpWorker;
 import personal.popy.localserver.lifecycle.ServerContext;

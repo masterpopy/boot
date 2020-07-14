@@ -1,4 +1,4 @@
-package personal.popy.localserver.io.io;
+package personal.popy.localserver.io.stream;
 
 import personal.popy.localserver.servlet.HttpExchanger;
 
