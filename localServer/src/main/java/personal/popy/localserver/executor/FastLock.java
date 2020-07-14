@@ -27,6 +27,9 @@ public class FastLock {
                     threads.set(i, thread);
                     state.set(0);
                     LockSupport.park();
+                    if (state.get() == 0) {//可能已经被释放。
+                        continue;
+                    }
                     state.set(0);
                 }
                 return;

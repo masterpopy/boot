@@ -1,4 +1,4 @@
-package personal.popy.localserver.connect.aio;
+package personal.popy.localserver.io.aio;
 
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;

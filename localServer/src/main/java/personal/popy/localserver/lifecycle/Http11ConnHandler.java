@@ -7,13 +7,13 @@ import personal.popy.localserver.servlet.ServletContextImpl;
 import javax.servlet.ServletContext;
 import java.nio.channels.AsynchronousSocketChannel;
 
-
-public class HttpProcessor extends EnvAwire implements Processor {
+//这个类负责处理新进来的连接，并且管理http交换器HttpExchanger
+public class Http11ConnHandler extends EnvAwire implements ConnHandler {
 
     private ServletContext servletContext = new ServletContextImpl();
 
     public static final SynchronizedStack<HttpExchanger> stack = new SynchronizedStack<>(128,500);
-    public HttpProcessor() {
+    public Http11ConnHandler() {
     }
 
     @Override

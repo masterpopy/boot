@@ -1,4 +1,4 @@
-package personal.popy.localserver.connect.io;
+package personal.popy.localserver.io.io;
 
 import personal.popy.localserver.servlet.HttpExchanger;
 import personal.popy.localserver.util.TimeMonitor;

@@ -1,8 +1,8 @@
 package personal.popy.localserver.servlet;
 
-import personal.popy.localserver.connect.io.ResponseWriter;
 import personal.popy.localserver.data.ProcessBuffer;
-import personal.popy.localserver.lifecycle.HttpProcessor;
+import personal.popy.localserver.io.io.ResponseWriter;
+import personal.popy.localserver.lifecycle.Http11ConnHandler;
 import personal.popy.localserver.lifecycle.HttpWorker;
 import personal.popy.localserver.lifecycle.ServerContext;
 import personal.popy.localserver.util.TimeMonitor;
@@ -14,6 +14,7 @@ import java.nio.channels.CompletionHandler;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+//http请求，相应，读写都由这类完成
 public class HttpExchanger extends TimeMonitor implements  HttpWorker {
     private AsynchronousSocketChannel channel;
     private RequestImpl request;
@@ -24,7 +25,7 @@ public class HttpExchanger extends TimeMonitor implements  HttpWorker {
     private ByteBuffer readBuf;
 
     private HttpRequestProtocol protocol;
-    private HttpProcessor processor;
+    private Http11ConnHandler processor;
 
     private ResponseWriter task = ResponseWriter.newBlock();
 //    private static final byte[] ACK = "HTTP/1.1 100 \r\n\r\n".getBytes(StandardCharsets.ISO_8859_1);
@@ -33,7 +34,7 @@ public class HttpExchanger extends TimeMonitor implements  HttpWorker {
     //public static final Charset DEFAULT_BODY_CHARSET = StandardCharsets.ISO_8859_1;
     public static final AtomicInteger suc = new AtomicInteger(1);
 
-    public HttpExchanger(HttpProcessor processor, AsynchronousSocketChannel channel) {
+    public HttpExchanger(Http11ConnHandler processor, AsynchronousSocketChannel channel) {
         this.processor = processor;
         this.channel = channel;
         this.request = new RequestImpl(this);
@@ -49,7 +50,7 @@ public class HttpExchanger extends TimeMonitor implements  HttpWorker {
         return processor.getServer();
     }
 
-    public HttpProcessor getProcessor() {
+    public Http11ConnHandler getProcessor() {
         return processor;
     }
 

@@ -8,7 +8,7 @@ public class ServerContext {
 
     private ConnectionContext connectionContext;
 
-    private Processor processor;
+    private ConnHandler processor;
 
     private HashMap<String, String> properties;
 
@@ -24,7 +24,7 @@ public class ServerContext {
         properties.put(prop, value);
     }
 
-    public Processor getProcessor() {
+    public ConnHandler getProcessor() {
         return processor;
     }
 
@@ -55,7 +55,7 @@ public class ServerContext {
         this.proxyName  = proxyName;
     }
 
-    public void setProcessor(Processor processor) {
+    public void setProcessor(ConnHandler processor) {
         this.processor = processor;
     }
 }

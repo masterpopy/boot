@@ -1,4 +1,4 @@
-package personal.popy.localserver.connect.nio;
+package personal.popy.localserver.io.nio;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;

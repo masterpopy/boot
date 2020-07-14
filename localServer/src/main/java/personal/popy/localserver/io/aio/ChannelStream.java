@@ -1,4 +1,4 @@
-package personal.popy.localserver.connect.aio;
+package personal.popy.localserver.io.aio;
 
 import personal.popy.localserver.action.CompletedStatus;
 import personal.popy.localserver.action.ReadAction;

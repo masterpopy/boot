@@ -1,7 +1,7 @@
 package personal.popy.localserver.lifecycle;
 
-import personal.popy.localserver.connect.aio.AioAcceptor;
 import personal.popy.localserver.executor.ExecutorFactory;
+import personal.popy.localserver.io.aio.AioAcceptor;
 
 import java.net.InetSocketAddress;
 import java.nio.channels.AsynchronousChannelGroup;

@@ -1,10 +1,11 @@
 package personal.popy.localserver.servlet;
 
-import personal.popy.localserver.connect.aio.ChannelStream;
+import personal.popy.localserver.io.aio.ChannelStream;
 import personal.popy.localserver.wrapper.HttpReqEntity;
 
 import java.nio.ByteBuffer;
 
+//这个类负责解析请求。
 public class HttpRequestProtocol {
 
     private ChannelStream stream;

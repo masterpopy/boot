@@ -1,4 +1,4 @@
-package personal.popy.localserver.connect.io;
+package personal.popy.localserver.io.io;
 
 import java.io.IOException;
 import java.io.Writer;

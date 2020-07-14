@@ -10,7 +10,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.locks.LockSupport;
 
 public class Run {
 
@@ -26,7 +25,7 @@ public class Run {
 
     @Test
     public void runResponse() throws Exception {
-        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        ExecutorService executorService = Executors.newFixedThreadPool(20);
         Ints i = new Ints();
 
         for (int j = 0; j < 1024; j++) {
@@ -44,7 +43,7 @@ public class Run {
 
         List<Thread> threads = i.lock.getThreads();
         for (Thread thread : threads) {
-            LockSupport.unpark(thread);
+
             System.out.println(mxBean.getThreadInfo(thread.getId()));
         }
     }
