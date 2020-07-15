@@ -69,7 +69,7 @@ public class ChannelStream implements CompletionHandler<Integer, ByteBuffer>, Ht
             while (readIndex + READ_UNTIL_END_LINE.length <= position) {//required bytes
                 for (int i = 0; i < READ_UNTIL_END_LINE.length; i++) {
                     char b = (char) buffer.get(readIndex + i);
-                    if (READ_UNTIL_END_LINE[i]!=b) {
+                    if (READ_UNTIL_END_LINE[i] != b) {
                         //匹配失败，当前字节数提升1
                         readIndex += 1;
                         continue OUT;
@@ -135,6 +135,10 @@ public class ChannelStream implements CompletionHandler<Integer, ByteBuffer>, Ht
             CompletedStatus exe = cur.onData(buffer.position() - curStart, buffer);
             switch (exe) {
                 case REQUIRE_MORE_DATA:
+                    buffer.position(curStart);//丢弃前面的字节。
+                    buffer.compact();
+                    readIndex = readIndex - curStart;
+                    curStart = 0;
                     require(buffer);
                     return;
                 case SUCCESS:

@@ -1,8 +1,11 @@
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 import org.junit.Test;
+import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
 import personal.popy.localserver.executor.FastLock;
-import sun.security.ssl.SSLEngineImpl;
 
-import javax.net.ssl.SSLContext;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.util.List;
@@ -15,10 +18,33 @@ public class Run {
 
     @Test
     public void run1() throws Throwable {
-        System.setProperty("java.security.debug", "all");
-        SSLContext ctx = SSLContext.getDefault();
-        SSLEngineImpl sslEngine = (SSLEngineImpl) ctx.createSSLEngine();
-        System.out.println(sslEngine.toString());
+        Observer<Object> onsubscribe = new Observer<Object>() {
+            @Override
+            public void onSubscribe(Disposable disposable) {
+                System.out.println("onsubscribe");
+            }
+
+            @Override
+            public void onNext(Object o) {
+                System.out.println(o);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        };
+        Observable.fromPublisher(new Publisher<Object>() {
+            @Override
+            public void subscribe(Subscriber<? super Object> subscriber) {
+                subscriber.onNext("on next");
+            }
+        }).subscribe(onsubscribe);
 
     }
 
