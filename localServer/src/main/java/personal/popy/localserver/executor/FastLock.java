@@ -15,6 +15,8 @@ public class FastLock {
 
     private AtomicInteger pos = new AtomicInteger(-1);
 
+
+
     public void lock() {
         Thread thread = Thread.currentThread();
 

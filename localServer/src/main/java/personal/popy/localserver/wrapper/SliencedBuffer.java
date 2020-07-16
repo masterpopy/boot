@@ -48,7 +48,7 @@ public class SliencedBuffer {
     }
 
     public String stringValue() {
-        return stringValue(0, length);
+        return stringValue(start, length);
     }
 
 

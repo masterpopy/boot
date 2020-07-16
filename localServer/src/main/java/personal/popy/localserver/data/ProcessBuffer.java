@@ -2,19 +2,16 @@ package personal.popy.localserver.data;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 public final class ProcessBuffer {
     private final ByteBuffer streamBuf;//4kb
-    private final ByteBuffer writerBuf;//8kb
+    private final ByteBuffer commonBuffer;//8kb,这个东东可以用来POST请求的读，也可以用于写。记得及时清理。
 
     private final CharBuffer charBuf;
 
-    private Future realWriteTask;
     public ProcessBuffer() {
         streamBuf = ByteBuffer.allocate(1024 * 4);
-        writerBuf = ByteBuffer.allocateDirect(1024 * 8);
+        commonBuffer = ByteBuffer.allocateDirect(1024 * 8);
         charBuf = CharBuffer.allocate(1024);
     }
 
@@ -23,17 +20,8 @@ public final class ProcessBuffer {
         return streamBuf;
     }
 
-    public ByteBuffer getWriterBuf() {
-        if (realWriteTask != null) {
-            try {
-                realWriteTask.get();
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-            realWriteTask = null;
-            writerBuf.clear();
-        }
-        return writerBuf;
+    public ByteBuffer borrowByteBuffer() {
+        return commonBuffer;
     }
 
     public CharBuffer getCharBuf() {
@@ -42,12 +30,9 @@ public final class ProcessBuffer {
 
 
     public void clear() {
-        writerBuf.clear();
+        commonBuffer.clear();
         streamBuf.clear();
         charBuf.clear();
     }
 
-    public void setRealWriteTask(Future realWriteTask) {
-        this.realWriteTask = realWriteTask;
-    }
 }

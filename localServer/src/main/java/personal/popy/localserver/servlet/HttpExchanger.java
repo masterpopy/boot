@@ -11,11 +11,12 @@ import personal.popy.localserver.wrapper.HttpReqEntity;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 //http请求，相应，读写都由这类完成
-public class HttpExchanger extends TimeMonitor implements  HttpWorker {
+public class HttpExchanger extends TimeMonitor implements HttpWorker {
     private AsynchronousSocketChannel channel;
     private RequestImpl request;
     private ResponseImpl response;
@@ -113,6 +114,19 @@ public class HttpExchanger extends TimeMonitor implements  HttpWorker {
             return;
         }
         channel.read(b, 30, TimeUnit.MINUTES, b, c);
+    }
+
+    public Integer doRead(ByteBuffer b) {
+        if (readBuf.hasRemaining()) {
+            int remaining = readBuf.remaining();
+            b.put(readBuf);
+            return remaining;
+        }
+        try {
+            return channel.read(b).get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new IllegalStateException("unexpected buffer read end");
+        }
     }
 
 

@@ -272,7 +272,8 @@ public class ResponseImpl implements HttpServletResponse {
         headerSended = true;
         HttpExchanger httpExchanger = getHttpExchanger();
         //todo 规范获取
-        ByteBuffer writer = httpExchanger.getBuf().getWriterBuf();
+        ByteBuffer writer = httpExchanger.getBuf().borrowByteBuffer();
+        writer.clear();
         HttpRespEntity httpRespEntity = getHttpRespEntity();
         //prepare response line
         BufferUtil.put(writer, "HTTP/1.1 ");//必须是大写

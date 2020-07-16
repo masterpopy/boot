@@ -22,17 +22,18 @@ public class BlockRespWriter extends TimeMonitor implements ResponseWriter {
         try {
             timeStart();
             Future<Integer> write = exchanger.getChannel().write(buffer);
-            exchanger.getBuf().setRealWriteTask(write);
+            write.get();
             timeEnd();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        buffer.clear();
         buffer = null;
     }
 
     public void doWrite(HttpExchanger exchanger, ByteBuffer b) {
         if (buffer == null) {
-            buffer = exchanger.getBuf().getWriterBuf();
+            buffer = exchanger.getBuf().borrowByteBuffer();
         }
         int remaining = buffer.remaining();
         if (remaining < b.remaining()) {

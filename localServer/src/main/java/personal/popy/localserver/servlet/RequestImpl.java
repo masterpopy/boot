@@ -32,6 +32,8 @@ public class RequestImpl extends TimeMonitor implements HttpServletRequest, Http
 
     private SessionImpl session;
 
+    private ServletInputStream inputStream;
+
     public RequestImpl(HttpExchanger exchanger) {
         this.exchanger = exchanger;
     }
@@ -42,6 +44,7 @@ public class RequestImpl extends TimeMonitor implements HttpServletRequest, Http
 
     public void recycle() {
         entity.recycle();
+        inputStream=null;
     }
 
 
@@ -275,7 +278,10 @@ public class RequestImpl extends TimeMonitor implements HttpServletRequest, Http
 
     @Override
     public ServletInputStream getInputStream() throws IOException {
-        return null;
+        if (inputStream != null) {
+            return inputStream;
+        }
+        return inputStream = new ServletInputStreamImpl(this);
     }
 
     @Override
