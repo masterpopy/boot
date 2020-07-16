@@ -4,27 +4,30 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import personal.popy.entity.User;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
+import java.util.Map;
 
 @Controller
-@RequestMapping("action")
 public class IndexAction extends BaseController {
 
-    @PostMapping("index")
+    @GetMapping("index")
     @ResponseBody
-    public String hello(@RequestBody String hash) {
+    public Map hello(HttpServletRequest request) {
+        request.getSession();
 
-        System.out.println(hash);
-        return "123";
+        return Collections.emptyMap();
     }
 
-    @GetMapping("index2")
-    @ResponseBody
-    public String hello2() {
 
-        return "123";
+    @PostMapping("post")
+    @ResponseBody
+    public User post(@RequestBody User usr) {
+
+        return usr;
     }
 
    /* @GetMapping("cal")
@@ -46,6 +49,8 @@ public class IndexAction extends BaseController {
                 ", 平均阻塞write： " + write.get();
         response.getWriter().println(cal);
     }*/
+
+
 
 
 }
