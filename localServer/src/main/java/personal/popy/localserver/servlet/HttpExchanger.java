@@ -40,7 +40,7 @@ public class HttpExchanger extends TimeMonitor implements HttpWorker {
         this.channel = channel;
         this.request = new RequestImpl(this);
         this.protocol = new HttpRequestProtocol(this);
-        this.readBuf = ByteBuffer.allocateDirect(1024);
+        this.readBuf = ByteBuffer.allocateDirect(400);
     }
 
     public ResponseWriter getTask() {

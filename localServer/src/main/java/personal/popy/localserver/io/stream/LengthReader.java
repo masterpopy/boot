@@ -30,13 +30,15 @@ public class LengthReader implements RequestReader {
         if (buffer.hasRemaining()) {
             nRead = buffer.remaining();
         } else {
+            buffer.position(0);
             if (remaining < buffer.capacity()) {//保证最大读取数不会超过剩余字节数。保证安全读取。
-                buffer.position(0).limit(remaining);
+                buffer.limit(remaining);
                 buffer = buffer.slice();
             }
             nRead = exchanger.doRead(buffer);
+            buffer.flip();
         }
-
+        //nRead读取的字节不可能超过remaining,必须判断大小，否则buffer剩余字节可能会出错
         int length = Math.min(nRead, remaining);
         length = Math.min(len, length);
         remaining -= length;
@@ -50,8 +52,9 @@ public class LengthReader implements RequestReader {
             return -1;
         }
         if (!buffer.hasRemaining()) {
+            buffer.position(0);
             if (remaining < buffer.capacity()) {//保证最大读取数不会超过剩余字节数。保证安全读取。
-                buffer.position(0).limit(remaining);
+                buffer.limit(remaining);
                 buffer = buffer.slice();
             }
             exchanger.doRead(buffer);
