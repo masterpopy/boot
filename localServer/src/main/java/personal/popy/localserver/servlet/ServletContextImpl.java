@@ -96,20 +96,7 @@ public class ServletContextImpl implements ServletContext, ServletConfig {
 
     @Override
     public Enumeration<String> getServletNames() {
-        return new Enumeration<String>() {
-            boolean h = true;
-
-            @Override
-            public boolean hasMoreElements() {
-                return h;
-            }
-
-            @Override
-            public String nextElement() {
-                h = false;
-                return contextPath;
-            }
-        };
+        return Collections.enumeration(Collections.singleton(contextPath));
     }
 
     @Override
@@ -300,7 +287,7 @@ public class ServletContextImpl implements ServletContext, ServletConfig {
 
     @Override
     public ServletRegistration getServletRegistration(String servletName) {
-        return null;
+        return dynamic;
     }
 
     @Override

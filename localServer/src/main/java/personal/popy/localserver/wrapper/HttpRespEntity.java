@@ -3,20 +3,19 @@ package personal.popy.localserver.wrapper;
 import personal.popy.localserver.data.Headers;
 
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
 public class HttpRespEntity {
     public int status;
     public String contentType;
     public Headers headers = new Headers();
-    public Charset charset = StandardCharsets.ISO_8859_1;
+    public Charset charset = null;//除非用户自己设置charset，否则不传charset
     public boolean isChunked;
     public long contentLength = -1;
 
     public void prepareHeader() {
         if (contentType != null)
         {
-            headers.add("content-type", contentType + ";charset=" + charset.name());
+            headers.add("content-type",charset == null ? contentType : contentType + ";charset=" + charset.name());
         }
         if (contentLength != -1L) {
             headers.add("content-length", String.valueOf(contentLength));
@@ -32,7 +31,7 @@ public class HttpRespEntity {
         contentLength = -1L;
         contentType = null;
         headers.clear();
-        charset = StandardCharsets.ISO_8859_1;
+        charset = null;
         isChunked = false;
     }
 }

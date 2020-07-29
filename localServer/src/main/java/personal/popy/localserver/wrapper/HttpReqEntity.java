@@ -50,16 +50,6 @@ public class HttpReqEntity {
         return "UNKNOWN";
     }
 
-    private static int indexOf(char[] cb, int start, int end, char c) {
-        while (start < end) {
-            if (cb[start] == c) {
-                break;
-            }
-            start++;
-        }
-        return start;
-    }
-
     //todo range check
     public void parseHeader(SliencedBuffer bytes) {
         int start = bytes.getStart();

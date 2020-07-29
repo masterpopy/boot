@@ -25,7 +25,6 @@ public class ByteBufferStream extends ServletOutputStream {
     public ByteBufferStream(ResponseImpl response) {
         this.response = response;
         ob = response.getHttpExchanger().getBuf().getStreamBuf();
-        encoder = response.getCharset().newEncoder().onUnmappableCharacter(CodingErrorAction.REPORT).onMalformedInput(CodingErrorAction.REPORT);
     }
 
 
@@ -103,6 +102,10 @@ public class ByteBufferStream extends ServletOutputStream {
     }
 
     private void encode() throws IOException {
+        if (encoder == null) {
+            encoder = response.getCharset().newEncoder()
+                    .onUnmappableCharacter(CodingErrorAction.REPORT).onMalformedInput(CodingErrorAction.REPORT);
+        }
         cb.flip();
         CoderResult encode;
         do {

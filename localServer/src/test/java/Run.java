@@ -4,6 +4,7 @@ import io.reactivex.disposables.Disposable;
 import org.junit.Test;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 import personal.popy.localserver.executor.FastLock;
 
 import java.lang.management.ManagementFactory;
@@ -18,15 +19,32 @@ public class Run {
 
     @Test
     public void run1() throws Throwable {
-        Observer<Object> onsubscribe = new Observer<Object>() {
+
+        Observable.fromPublisher(new Publisher<String>() {
+            @Override
+            public void subscribe(Subscriber<? super String> subscriber) {
+                subscriber.onSubscribe(new Subscription() {
+                    @Override
+                    public void request(long l) {
+
+                    }
+
+                    @Override
+                    public void cancel() {
+
+                    }
+                });
+                subscriber.onNext("321");
+            }
+        }).subscribe(new Observer<String>() {
             @Override
             public void onSubscribe(Disposable disposable) {
-                System.out.println("onsubscribe");
+                System.out.println("onSubscribe");
             }
 
             @Override
-            public void onNext(Object o) {
-                System.out.println(o);
+            public void onNext(String s) {
+                System.out.println("onNext");
             }
 
             @Override
@@ -38,13 +56,8 @@ public class Run {
             public void onComplete() {
 
             }
-        };
-        Observable.fromPublisher(new Publisher<Object>() {
-            @Override
-            public void subscribe(Subscriber<? super Object> subscriber) {
-                subscriber.onNext("on next");
-            }
-        }).subscribe(onsubscribe);
+        });
+
 
     }
 

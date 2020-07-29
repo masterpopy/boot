@@ -45,6 +45,7 @@ public class RequestImpl extends TimeMonitor implements HttpServletRequest, Http
     public void recycle() {
         entity.recycle();
         inputStream=null;
+        attributes.clear();
     }
 
 
