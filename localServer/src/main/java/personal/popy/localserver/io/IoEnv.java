@@ -4,7 +4,7 @@ import java.util.IdentityHashMap;
 
 public class IoEnv {
     private InputBuffer inputBuffer;
-    private IdentityHashMap<String, Object> attributes;
+    private IdentityHashMap<AttrKey<?>, Object> attributes;
 
     public InputBuffer inputBuffer() {
         return inputBuffer;
@@ -15,11 +15,12 @@ public class IoEnv {
         return this;
     }
 
-    public Object attr(String key) {
-        return attributes.get(key);
+    public <T> T attr(AttrKey<T> key) {
+        Object o = attributes.get(key);
+        return key.cast(o);
     }
 
-    public void attr(String key, Object value) {
+    public <T> void attr(AttrKey<T> key, T value) {
         if (attributes == null) {
             attributes = new IdentityHashMap<>();
         }

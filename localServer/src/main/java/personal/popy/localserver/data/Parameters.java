@@ -10,7 +10,7 @@ public class Parameters extends FastList<String> {
         sort();
         for (int i = 0; i < size; i += 1) {
             if (table[i].keyEq(s)) {
-                return createValueArray(i, s);
+                return createValueArray(i, table[i].name);
             }
         }
         return null;
@@ -38,7 +38,7 @@ public class Parameters extends FastList<String> {
         if (size == 0) {
             return Collections.emptyMap();
         }
-        Map<String, String[]> pmCache = new HashMap<>(size / 3 * 4);
+        Map<String, String[]> pmCache = new HashMap<>(size,1);
         for (int i = 0; i < size; ) {
             String name = table[i].name;
             String[] pmValues = createValueArray(i, name);
