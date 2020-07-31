@@ -1,6 +1,5 @@
-import com.lmax.disruptor.RingBuffer;
-import com.lmax.disruptor.SequenceBarrier;
 import org.junit.Test;
+import personal.popy.localserver.servlet.util.RestPath;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
@@ -14,8 +13,10 @@ public class ServerTest {
 
     @Test
     public void test0() throws Exception {
-        RingBuffer buffer = RingBuffer.createSingleProducer(null,200);
-        SequenceBarrier seq = buffer.newBarrier(null);
+        RestPath<String> path = new RestPath<>("wgasg");
+        path.addPrefixPath("a/", "www");
+
+        System.out.println(path.match("/a").getValue());
 
     }
 

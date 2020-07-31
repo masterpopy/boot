@@ -1,31 +1,41 @@
 package personal.popy.localserver.servlet;
 
 import personal.popy.localserver.data.FastList;
+import personal.popy.localserver.servlet.manage.InstanceFactory;
+import personal.popy.localserver.servlet.registry.ServletRegistrationDynamicImpl;
 
 import javax.servlet.*;
 import javax.servlet.descriptor.JspConfigDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.EventListener;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Set;
 
-public class ServletContextImpl implements ServletContext, ServletConfig {
-    private String contextPath = "";
-    private Servlet servlet;
-    private DynamicImpl dynamic = new DynamicImpl();
+public class ServletContextImpl implements ServletContext {
+
     private Hashtable<String, String> parameters = new Hashtable<>();
+
     private FastList<Object> attr = new FastList<>();
+
+    private HashMap<String, ServletRegistrationDynamicImpl> servletRegistrations = new HashMap<>(4);
+
+    private InstanceFactory instanceFactory = new InstanceFactory(Thread.currentThread().getContextClassLoader());
+
+
 
     @Override
     public String getContextPath() {
-        return contextPath;
+        return "";
     }
 
     @Override
     public ServletContext getContext(String uriPath) {
-        if (uriPath.startsWith(contextPath))
-            return this;
-        return null;
+        return this;
     }
 
     @Override
@@ -86,7 +96,7 @@ public class ServletContextImpl implements ServletContext, ServletConfig {
 
     @Override
     public Servlet getServlet(String name) throws ServletException {
-        return servlet;
+        return null;
     }
 
     @Override
@@ -96,7 +106,7 @@ public class ServletContextImpl implements ServletContext, ServletConfig {
 
     @Override
     public Enumeration<String> getServletNames() {
-        return Collections.enumeration(Collections.singleton(contextPath));
+        return null;
     }
 
     @Override
@@ -116,22 +126,12 @@ public class ServletContextImpl implements ServletContext, ServletConfig {
 
     @Override
     public String getRealPath(String path) {
-        return contextPath;
+        return path;
     }
 
     @Override
     public String getServerInfo() {
-        return null;
-    }
-
-    @Override
-    public String getServletName() {
-        return contextPath;
-    }
-
-    @Override
-    public ServletContext getServletContext() {
-        return this;
+        return "";
     }
 
     @Override
@@ -172,108 +172,28 @@ public class ServletContextImpl implements ServletContext, ServletConfig {
 
     @Override
     public String getServletContextName() {
-        return contextPath;
+        return "";
     }
 
-    private class DynamicImpl implements ServletRegistration.Dynamic {
-
-        @Override
-        public void setLoadOnStartup(int i) {
-
-        }
-
-        @Override
-        public Set<String> setServletSecurity(ServletSecurityElement servletSecurityElement) {
-            return null;
-        }
-
-        @Override
-        public void setMultipartConfig(MultipartConfigElement multipartConfigElement) {
-
-        }
-
-        @Override
-        public void setRunAsRole(String s) {
-
-        }
-
-        @Override
-        public void setAsyncSupported(boolean b) {
-
-        }
-
-        @Override
-        public Set<String> addMapping(String... strings) {
-            return new HashSet<>(Arrays.asList(strings));
-        }
-
-        @Override
-        public Collection<String> getMappings() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public String getRunAsRole() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public String getName() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public String getClassName() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public boolean setInitParameter(String s, String s1) {
-            return ServletContextImpl.this.setInitParameter(s, s1);
-        }
-
-        @Override
-        public String getInitParameter(String s) {
-            return ServletContextImpl.this.getInitParameter(s);
-        }
-
-        @Override
-        public Set<String> setInitParameters(Map<String, String> map) {
-            map.forEach(ServletContextImpl.this::setInitParameter);
-            return map.keySet();
-        }
-
-        @Override
-        public Map<String, String> getInitParameters() {
-            return ServletContextImpl.this.parameters;
-        }
-    }
 
     @Override
     public ServletRegistration.Dynamic addServlet(String servletName, String className) {
-
-        return dynamic;
+        return new ServletRegistrationDynamicImpl(servletName, className, instanceFactory.newInstance(className));
     }
 
     @Override
     public ServletRegistration.Dynamic addServlet(String servletName, Servlet servlet) {
-        this.servlet = servlet;
-        try {
-            servlet.init(this);
-        } catch (ServletException e) {
-            e.printStackTrace();
-        }
-        return dynamic;
+        return new ServletRegistrationDynamicImpl(servletName, servlet.getClass().getName(), instanceFactory.newInstance(servlet));
     }
 
     @Override
     public ServletRegistration.Dynamic addServlet(String servletName, Class<? extends Servlet> servletClass) {
-        return dynamic;
+        return new ServletRegistrationDynamicImpl(servletName, servletClass.getName(), instanceFactory.newInstance(servletClass));
     }
 
     @Override
     public ServletRegistration.Dynamic addJspFile(String servletName, String jspFile) {
-        return dynamic;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -287,12 +207,13 @@ public class ServletContextImpl implements ServletContext, ServletConfig {
 
     @Override
     public ServletRegistration getServletRegistration(String servletName) {
-        return dynamic;
+
+        return servletRegistrations.get(servletName);
     }
 
     @Override
     public Map<String, ? extends ServletRegistration> getServletRegistrations() {
-        return null;
+        return servletRegistrations;
     }
 
     @Override
@@ -372,7 +293,7 @@ public class ServletContextImpl implements ServletContext, ServletConfig {
 
     @Override
     public ClassLoader getClassLoader() {
-        return ServletContext.class.getClassLoader();
+        return instanceFactory.getClassLoader();
     }
 
     @Override
@@ -382,7 +303,7 @@ public class ServletContextImpl implements ServletContext, ServletConfig {
 
     @Override
     public String getVirtualServerName() {
-        return null;
+        return "";
     }
 
     @Override
