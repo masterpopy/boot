@@ -32,11 +32,6 @@ public class FastList<V> {
         }
     }
 
-
-    public int getSize() {
-        return size;
-    }
-
     public void add(String key, V value) {
         sorted = false;
         resize();
@@ -60,12 +55,17 @@ public class FastList<V> {
     }
 
     public void clear() {
-        for (int i = 0; i < size; i++) {
-            table[i] = null;
+        if (size > 512) {
+            table = new Node[16];//shorten it
+        } else {
+            for (int i = 0; i < size; i++) {
+                table[i] = null;
+            }
         }
         size = 0;
     }
 
+    @SuppressWarnings("unchecked")
     private V get(String key) {
         for (int i = 0; i < size; i += 1) {
             if (table[i].name.equalsIgnoreCase(key)) {

@@ -2,14 +2,13 @@ import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.SequenceBarrier;
 import org.junit.Test;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.OutputStream;
-import java.net.Socket;
+import java.util.Arrays;
 import java.util.function.Consumer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ServerTest {
 
@@ -25,39 +24,16 @@ public class ServerTest {
     }
 
     @Test
-    public void test1() {
-        try (Socket socket = new Socket("localhost", 8080);
-             OutputStream stream = socket.getOutputStream()) {
-            String shutdown = "method url protocol\r\nInt=Ws\r\nWG=sgag\r\n";
-            stream.write(shutdown.getBytes());
-            stream.flush();
-            Thread.sleep(1000);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void test1() throws Exception {
+        SSLContext sslContext=SSLContext.getDefault();
+        sslContext.getDefaultSSLParameters().setCipherSuites(new String[]{"TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384"});
+        SSLEngine sslEngine = sslContext.createSSLEngine();
+        System.out.println(Arrays.toString(sslEngine.getEnabledCipherSuites()));
     }
 
     @Test
     public void test2() throws Exception {
-        Matcher matcher = Pattern.compile("0mw\\S*?</td>").matcher("");
-        String[] files = {
-                "C:\\Users\\lihq\\Documents\\WeChat Files\\popy596963\\FileStorage\\File\\2020-04\\要删除的列表\\6-ejb\\要删除列表\\FOSSID.html",
-                "C:\\Users\\lihq\\Documents\\WeChat Files\\popy596963\\FileStorage\\File\\2020-04\\要删除的列表\\6-javassist\\要删除列表\\FOSSID.html",
-                "C:\\Users\\lihq\\Documents\\WeChat Files\\popy596963\\FileStorage\\File\\2020-04\\要删除的列表\\6-jca\\要删除列表\\FOSSID.html",
-                "C:\\Users\\lihq\\Documents\\WeChat Files\\popy596963\\FileStorage\\File\\2020-04\\要删除的列表\\6-jdbc\\要删除列表\\FOSSID.html"
-        };
-        for (String fileName : files) {
-            System.out.println();
-            BufferedReader br = new BufferedReader(new FileReader(fileName));
-            br.lines().forEach(s -> {
-                matcher.reset(s);
-                while (matcher.find()) {
-                    String group = matcher.group();
-                    group = group.substring("0mw/0-13M-13W/".length(), group.length() - 5);
-                    System.out.println(group);
-                }
-            });
-        }
+
     }
 
     @Test

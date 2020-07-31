@@ -45,6 +45,7 @@ public class RequestImpl extends TimeMonitor implements HttpServletRequest, Http
     public void recycle() {
         entity.recycle();
         inputStream=null;
+        attributes.clear();
     }
 
 
@@ -346,7 +347,7 @@ public class RequestImpl extends TimeMonitor implements HttpServletRequest, Http
     public void setAttribute(String s, Object o) {
         Node node = attributes.getNode(s);
         if (node != null) {
-            node.value = o;
+            node.setValue(o);
         } else {
             attributes.add(s, o);
         }

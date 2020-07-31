@@ -8,12 +8,16 @@ public class Node implements Comparable<Node>, Map.Entry<String, Object> {
         this.value = value;
     }
 
-    public String name;
-    public Object value;
+    String name;
+    Object value;
 
     @Override
     public int compareTo(Node node) {
-        return name.compareToIgnoreCase(node.name);
+        int ret = name.compareToIgnoreCase(node.name);
+        if (ret == 0) {
+            name = node.name;
+        }
+        return ret;
     }
 
     boolean keyEq(String n) {

@@ -20,14 +20,14 @@ public class HttpReqEntity {
 
     public long contentLength = -1L;
 
-    public static final int GET = 0x474554;
-    public static final int POST = 0x504f5354;
-    public static final long DELETE = 0x44454c455445L;
-    public static final int PUT = 0x505554;
-    public static final int HEAD = 0x48454144;
-    public static final long TRACE = 0x5452414345L;
-    public static final long OPTIONS = 0x4f5054494f4e53L;
-    public static final long CONNECT = 0x434f4e4e454354L;
+    public static final int     GET     = 0x474554;
+    public static final int     POST    = 0x504f5354;
+    public static final long    DELETE  = 0x44454c455445L;
+    public static final int     PUT     = 0x505554;
+    public static final int     HEAD    = 0x48454144;
+    public static final long    TRACE   = 0x5452414345L;
+    public static final long    OPTIONS = 0x4f5054494f4e53L;
+    public static final long    CONNECT = 0x434f4e4e454354L;
 
     public String getMethod() {
         if (method == GET) {
@@ -48,16 +48,6 @@ public class HttpReqEntity {
             return "CONNECT";
         }
         return "UNKNOWN";
-    }
-
-    private static int indexOf(char[] cb, int start, int end, char c) {
-        while (start < end) {
-            if (cb[start] == c) {
-                break;
-            }
-            start++;
-        }
-        return start;
     }
 
     //todo range check

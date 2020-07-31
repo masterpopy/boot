@@ -21,7 +21,7 @@ public class UrlDecoder {
             switch (c) {
                 case '%':
                     if (i + 3 <= limit) {
-                        int v = x2c(origin.get(i+1), origin.get(i+2));
+                        int v = x2c(origin.get(i+1), origin.get(i + 2));
                         if (v < 0) {
                             throw new ServerException("URLDecoder: Illegal hex characters in escape (%) pattern - negative value");
                         }

@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Locale;
 
@@ -53,7 +54,8 @@ public class ResponseImpl implements HttpServletResponse {
     }
 
     public Charset getCharset() {
-        return getHttpRespEntity().charset;
+        Charset charset = getHttpRespEntity().charset;
+        return charset == null ? StandardCharsets.ISO_8859_1 : charset;
     }
 
     @Override
@@ -203,7 +205,8 @@ public class ResponseImpl implements HttpServletResponse {
     @Override
     public String getCharacterEncoding() {
         checkCommitted();
-        return getHttpRespEntity().charset.name();
+        Charset charset = getHttpRespEntity().charset;
+        return charset == null ? null : charset.name();
     }
 
     @Override
