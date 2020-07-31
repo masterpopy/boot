@@ -4,7 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 public class InstanceFactory {
-    private ClassLoader loader;
+    private final ClassLoader loader;
 
     public InstanceFactory(ClassLoader loader) {
         this.loader = loader;
@@ -35,4 +35,7 @@ public class InstanceFactory {
         return InstanceHandler.identity(obj);
     }
 
+    public ClassLoader getClassLoader() {
+        return loader;
+    }
 }

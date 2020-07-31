@@ -16,8 +16,8 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 
-public class ServletContextImpl implements ServletContext, ServletConfig {
-    private String contextPath = "";
+public class ServletContextImpl implements ServletContext {
+
     private Hashtable<String, String> parameters = new Hashtable<>();
 
     private FastList<Object> attr = new FastList<>();
@@ -26,14 +26,16 @@ public class ServletContextImpl implements ServletContext, ServletConfig {
 
     private InstanceFactory instanceFactory = new InstanceFactory(Thread.currentThread().getContextClassLoader());
 
+
+
     @Override
     public String getContextPath() {
-        return contextPath;
+        return "";
     }
 
     @Override
     public ServletContext getContext(String uriPath) {
-        return null;
+        return this;
     }
 
     @Override
@@ -124,22 +126,12 @@ public class ServletContextImpl implements ServletContext, ServletConfig {
 
     @Override
     public String getRealPath(String path) {
-        return contextPath;
+        return path;
     }
 
     @Override
     public String getServerInfo() {
-        return null;
-    }
-
-    @Override
-    public String getServletName() {
-        return contextPath;
-    }
-
-    @Override
-    public ServletContext getServletContext() {
-        return this;
+        return "";
     }
 
     @Override
@@ -180,7 +172,7 @@ public class ServletContextImpl implements ServletContext, ServletConfig {
 
     @Override
     public String getServletContextName() {
-        return contextPath;
+        return "";
     }
 
 
@@ -301,7 +293,7 @@ public class ServletContextImpl implements ServletContext, ServletConfig {
 
     @Override
     public ClassLoader getClassLoader() {
-        return ServletContext.class.getClassLoader();
+        return instanceFactory.getClassLoader();
     }
 
     @Override
@@ -311,7 +303,7 @@ public class ServletContextImpl implements ServletContext, ServletConfig {
 
     @Override
     public String getVirtualServerName() {
-        return null;
+        return "";
     }
 
     @Override
