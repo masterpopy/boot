@@ -1,6 +1,7 @@
 package personal.popy.localserver.servlet;
 
 import personal.popy.localserver.data.FastList;
+import personal.popy.localserver.servlet.base.AbsServletContextImpl;
 import personal.popy.localserver.servlet.manage.InstanceFactory;
 import personal.popy.localserver.servlet.registry.ServletRegistrationDynamicImpl;
 
@@ -16,47 +17,19 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 
-public class ServletContextImpl implements ServletContext {
+/**
+ * 这个context的生命周期仅存在于启动阶段
+ * 嵌入式版的servletcontext并没有意义
+ */
+public class ServletContextImpl extends AbsServletContextImpl implements ServletContext {
 
     private Hashtable<String, String> parameters = new Hashtable<>();
 
-    private FastList<Object> attr = new FastList<>();
+    private FastList<Object> attributes = new FastList<>();
 
     private HashMap<String, ServletRegistrationDynamicImpl> servletRegistrations = new HashMap<>(4);
 
     private InstanceFactory instanceFactory = new InstanceFactory(Thread.currentThread().getContextClassLoader());
-
-
-
-    @Override
-    public String getContextPath() {
-        return "";
-    }
-
-    @Override
-    public ServletContext getContext(String uriPath) {
-        return this;
-    }
-
-    @Override
-    public int getMajorVersion() {
-        return 0;
-    }
-
-    @Override
-    public int getMinorVersion() {
-        return 0;
-    }
-
-    @Override
-    public int getEffectiveMajorVersion() {
-        return 0;
-    }
-
-    @Override
-    public int getEffectiveMinorVersion() {
-        return 0;
-    }
 
     @Override
     public String getMimeType(String file) {
@@ -82,46 +55,6 @@ public class ServletContextImpl implements ServletContext {
         } catch (IOException e) {
             return null;
         }
-    }
-
-    @Override
-    public RequestDispatcher getRequestDispatcher(String path) {
-        return null;
-    }
-
-    @Override
-    public RequestDispatcher getNamedDispatcher(String name) {
-        return null;
-    }
-
-    @Override
-    public Servlet getServlet(String name) throws ServletException {
-        return null;
-    }
-
-    @Override
-    public Enumeration<Servlet> getServlets() {
-        return null;
-    }
-
-    @Override
-    public Enumeration<String> getServletNames() {
-        return null;
-    }
-
-    @Override
-    public void log(String msg) {
-
-    }
-
-    @Override
-    public void log(Exception exception, String msg) {
-
-    }
-
-    @Override
-    public void log(String message, Throwable throwable) {
-
     }
 
     @Override
@@ -152,28 +85,25 @@ public class ServletContextImpl implements ServletContext {
 
     @Override
     public Object getAttribute(String name) {
-        return attr.get(name);
+        return attributes.get(name);
     }
 
     @Override
     public Enumeration<String> getAttributeNames() {
-        return attr.names();
+        return attributes.names();
     }
 
     @Override
     public void setAttribute(String name, Object object) {
-        attr.addIfNotExits(name, object);
+        attributes.addIfNotExits(name, object);
     }
 
     @Override
     public void removeAttribute(String name) {
-        attr.remove(name);
+        attributes.remove(name);
     }
 
-    @Override
-    public String getServletContextName() {
-        return "";
-    }
+
 
 
     @Override
@@ -198,11 +128,7 @@ public class ServletContextImpl implements ServletContext {
 
     @Override
     public <T extends Servlet> T createServlet(Class<T> clazz) throws ServletException {
-        try {
-            return clazz.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            return null;
-        }
+        return instanceFactory.newInstance(clazz).get();
     }
 
     @Override
@@ -334,5 +260,12 @@ public class ServletContextImpl implements ServletContext {
     @Override
     public void setResponseCharacterEncoding(String encoding) {
 
+    }
+
+    public void clean() {
+        servletRegistrations = null;
+        instanceFactory = null;
+        attributes = null;
+        parameters = null;
     }
 }

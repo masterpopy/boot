@@ -2,10 +2,7 @@ package personal.popy.localserver.servlet.registry;
 
 import personal.popy.localserver.servlet.manage.InstanceHandler;
 
-import javax.servlet.MultipartConfigElement;
-import javax.servlet.Servlet;
-import javax.servlet.ServletRegistration;
-import javax.servlet.ServletSecurityElement;
+import javax.servlet.*;
 import java.util.*;
 
 public class ServletRegistrationDynamicImpl implements ServletRegistration.Dynamic {
@@ -13,14 +10,15 @@ public class ServletRegistrationDynamicImpl implements ServletRegistration.Dynam
     private final String className;
     private int loadOnStartup;
     private List<String> mapping = new ArrayList<>(1);
-    private Map<String, String> initParams = Collections.emptyMap();
-    private String name;
-    private InstanceHandler<? extends Servlet> instance;
 
+
+    private InstanceHandler<? extends Servlet> instance;
     private Servlet servlet;
 
+    private ServletConfigImpl servletConfig = new ServletConfigImpl();
+
     public ServletRegistrationDynamicImpl(String name, String className, InstanceHandler<? extends Servlet> instance) {
-        this.name = name;
+        servletConfig.setServletName(name);
         this.instance = instance;
         this.className = className;
     }
@@ -68,12 +66,12 @@ public class ServletRegistrationDynamicImpl implements ServletRegistration.Dynam
 
     @Override
     public String getRunAsRole() {
-        throw new UnsupportedOperationException();
+        return null;
     }
 
     @Override
     public String getName() {
-        return name;
+        return servletConfig.getServletName();
     }
 
     @Override
@@ -83,25 +81,24 @@ public class ServletRegistrationDynamicImpl implements ServletRegistration.Dynam
 
     @Override
     public boolean setInitParameter(String s, String s1) {
-        if (initParams.isEmpty()) initParams = new HashMap<>();
-        initParams.put(s, s1);
+        servletConfig.setInitParameter(s, s1);
         return true;
     }
 
     @Override
     public String getInitParameter(String s) {
-        return initParams.get(s);
+        return servletConfig.getInitParameter(s);
     }
 
     @Override
     public Set<String> setInitParameters(Map<String, String> map) {
-        this.initParams = map;
-        return map.keySet();
+        servletConfig.setInitParameters(map);
+        return Collections.emptySet();
     }
 
     @Override
     public Map<String, String> getInitParameters() {
-        return initParams;
+        return servletConfig.getInitParameter();
     }
 
     public Servlet getServlet() {

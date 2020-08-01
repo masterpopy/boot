@@ -168,7 +168,7 @@ public class RequestImpl extends TimeMonitor implements HttpServletRequest, Http
 
     @Override
     public String getServletPath() {
-        return getServletContext().getContextPath();
+        return ""; //not support
     }
 
     @Override

@@ -19,7 +19,7 @@ public class InstanceFactory {
     }
 
     public <T> InstanceHandler<T> newInstance(Class<T> clz) {
-        return ()->{
+        return () -> {
             try {
                 Constructor<T> constructor = clz.getConstructor();
                 constructor.setAccessible(true);

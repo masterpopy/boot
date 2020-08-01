@@ -12,27 +12,27 @@ import javax.servlet.ServletException;
 
 public class WebFactory implements ServletWebServerFactory, WebServer {
     private ServerContext container;
-    private Http11ConnHandler processor;
+    private Http11ConnHandler handler;
 
     public WebFactory() {
         container = new ServerContext();
         ConnectionContext connectionContext = new ConnectionContext();
-        processor = new Http11ConnHandler();
+        handler = new Http11ConnHandler();
         container.setConnectionContext(connectionContext);
-        container.setProcessor(processor);
+        container.setProcessor(handler);
     }
 
     @Override
     public WebServer getWebServer(ServletContextInitializer... initializers) {
         for (ServletContextInitializer initializer : initializers) {
             try {
-                initializer.onStartup(processor.getServletContext());
+                initializer.onStartup(handler.getServletContext());
             } catch (ServletException e) {
                 e.printStackTrace();
             }
         }
         //no use
-        processor = null;
+        handler = null;
         return this;
     }
 
@@ -41,7 +41,7 @@ public class WebFactory implements ServletWebServerFactory, WebServer {
         try {
             container.start();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new WebServerException(e.getMessage(), e);
         }
     }
 
