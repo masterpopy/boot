@@ -1,7 +1,9 @@
 package personal.popy.localserver.servlet.registry;
 
+import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -55,5 +57,13 @@ public class ServletConfigImpl implements ServletConfig {
 
     public Map<String, String> getInitParameter() {
         return initParameters;
+    }
+
+    public void initServlet(Servlet servlet) {
+        try {
+            servlet.init(this);
+        } catch (ServletException e) {
+
+        }
     }
 }

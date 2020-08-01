@@ -1,5 +1,6 @@
 package personal.popy.localserver.servlet.registry;
 
+import org.graalvm.compiler.nodes.calc.CompareNode;
 import personal.popy.localserver.servlet.manage.InstanceHandler;
 
 import javax.servlet.*;
@@ -9,11 +10,11 @@ public class ServletRegistrationDynamicImpl implements ServletRegistration.Dynam
 
     private final String className;
     private int loadOnStartup;
-    private List<String> mapping = new ArrayList<>(1);
+    private String mapping;
 
 
     private InstanceHandler<? extends Servlet> instance;
-    private Servlet servlet;
+
 
     private ServletConfigImpl servletConfig = new ServletConfigImpl();
 
@@ -54,14 +55,16 @@ public class ServletRegistrationDynamicImpl implements ServletRegistration.Dynam
 
     @Override
     public Set<String> addMapping(String... strings) {
-        HashSet<String> c = new HashSet<>(Arrays.asList(strings));
-        mapping.addAll(c);
-        return c;
+        if (strings.length != 1 || mapping != null) {
+            throw new IllegalArgumentException("每个servlet只支持一个url pattern");
+        }
+        mapping = strings[0];
+        return getMappings();
     }
 
     @Override
-    public Collection<String> getMappings() {
-        return mapping;
+    public Set<String> getMappings() {
+        return Collections.singleton(mapping);
     }
 
     @Override
@@ -101,7 +104,15 @@ public class ServletRegistrationDynamicImpl implements ServletRegistration.Dynam
         return servletConfig.getInitParameter();
     }
 
-    public Servlet getServlet() {
-        return servlet == null ? servlet = instance.get() : servlet;
+    public InstanceHandler<? extends Servlet> getServlet() {
+        return instance;
+    }
+
+    public String getMapping() {
+        return mapping;
+    }
+
+    public ServletConfigImpl getServletConfig() {
+        return servletConfig;
     }
 }

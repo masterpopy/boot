@@ -138,7 +138,7 @@ public class ServletContextImpl extends AbsServletContextImpl implements Servlet
     }
 
     @Override
-    public Map<String, ? extends ServletRegistration> getServletRegistrations() {
+    public Map<String, ServletRegistrationDynamicImpl> getServletRegistrations() {
         return servletRegistrations;
     }
 
