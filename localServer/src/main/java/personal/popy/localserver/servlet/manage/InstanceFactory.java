@@ -10,7 +10,7 @@ public class InstanceFactory {
         this.loader = loader;
     }
 
-    public <T> InstanceHandler<T> newInstance(String className) {
+    public <T> InstanceManager<T> newInstance(String className) {
         try {
             return newInstance((Class<T>) loader.loadClass(className));
         } catch (ClassNotFoundException e) {
@@ -18,7 +18,7 @@ public class InstanceFactory {
         }
     }
 
-    public <T> InstanceHandler<T> newInstance(Class<T> clz) {
+    public <T> InstanceManager<T> newInstance(Class<T> clz) {
         return () -> {
             try {
                 Constructor<T> constructor = clz.getConstructor();
@@ -31,8 +31,8 @@ public class InstanceFactory {
 
     }
 
-    public <T> InstanceHandler<T> newInstance(T obj) {
-        return InstanceHandler.identity(obj);
+    public <T> InstanceManager<T> newInstance(T obj) {
+        return InstanceManager.identity(obj);
     }
 
     public ClassLoader getClassLoader() {

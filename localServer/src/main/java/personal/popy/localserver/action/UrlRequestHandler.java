@@ -1,7 +1,7 @@
 package personal.popy.localserver.action;
 
 import personal.popy.localserver.servlet.HttpExchanger;
-import personal.popy.localserver.servlet.manage.InstanceHandler;
+import personal.popy.localserver.servlet.manage.InstanceManager;
 import personal.popy.localserver.servlet.registry.ServletConfigImpl;
 import personal.popy.localserver.servlet.registry.ServletRegistrationDynamicImpl;
 
@@ -11,17 +11,17 @@ import java.io.IOException;
 
 public class UrlRequestHandler implements RequestHandler {
 
-    private InstanceHandler<? extends Servlet> servlet;
+    private InstanceManager<? extends Servlet> servlet;
 
     public UrlRequestHandler() {
     }
 
     public UrlRequestHandler(ServletRegistrationDynamicImpl reg) {
-        InstanceHandler<? extends Servlet> s = reg.getServlet();
+        InstanceManager<? extends Servlet> s = reg.getServlet();
         ServletConfigImpl servletConfig = reg.getServletConfig();
-        s = InstanceHandler.postConstruct(s, servletConfig::initServlet);
+        s = InstanceManager.postConstruct(s, servletConfig::initServlet);
         if (reg.getLoadOnStartup() < 0) {
-            this.servlet = InstanceHandler.lazy((v) -> this.servlet = v, s);
+            this.servlet = InstanceManager.lazy((v) -> this.servlet = v, s);
         } else {
             servlet = s;
         }

@@ -1,10 +1,14 @@
 package personal.popy.localserver.servlet.registry;
 
-import org.graalvm.compiler.nodes.calc.CompareNode;
-import personal.popy.localserver.servlet.manage.InstanceHandler;
+import personal.popy.localserver.servlet.manage.InstanceManager;
 
-import javax.servlet.*;
-import java.util.*;
+import javax.servlet.MultipartConfigElement;
+import javax.servlet.Servlet;
+import javax.servlet.ServletRegistration;
+import javax.servlet.ServletSecurityElement;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 
 public class ServletRegistrationDynamicImpl implements ServletRegistration.Dynamic {
 
@@ -13,12 +17,12 @@ public class ServletRegistrationDynamicImpl implements ServletRegistration.Dynam
     private String mapping;
 
 
-    private InstanceHandler<? extends Servlet> instance;
+    private InstanceManager<? extends Servlet> instance;
 
 
     private ServletConfigImpl servletConfig = new ServletConfigImpl();
 
-    public ServletRegistrationDynamicImpl(String name, String className, InstanceHandler<? extends Servlet> instance) {
+    public ServletRegistrationDynamicImpl(String name, String className, InstanceManager<? extends Servlet> instance) {
         servletConfig.setServletName(name);
         this.instance = instance;
         this.className = className;
@@ -104,7 +108,7 @@ public class ServletRegistrationDynamicImpl implements ServletRegistration.Dynam
         return servletConfig.getInitParameter();
     }
 
-    public InstanceHandler<? extends Servlet> getServlet() {
+    public InstanceManager<? extends Servlet> getServlet() {
         return instance;
     }
 
