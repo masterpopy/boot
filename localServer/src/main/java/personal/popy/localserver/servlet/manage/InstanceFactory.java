@@ -24,7 +24,8 @@ public class InstanceFactory {
                 Constructor<T> constructor = clz.getConstructor();
                 constructor.setAccessible(true);
                 return constructor.newInstance();
-            } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            } catch (NoSuchMethodException | IllegalAccessException
+                    | InstantiationException | InvocationTargetException e) {
                 throw new IllegalArgumentException("create instance fail");
             }
         };
