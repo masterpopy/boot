@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
-public class Headers extends FastList<String> {
+public class Headers extends HeaderList<String> {
 
     public void getChars(ByteBuffer cb) {
         for (int i = 0; i < size; i++) {
@@ -48,7 +48,7 @@ public class Headers extends FastList<String> {
 
     public Collection<String> getHeaderValues(String header) {
         sort();
-        int i = Arrays.binarySearch(table, 0, size, new Node(header, null));
+        int i = Arrays.binarySearch(table, 0, size, header);
         if (i < 0) {
             return Collections.emptyList();
         }

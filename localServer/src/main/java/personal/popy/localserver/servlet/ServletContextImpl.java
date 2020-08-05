@@ -1,6 +1,5 @@
 package personal.popy.localserver.servlet;
 
-import personal.popy.localserver.data.FastList;
 import personal.popy.localserver.servlet.base.AbsServletContextImpl;
 import personal.popy.localserver.servlet.manage.InstanceFactory;
 import personal.popy.localserver.servlet.registry.ServletRegistrationDynamicImpl;
@@ -10,6 +9,7 @@ import javax.servlet.descriptor.JspConfigDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.EventListener;
 import java.util.HashMap;
@@ -25,8 +25,6 @@ public class ServletContextImpl extends AbsServletContextImpl implements Servlet
 
     private Hashtable<String, String> parameters = new Hashtable<>();
 
-    private FastList<Object> attributes = new FastList<>();
-
     private HashMap<String, ServletRegistrationDynamicImpl> servletRegistrations = new HashMap<>(4);
 
     private InstanceFactory instanceFactory = new InstanceFactory(Thread.currentThread().getContextClassLoader());
@@ -38,7 +36,7 @@ public class ServletContextImpl extends AbsServletContextImpl implements Servlet
 
     @Override
     public Set<String> getResourcePaths(String path) {
-        return null;
+        return Collections.emptySet();
     }
 
     @Override
@@ -50,7 +48,9 @@ public class ServletContextImpl extends AbsServletContextImpl implements Servlet
     public InputStream getResourceAsStream(String path) {
         try {
             URL resource = getResource(path);
-            if (resource == null) return null;
+            if (resource == null) {
+                return null;
+            }
             return resource.openStream();
         } catch (IOException e) {
             return null;
@@ -85,22 +85,22 @@ public class ServletContextImpl extends AbsServletContextImpl implements Servlet
 
     @Override
     public Object getAttribute(String name) {
-        return attributes.get(name);
+        return null;
     }
 
     @Override
     public Enumeration<String> getAttributeNames() {
-        return attributes.names();
+        return null;
     }
 
     @Override
     public void setAttribute(String name, Object object) {
-        attributes.addIfNotExits(name, object);
+
     }
 
     @Override
     public void removeAttribute(String name) {
-        attributes.remove(name);
+
     }
 
 
@@ -133,7 +133,6 @@ public class ServletContextImpl extends AbsServletContextImpl implements Servlet
 
     @Override
     public ServletRegistration getServletRegistration(String servletName) {
-
         return servletRegistrations.get(servletName);
     }
 
@@ -265,7 +264,6 @@ public class ServletContextImpl extends AbsServletContextImpl implements Servlet
     public void clean() {
         servletRegistrations = null;
         instanceFactory = null;
-        attributes = null;
         parameters = null;
     }
 }

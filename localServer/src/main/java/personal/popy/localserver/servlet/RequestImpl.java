@@ -1,7 +1,5 @@
 package personal.popy.localserver.servlet;
 
-import personal.popy.localserver.data.FastList;
-import personal.popy.localserver.data.Node;
 import personal.popy.localserver.lifecycle.ConnectionContext;
 import personal.popy.localserver.lifecycle.HttpWorker;
 import personal.popy.localserver.util.TimeMonitor;
@@ -28,7 +26,7 @@ public class RequestImpl extends TimeMonitor implements HttpServletRequest, Http
 
     private final HttpExchanger exchanger;
     private HttpReqEntity entity;
-    private FastList<Object> attributes = new FastList<>();
+
 
     private SessionImpl session;
 
@@ -45,7 +43,7 @@ public class RequestImpl extends TimeMonitor implements HttpServletRequest, Http
     public void recycle() {
         entity.recycle();
         inputStream=null;
-        attributes.clear();
+
     }
 
 
@@ -242,12 +240,12 @@ public class RequestImpl extends TimeMonitor implements HttpServletRequest, Http
 
     @Override
     public Object getAttribute(String s) {
-        return attributes.get(s);
+        return null;
     }
 
     @Override
     public Enumeration<String> getAttributeNames() {
-        return attributes.names();
+        return null;
     }
 
     @Override
@@ -345,17 +343,12 @@ public class RequestImpl extends TimeMonitor implements HttpServletRequest, Http
 
     @Override
     public void setAttribute(String s, Object o) {
-        Node node = attributes.getNode(s);
-        if (node != null) {
-            node.setValue(o);
-        } else {
-            attributes.add(s, o);
-        }
+
     }
 
     @Override
     public void removeAttribute(String s) {
-        attributes.remove(s);
+
     }
 
     @Override

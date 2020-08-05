@@ -1,6 +1,6 @@
 package personal.popy.localserver.servlet;
 
-import personal.popy.localserver.data.FastList;
+import personal.popy.localserver.data.HeaderList;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
@@ -16,7 +16,7 @@ public class SessionImpl implements HttpSession {
 
     private int maxInterval;
 
-    private FastList<Object> attributes;
+    private HeaderList<Object> attributes;
 
 
     public SessionImpl(String id) {
@@ -89,7 +89,7 @@ public class SessionImpl implements HttpSession {
     @Override
     public void setAttribute(String name, Object value) {
         if (attributes == null) {
-            attributes = new FastList<>(4);
+            attributes = new HeaderList<>(4);
         }
         attributes.add(name, value);
     }

@@ -1,6 +1,6 @@
 package personal.popy.localserver.wrapper;
 
-import personal.popy.localserver.data.FastList;
+import personal.popy.localserver.data.HeaderList;
 import personal.popy.localserver.data.Parameters;
 
 import java.nio.ByteBuffer;
@@ -13,7 +13,7 @@ public class HttpReqEntity {
 
     public String query;
     public String protocol;
-    public FastList<String> headers = new FastList<>();
+    public HeaderList<String> headers = new HeaderList<>();
     public Parameters parameters = new Parameters();
 
     public String encoding;

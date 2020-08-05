@@ -6,7 +6,9 @@ import javax.servlet.MultipartConfigElement;
 import javax.servlet.Servlet;
 import javax.servlet.ServletRegistration;
 import javax.servlet.ServletSecurityElement;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,7 +16,7 @@ public class ServletRegistrationDynamicImpl implements ServletRegistration.Dynam
 
     private final String className;
     private int loadOnStartup;
-    private String mapping;
+    private HashSet<String> mapping = new HashSet<>();
 
 
     private InstanceManager<? extends Servlet> instance;
@@ -29,8 +31,8 @@ public class ServletRegistrationDynamicImpl implements ServletRegistration.Dynam
     }
 
     @Override
-    public void setLoadOnStartup(int i) {
-        this.loadOnStartup = i;
+    public void setLoadOnStartup(int loadOnStartup) {
+        this.loadOnStartup = loadOnStartup;
     }
 
     public int getLoadOnStartup() {
@@ -48,27 +50,24 @@ public class ServletRegistrationDynamicImpl implements ServletRegistration.Dynam
     }
 
     @Override
-    public void setRunAsRole(String s) {
+    public void setRunAsRole(String runAsRole) {
 
     }
 
     @Override
-    public void setAsyncSupported(boolean b) {
+    public void setAsyncSupported(boolean async) {
 
     }
 
     @Override
     public Set<String> addMapping(String... strings) {
-        if (strings.length != 1 || mapping != null) {
-            throw new IllegalArgumentException("每个servlet只支持一个url pattern");
-        }
-        mapping = strings[0];
+        mapping.addAll(Arrays.asList(strings));
         return getMappings();
     }
 
     @Override
     public Set<String> getMappings() {
-        return Collections.singleton(mapping);
+        return Collections.unmodifiableSet(mapping);
     }
 
     @Override
@@ -87,14 +86,14 @@ public class ServletRegistrationDynamicImpl implements ServletRegistration.Dynam
     }
 
     @Override
-    public boolean setInitParameter(String s, String s1) {
-        servletConfig.setInitParameter(s, s1);
+    public boolean setInitParameter(String key, String value) {
+        servletConfig.setInitParameter(key, value);
         return true;
     }
 
     @Override
-    public String getInitParameter(String s) {
-        return servletConfig.getInitParameter(s);
+    public String getInitParameter(String key) {
+        return servletConfig.getInitParameter(key);
     }
 
     @Override
@@ -110,10 +109,6 @@ public class ServletRegistrationDynamicImpl implements ServletRegistration.Dynam
 
     public InstanceManager<? extends Servlet> getServlet() {
         return instance;
-    }
-
-    public String getMapping() {
-        return mapping;
     }
 
     public ServletConfigImpl getServletConfig() {

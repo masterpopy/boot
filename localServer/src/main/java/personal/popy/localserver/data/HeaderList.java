@@ -2,18 +2,19 @@ package personal.popy.localserver.data;
 
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.Objects;
 
-public class FastList<V> {
+public class HeaderList<V> {
 
     Node[] table;
     int size;
     private boolean sorted;
 
-    public FastList(int i) {
+    public HeaderList(int i) {
         table = new Node[i];
     }
 
-    public FastList() {
+    public HeaderList() {
         this(16);
     }
 
@@ -32,10 +33,16 @@ public class FastList<V> {
         }
     }
 
-    public void add(String key, V value) {
+
+    private Node newNode(String key, V value) {
+        return new Node(key, value);
+    }
+
+    public final void add(String key, V value) {
+        Objects.requireNonNull(key);
         sorted = false;
         resize();
-        table[size] = new Node(key, value);
+        table[size] = newNode(key, value);
         size++;
     }
 
@@ -47,11 +54,11 @@ public class FastList<V> {
 
     public Node getNode(String key) {
         for (int i = 0; i < size; i += 1) {
-            if (table[i].name.equalsIgnoreCase(key)) {
+            if (table[i].keyEq(key)) {
                 return table[i];
             }
         }
-        return null;
+        return Node.EMPTY;
     }
 
     public void clear() {
@@ -68,7 +75,7 @@ public class FastList<V> {
     @SuppressWarnings("unchecked")
     private V get(String key) {
         for (int i = 0; i < size; i += 1) {
-            if (table[i].name.equalsIgnoreCase(key)) {
+            if (table[i].keyEq(key)) {
                 return (V) table[i].value;
             }
         }
@@ -105,9 +112,9 @@ public class FastList<V> {
     }
 
     class HeaderEnumeration implements Enumeration<String> {
-        String h;
-        int index;
-        Node next;
+        private String h;
+        private int index;
+        private Node next;
 
         HeaderEnumeration(String h) {
             this.h = h;
@@ -116,7 +123,7 @@ public class FastList<V> {
         @Override
         public boolean hasMoreElements() {
             for (; index < size; index += 1) {
-                if (table[index].name.equalsIgnoreCase(h)) {
+                if (table[index].keyEq(h)) {
                     next = table[index];
                     return true;
                 }
@@ -140,7 +147,7 @@ public class FastList<V> {
     }
 
     class NameEnumeration implements Enumeration<String> {
-        int index;
+        private int index;
 
         NameEnumeration() {
         }
@@ -157,7 +164,7 @@ public class FastList<V> {
             }
             String node = table[index].name;
             while (++index < size) {
-                if (!node.equalsIgnoreCase(table[index].name)) {
+                if (!table[index].keyEq(node)) {
                     break;
                 }
             }

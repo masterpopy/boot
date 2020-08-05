@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Parameters extends FastList<String> {
+public class Parameters extends HeaderList<String> {
 
     public String[] getParameterValues(String s) {
         sort();

@@ -14,11 +14,11 @@ public class ServletConfigImpl implements ServletConfig {
     private ServletContext servletContext;
     private Map<String, String> initParameters = Collections.emptyMap();
 
-    public void setInitParameter(String s, String s1) {
-        if (initParameters.isEmpty()) {
+    public void setInitParameter(String key, String value) {
+        if (initParameters == Collections.EMPTY_MAP) {
             initParameters = new HashMap<>();
         }
-        initParameters.put(s, s1);
+        initParameters.put(key, value);
     }
 
     @Override
