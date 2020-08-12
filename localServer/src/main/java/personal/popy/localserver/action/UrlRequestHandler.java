@@ -1,6 +1,7 @@
 package personal.popy.localserver.action;
 
-import personal.popy.localserver.servlet.HttpExchanger;
+import personal.popy.localserver.servlet.RequestImpl;
+import personal.popy.localserver.servlet.ResponseImpl;
 import personal.popy.localserver.servlet.manage.InstanceManager;
 import personal.popy.localserver.servlet.registry.ServletConfigImpl;
 import personal.popy.localserver.servlet.registry.ServletRegistrationDynamicImpl;
@@ -35,18 +36,26 @@ public class UrlRequestHandler implements RequestHandler {
         if (reg.getLoadOnStartup() < 0) {
             this.servlet = InstanceManager.lazy((v) -> this.servlet = v, s);
         } else {
-            servlet = s;
+            this.servlet = s;
         }
     }
 
     @Override
-    public void doReq(HttpExchanger exchanger) {
+    public void doReq(RequestImpl request, ResponseImpl response) {
         try {
-            servlet.get().service(exchanger.getRequest(), exchanger.createResponse());
-            exchanger.createResponse().doResponse();
+            if (matching == MappingMatch.EXTENSION) {
+                if (request.getRequestURI().endsWith(pattern)) {
+                    response.sendError(404);
+                    return;
+                }
+            }
+            servlet.get().service(request, response);
+            response.doResponse();
         } catch (ServletException | IOException e) {
-            exchanger.createResponse().setStatus(300);
+            response.setStatus(300);
         }
     }
+
+
 
 }
