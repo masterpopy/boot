@@ -2,7 +2,7 @@ package personal.popy.localserver.lifecycle;
 
 public class ServerContext {
 
-    private String proxyName="localhost";
+    private String proxyName = "localhost";
 
     private ConnectionContext connectionContext;
 
@@ -36,7 +36,7 @@ public class ServerContext {
     }
 
     public void setProxyName(String proxyName) {
-        this.proxyName  = proxyName;
+        this.proxyName = proxyName;
     }
 
     public void setProcessor(ConnHandler processor) {

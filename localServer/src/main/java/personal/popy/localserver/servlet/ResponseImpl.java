@@ -175,7 +175,9 @@ public class ResponseImpl implements HttpServletResponse {
     @Override
     public void setStatus(int sc, String sm) {
         checkCommitted();
-        getHttpRespEntity().status = sc;
+        HttpRespEntity httpRespEntity = getHttpRespEntity();
+        httpRespEntity.status = sc;
+        httpRespEntity.msg = sm;
     }
 
     @Override
@@ -282,16 +284,19 @@ public class ResponseImpl implements HttpServletResponse {
         BufferUtil.put(writer, "HTTP/1.1 ");//必须是大写
 
         int code = httpRespEntity.status;
+        String msg = httpRespEntity.msg;
         if (code == 0) {
             code = httpRespEntity.status = 200;
+            msg = "ok";
         }
-        if (code == 404) {
-            System.out.println(404);
-        }
+
         writer.put((byte) (code / 100 + '0'));
         writer.put((byte) (code / 10 % 10 + '0'));
         writer.put((byte) (code % 10 + '0'));
-
+        if (msg != null && msg.length() > 0) {
+            writer.put((byte) ' ');
+            BufferUtil.put(writer, msg);
+        }
         BufferUtil.put(writer, " \r\n");
 
 

@@ -2,6 +2,7 @@ package personal.popy;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  *
@@ -10,7 +11,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class BootApplication {
 
     public static void main(String[] args) throws Exception {
-        SpringApplication.run(BootApplication.class, args);
+        ConfigurableApplicationContext run = SpringApplication.run(BootApplication.class, args);
+        run.getResource("");
     }
 
 

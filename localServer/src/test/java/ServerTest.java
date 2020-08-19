@@ -1,12 +1,10 @@
 import org.junit.Test;
 import personal.popy.localserver.servlet.util.RestPath;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLEngine;
-import java.io.BufferedReader;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
 import java.io.File;
-import java.io.FileReader;
-import java.util.Arrays;
+import java.util.StringTokenizer;
 import java.util.function.Consumer;
 
 public class ServerTest {
@@ -26,25 +24,27 @@ public class ServerTest {
 
     @Test
     public void test1() throws Exception {
-        SSLContext sslContext=SSLContext.getDefault();
-        sslContext.getDefaultSSLParameters().setCipherSuites(new String[]{"TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384"});
-        SSLEngine sslEngine = sslContext.createSSLEngine();
-        System.out.println(Arrays.toString(sslEngine.getEnabledCipherSuites()));
+        System.out.println(getClass().getResource("personal/popy/localserver"));
     }
 
     @Test
     public void test2() throws Exception {
+        JAXBContext jaxbContext = JAXBContext.newInstance(Root.class);
+        Unmarshaller jaxbMarshaller = jaxbContext.createUnmarshaller();
+        // output pretty printed
 
+        Root unmarshal = (Root) jaxbMarshaller.unmarshal(getClass().getResourceAsStream("root.xml"));
+        for (ValidOption validOption : unmarshal.validOptions) {
+            System.out.print(validOption.name+"={$"+validOption.name+"},");
+        }
     }
 
     @Test
     public void test3() throws Exception {
-
-        String path = "C:\\Users\\lihq\\Desktop\\file to delete";
-        BufferedReader br = new BufferedReader(new FileReader(path));
-        Cnt action = new Cnt();
-        br.lines().forEach(action);
-        System.out.println(action.cnt);
+        StringTokenizer tokenizer = new StringTokenizer("22/33/44/55", "/");
+        while (tokenizer.hasMoreElements()) {
+            System.out.println(tokenizer.nextElement());
+        }
     }
 
     private static class Cnt implements Consumer<String> {

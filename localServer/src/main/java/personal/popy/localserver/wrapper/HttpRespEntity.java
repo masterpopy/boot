@@ -6,6 +6,7 @@ import java.nio.charset.Charset;
 
 public class HttpRespEntity {
     public int status;
+    public String msg;
     public String contentType;
     public Headers headers = new Headers();
     public Charset charset = null;//除非用户自己设置charset，否则不传charset
@@ -28,6 +29,7 @@ public class HttpRespEntity {
 
     public void reset() {
         status=0;
+        msg="";
         contentLength = -1L;
         contentType = null;
         headers.clear();

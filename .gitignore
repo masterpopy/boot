@@ -31,4 +31,4 @@ mvnw.cmd
 
 ### VS Code ###
 .vscode/
-/localServer/target/classes/META-INF/localServer.kotlin_module
+/test/

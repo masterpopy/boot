@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<root>
+    <ValidOption name="validationInterval" explain="连接验证时间间隔"/>
+    <ValidOption name="removeAbandoned" explain="泄露回收"/>
+    <ValidOption name="connectionProperties"/>
+    <ValidOption name="minIdle"/>
+    <ValidOption name="logValidationErrors" explain="打印验证失败信息"/>
+    <ValidOption name="ignoreExceptionOnPreLoad" explain="打印初始化连接异常"/>
+</root>

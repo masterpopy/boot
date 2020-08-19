@@ -25,6 +25,8 @@ public class ServletContextImpl extends AbsServletContextImpl implements Servlet
 
     private Hashtable<String, String> parameters = new Hashtable<>();
 
+    private Hashtable<String, Object> attributes = new Hashtable<>();
+
     private HashMap<String, ServletRegistrationDynamicImpl> servletRegistrations = new HashMap<>(4);
 
     private InstanceFactory instanceFactory = new InstanceFactory(Thread.currentThread().getContextClassLoader());
@@ -85,22 +87,22 @@ public class ServletContextImpl extends AbsServletContextImpl implements Servlet
 
     @Override
     public Object getAttribute(String name) {
-        return null;
+        return attributes.get(name);
     }
 
     @Override
     public Enumeration<String> getAttributeNames() {
-        return null;
+        return attributes.keys();
     }
 
     @Override
     public void setAttribute(String name, Object object) {
-
+        attributes.put(name, object);
     }
 
     @Override
     public void removeAttribute(String name) {
-
+        attributes.remove(name);
     }
 
 

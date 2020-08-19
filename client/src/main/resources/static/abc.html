@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <head>
-<title>test</title>
+    <title>test</title>
 
 </head>
 <script src="https://lib.sinaapp.com/js/jquery/2.0.2/jquery-2.0.2.min.js"></script>
@@ -12,24 +12,16 @@
 
 <script>
     function s() {
-        $.ajax(
-            {
-
-                type : 'post',
-
-                url : '/post',
-
-                dataType : 'json',
-
-                data : JSON.stringify({age:1}), //需要将当前的对象转换为json字符串,
-
-                contentType : 'application/json',
-
-                success : function(result){console.log(result);}
-
-
-            })
-
+        $.ajax({
+            type: 'post',
+            url: '/post',
+            dataType: 'json',
+            data: JSON.stringify({age: 1}), //需要将当前的对象转换为json字符串,
+            contentType: 'application/json',
+            success: function (result) {
+                console.log(result);
+            }
+        })
     }
 </script>
 </html>
