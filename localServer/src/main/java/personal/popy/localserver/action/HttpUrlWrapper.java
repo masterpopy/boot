@@ -1,5 +1,7 @@
 package personal.popy.localserver.action;
 
+import personal.popy.localserver.servlet.RequestImpl;
+import personal.popy.localserver.servlet.ResponseImpl;
 import personal.popy.localserver.servlet.ServletContextImpl;
 import personal.popy.localserver.servlet.registry.ServletRegistrationDynamicImpl;
 import personal.popy.localserver.servlet.util.RestPath;
@@ -28,6 +30,7 @@ public class HttpUrlWrapper {
                     handler.setMatching(MappingMatch.DEFAULT);
                     handler.setPattern("/");
                     wrapper.addPrefixPath("/", handler);
+                    return;
                 }
                 int pos = mapping.indexOf('*');
                 if (pos >= 0) {
@@ -51,5 +54,9 @@ public class HttpUrlWrapper {
             }
 
         }
+    }
+
+    public void processReq(RequestImpl request, ResponseImpl response) {
+        wrapper.match(request.getRequestURI()).getValue().doReq(request, response);
     }
 }

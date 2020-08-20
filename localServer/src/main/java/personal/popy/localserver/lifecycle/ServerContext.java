@@ -4,22 +4,15 @@ public class ServerContext {
 
     private String proxyName = "localhost";
 
-    private ConnectionContext connectionContext;
+    private ConnectionContext connectionContext = new ConnectionContext();
 
-    private ConnHandler processor;
-
-    public ConnHandler getProcessor() {
-        return processor;
-    }
+    private ServerInitializer initializer;
 
     public void start() throws Exception {
+        if (initializer != null) initializer.onInitialzing(this);
         connectionContext.setServer(this);
-        processor.setServer(this);
         connectionContext.start();
-    }
-
-    public void setConnectionContext(ConnectionContext connectionContext) {
-        this.connectionContext = connectionContext;
+        if (initializer != null) initializer.onInitialized(this);
     }
 
     public ConnectionContext getConnectionContext() {
@@ -39,7 +32,7 @@ public class ServerContext {
         this.proxyName = proxyName;
     }
 
-    public void setProcessor(ConnHandler processor) {
-        this.processor = processor;
+    public void setInitializer(ServerInitializer initializer) {
+        this.initializer = initializer;
     }
 }

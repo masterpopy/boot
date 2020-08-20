@@ -18,6 +18,8 @@ public class ConnectionContext extends EnvAwire implements CompletionHandler<Asy
 
     private ExecutorService ioExecutor = ExecutorFactory.newIo();
 
+    private ConnHandler handler;
+
     public void start() throws Exception {
         worker.execute(() -> {
         });
@@ -32,7 +34,7 @@ public class ConnectionContext extends EnvAwire implements CompletionHandler<Asy
 
     @Override
     public void completed(AsynchronousSocketChannel result, Void attachment) {
-        server.getProcessor().processNewConnection(result, this);
+        handler.processNewConnection(result, this);
     }
 
     public ExecutorService getWorker() {
@@ -56,5 +58,9 @@ public class ConnectionContext extends EnvAwire implements CompletionHandler<Asy
 
     public int getPort() {
         return port;
+    }
+
+    public void setHandler(ConnHandler handler) {
+        this.handler = handler;
     }
 }

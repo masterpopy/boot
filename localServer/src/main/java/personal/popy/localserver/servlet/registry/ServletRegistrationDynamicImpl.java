@@ -1,9 +1,10 @@
 package personal.popy.localserver.servlet.registry;
 
-import personal.popy.localserver.servlet.manage.InstanceManager;
+import personal.popy.localserver.servlet.ServletContextImpl;
 
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.Servlet;
+import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 import javax.servlet.ServletSecurityElement;
 import java.util.Arrays;
@@ -19,13 +20,14 @@ public class ServletRegistrationDynamicImpl implements ServletRegistration.Dynam
     private HashSet<String> mapping = new HashSet<>();
 
 
-    private InstanceManager<? extends Servlet> instance;
+    private Servlet instance;
 
 
     private ServletConfigImpl servletConfig = new ServletConfigImpl();
 
-    public ServletRegistrationDynamicImpl(String name, String className, InstanceManager<? extends Servlet> instance) {
+    public ServletRegistrationDynamicImpl(String name, String className, Servlet instance, ServletContextImpl servletContext) {
         servletConfig.setServletName(name);
+        servletConfig.setServletContext(servletContext);
         this.instance = instance;
         this.className = className;
     }
@@ -107,7 +109,13 @@ public class ServletRegistrationDynamicImpl implements ServletRegistration.Dynam
         return servletConfig.getInitParameter();
     }
 
-    public InstanceManager<? extends Servlet> getServlet() {
+    public Servlet getServlet() {
+        try {
+            instance.init(getServletConfig());
+        } catch (ServletException e) {
+            e.printStackTrace();
+            return null;
+        }
         return instance;
     }
 

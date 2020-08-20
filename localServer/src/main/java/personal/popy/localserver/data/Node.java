@@ -2,7 +2,7 @@ package personal.popy.localserver.data;
 
 import java.util.Map;
 
-class Node implements Comparable<String>, Map.Entry<String, Object> {
+class Node implements Comparable<Node>, Map.Entry<String, Object> {
     static Node EMPTY = new Node("", null);
     Node(String name, Object value) {
         if (name == null) {
@@ -16,10 +16,10 @@ class Node implements Comparable<String>, Map.Entry<String, Object> {
     Object value;
 
     @Override
-    public int compareTo(String node) {
-        int ret = name.compareToIgnoreCase(node);
+    public int compareTo(Node node) {
+        int ret = name.compareToIgnoreCase(node.name);
         if (ret == 0) {
-            name = node;
+            name = node.name;
         }
         return ret;
     }

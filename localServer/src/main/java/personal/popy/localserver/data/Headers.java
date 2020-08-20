@@ -48,7 +48,7 @@ public class Headers extends HeaderList<String> {
 
     public Collection<String> getHeaderValues(String header) {
         sort();
-        int i = Arrays.binarySearch(table, 0, size, header);
+        int i = Arrays.binarySearch(table, 0, size, new Node(header, null));
         if (i < 0) {
             return Collections.emptyList();
         }

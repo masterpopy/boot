@@ -276,7 +276,7 @@ public class ResponseImpl implements HttpServletResponse {
         if (headerSended) return;
         headerSended = true;
         HttpExchanger httpExchanger = getHttpExchanger();
-        //todo 规范获取
+        //todo 规范获取 改成文本协议。
         ByteBuffer writer = httpExchanger.getBuf().borrowByteBuffer();
         writer.clear();
         HttpRespEntity httpRespEntity = getHttpRespEntity();

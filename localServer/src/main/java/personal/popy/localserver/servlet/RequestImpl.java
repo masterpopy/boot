@@ -14,10 +14,12 @@ import javax.servlet.http.HttpUpgradeHandler;
 import javax.servlet.http.Part;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Map;
 
@@ -31,6 +33,10 @@ public class RequestImpl extends TimeMonitor implements HttpServletRequest, Http
     private SessionImpl session;
 
     private ServletInputStream inputStream;
+
+    private Hashtable<String, Object> attributes = new Hashtable<>();
+
+    private String bodyEncoding="UTF-8";
 
     public RequestImpl(HttpExchanger exchanger) {
         this.exchanger = exchanger;
@@ -240,22 +246,22 @@ public class RequestImpl extends TimeMonitor implements HttpServletRequest, Http
 
     @Override
     public Object getAttribute(String s) {
-        return null;
+        return attributes.get(s);
     }
 
     @Override
     public Enumeration<String> getAttributeNames() {
-        return null;
+        return attributes.keys();
     }
 
     @Override
     public String getCharacterEncoding() {
-        return null;
+        return bodyEncoding;
     }
 
     @Override
     public void setCharacterEncoding(String s) throws UnsupportedEncodingException {
-
+        this.bodyEncoding=s;
     }
 
     @Override
@@ -328,7 +334,7 @@ public class RequestImpl extends TimeMonitor implements HttpServletRequest, Http
 
     @Override
     public BufferedReader getReader() throws IOException {
-        return null;
+        return new BufferedReader(new InputStreamReader(getInputStream(), bodyEncoding));
     }
 
     @Override
@@ -343,12 +349,12 @@ public class RequestImpl extends TimeMonitor implements HttpServletRequest, Http
 
     @Override
     public void setAttribute(String s, Object o) {
-
+        attributes.put(s,o);
     }
 
     @Override
     public void removeAttribute(String s) {
-
+        attributes.remove(s);
     }
 
     @Override
@@ -442,10 +448,9 @@ public class RequestImpl extends TimeMonitor implements HttpServletRequest, Http
             timeStart();
             exchanger.refreshBuf();
             ResponseImpl response = exchanger.createResponse();
-            getServletContext().getServlet(getRequestURI()).service(this, response);
+            exchanger.getProcessor().processRequest(this, response);
             timeEnd();
-            response.doResponse();
-        } catch (ServletException | IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

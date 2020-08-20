@@ -110,17 +110,19 @@ public class ServletContextImpl extends AbsServletContextImpl implements Servlet
 
     @Override
     public ServletRegistration.Dynamic addServlet(String servletName, String className) {
-        return new ServletRegistrationDynamicImpl(servletName, className, instanceFactory.newInstance(className));
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public ServletRegistration.Dynamic addServlet(String servletName, Servlet servlet) {
-        return new ServletRegistrationDynamicImpl(servletName, servlet.getClass().getName(), instanceFactory.newInstance(servlet));
+        ServletRegistrationDynamicImpl reg = new ServletRegistrationDynamicImpl(servletName, servlet.getClass().getName(), servlet, this);
+        servletRegistrations.put(servletName, reg);
+        return reg;
     }
 
     @Override
     public ServletRegistration.Dynamic addServlet(String servletName, Class<? extends Servlet> servletClass) {
-        return new ServletRegistrationDynamicImpl(servletName, servletClass.getName(), instanceFactory.newInstance(servletClass));
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -220,7 +222,7 @@ public class ServletContextImpl extends AbsServletContextImpl implements Servlet
 
     @Override
     public ClassLoader getClassLoader() {
-        return instanceFactory.getClassLoader();
+        return Thread.currentThread().getContextClassLoader();
     }
 
     @Override
