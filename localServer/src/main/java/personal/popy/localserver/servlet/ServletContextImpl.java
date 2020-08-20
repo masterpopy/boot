@@ -1,7 +1,6 @@
 package personal.popy.localserver.servlet;
 
 import personal.popy.localserver.servlet.base.AbsServletContextImpl;
-import personal.popy.localserver.servlet.manage.InstanceFactory;
 import personal.popy.localserver.servlet.registry.ServletRegistrationDynamicImpl;
 
 import javax.servlet.*;
@@ -28,8 +27,6 @@ public class ServletContextImpl extends AbsServletContextImpl implements Servlet
     private Hashtable<String, Object> attributes = new Hashtable<>();
 
     private HashMap<String, ServletRegistrationDynamicImpl> servletRegistrations = new HashMap<>(4);
-
-    private InstanceFactory instanceFactory = new InstanceFactory(Thread.currentThread().getContextClassLoader());
 
     @Override
     public String getMimeType(String file) {
@@ -132,7 +129,11 @@ public class ServletContextImpl extends AbsServletContextImpl implements Servlet
 
     @Override
     public <T extends Servlet> T createServlet(Class<T> clazz) throws ServletException {
-        return instanceFactory.newInstance(clazz).get();
+        try {
+            return clazz.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new ServletException(e);
+        }
     }
 
     @Override
@@ -267,7 +268,6 @@ public class ServletContextImpl extends AbsServletContextImpl implements Servlet
 
     public void clean() {
         servletRegistrations = null;
-        instanceFactory = null;
         parameters = null;
     }
 }

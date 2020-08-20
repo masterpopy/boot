@@ -34,7 +34,7 @@ public class ConnectionContext extends EnvAwire implements CompletionHandler<Asy
 
     @Override
     public void completed(AsynchronousSocketChannel result, Void attachment) {
-        handler.processNewConnection(result, this);
+        handler.processNewConnection(result);
     }
 
     public ExecutorService getWorker() {

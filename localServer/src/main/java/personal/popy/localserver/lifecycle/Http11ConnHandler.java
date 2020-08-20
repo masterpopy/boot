@@ -22,7 +22,7 @@ public class Http11ConnHandler extends EnvAwire implements ConnHandler {
     }
 
     @Override
-    public void processNewConnection(AsynchronousSocketChannel result, ConnectionContext connectionContext) {
+    public void processNewConnection(AsynchronousSocketChannel result) {
         HttpExchanger pop = stack.pop();
         if (pop == null) {
             pop = new HttpExchanger(this, result);

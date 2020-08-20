@@ -9,10 +9,10 @@ public class ServerContext {
     private ServerInitializer initializer;
 
     public void start() throws Exception {
-        if (initializer != null) initializer.onInitialzing(this);
+        initializer.onInitialzing(this);
         connectionContext.setServer(this);
         connectionContext.start();
-        if (initializer != null) initializer.onInitialized(this);
+        initializer.onInitialized(this);
     }
 
     public ConnectionContext getConnectionContext() {
