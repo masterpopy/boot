@@ -21,10 +21,8 @@ public class ConnectionContext extends EnvAwire implements CompletionHandler<Asy
     private ConnHandler handler;
 
     public void start() throws Exception {
-        worker.execute(() -> {
-        });
-        ioExecutor.execute(() -> {
-        });
+        worker.execute(() -> { });
+        ioExecutor.execute(() -> { });
         AsynchronousChannelGroup threadGroup = AsynchronousChannelGroup.withThreadPool(ioExecutor);
         AsynchronousServerSocketChannel aio = AsynchronousServerSocketChannel.open(threadGroup);
         aio.bind(new InetSocketAddress(port), 100);

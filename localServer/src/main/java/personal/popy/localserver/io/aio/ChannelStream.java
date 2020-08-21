@@ -4,6 +4,7 @@ import personal.popy.localserver.action.CompletedStatus;
 import personal.popy.localserver.action.ReadAction;
 import personal.popy.localserver.lifecycle.HttpWorker;
 import personal.popy.localserver.servlet.HttpExchanger;
+import personal.popy.localserver.util.BufferUtil;
 import personal.popy.localserver.wrapper.HttpReqEntity;
 import personal.popy.localserver.wrapper.SliencedBuffer;
 
@@ -37,7 +38,7 @@ public class ChannelStream implements CompletionHandler<Integer, ByteBuffer>, Ht
     private static final CharCondition meetCR = ch -> ch == '\n';
     private static final CharCondition meetSp = ch -> ch == ' ' || ch == '\t';*/
 
-    private static final char[] READ_UNTIL_END_LINE = {'\r', '\n'};
+
 
     public ChannelStream() {
         origin = new SliencedBuffer();
@@ -65,20 +66,21 @@ public class ChannelStream implements CompletionHandler<Integer, ByteBuffer>, Ht
     public ChannelStream readToLine(BiConsumer<HttpReqEntity, SliencedBuffer> w) {
         stream.add(((result, buffer) -> {
             int position = buffer.position();
+            byte[] lineSep = BufferUtil.LINE_SEP;
             OUT:
-            while (readIndex + READ_UNTIL_END_LINE.length <= position) {//required bytes
-                for (int i = 0; i < READ_UNTIL_END_LINE.length; i++) {
+            while (readIndex + lineSep.length <= position) {//required bytes
+                for (int i = 0; i < lineSep.length; i++) {
                     char b = (char) buffer.get(readIndex + i);
-                    if (READ_UNTIL_END_LINE[i] != b) {
+                    if (lineSep[i] != b) {
                         //匹配失败，当前字节数提升1
                         readIndex += 1;
                         continue OUT;
                     }
                 }
                 //匹配成功
-                readIndex += READ_UNTIL_END_LINE.length;
-                SliencedBuffer reset = origin.reset(buffer, curStart, readIndex - READ_UNTIL_END_LINE.length);
-                if (reset.getLength() == READ_UNTIL_END_LINE.length) {
+                readIndex += lineSep.length;
+                SliencedBuffer reset = origin.reset(buffer, curStart, readIndex - lineSep.length);
+                if (reset.getLength() == lineSep.length) {
                     //empty give up
                     readIndex -= 2;
                 } else {

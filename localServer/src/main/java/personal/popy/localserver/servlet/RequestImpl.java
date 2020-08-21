@@ -36,7 +36,7 @@ public class RequestImpl extends TimeMonitor implements HttpServletRequest, Http
 
     private Hashtable<String, Object> attributes = new Hashtable<>();
 
-    private String bodyEncoding="UTF-8";
+    private String bodyEncoding = "UTF-8";
 
     public RequestImpl(HttpExchanger exchanger) {
         this.exchanger = exchanger;
@@ -48,17 +48,12 @@ public class RequestImpl extends TimeMonitor implements HttpServletRequest, Http
 
     public void recycle() {
         entity.recycle();
-        inputStream=null;
-
+        inputStream = null;
     }
 
 
     private ConnectionContext getConnectionContext() {
         return exchanger.getServer().getConnectionContext();
-    }
-
-    public void setReqEntity(HttpReqEntity reqEntity) {
-        this.entity = reqEntity;
     }
 
     @Override
@@ -68,7 +63,7 @@ public class RequestImpl extends TimeMonitor implements HttpServletRequest, Http
 
     @Override
     public Cookie[] getCookies() {
-        return new Cookie[0];
+        return entity.headers.getCookies().toArray(new Cookie[0]);
     }
 
     @Override
@@ -261,7 +256,7 @@ public class RequestImpl extends TimeMonitor implements HttpServletRequest, Http
 
     @Override
     public void setCharacterEncoding(String s) throws UnsupportedEncodingException {
-        this.bodyEncoding=s;
+        this.bodyEncoding = s;
     }
 
     @Override
@@ -349,7 +344,7 @@ public class RequestImpl extends TimeMonitor implements HttpServletRequest, Http
 
     @Override
     public void setAttribute(String s, Object o) {
-        attributes.put(s,o);
+        attributes.put(s, o);
     }
 
     @Override

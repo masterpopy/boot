@@ -24,6 +24,7 @@ public class ServletRegistrationDynamicImpl implements ServletRegistration.Dynam
 
 
     private ServletConfigImpl servletConfig = new ServletConfigImpl();
+    private String role;
 
     public ServletRegistrationDynamicImpl(String name, String className, Servlet instance, ServletContextImpl servletContext) {
         servletConfig.setServletName(name);
@@ -53,7 +54,7 @@ public class ServletRegistrationDynamicImpl implements ServletRegistration.Dynam
 
     @Override
     public void setRunAsRole(String runAsRole) {
-
+        this.role = runAsRole;
     }
 
     @Override
@@ -121,5 +122,9 @@ public class ServletRegistrationDynamicImpl implements ServletRegistration.Dynam
 
     public ServletConfigImpl getServletConfig() {
         return servletConfig;
+    }
+
+    public String getRole() {
+        return role;
     }
 }

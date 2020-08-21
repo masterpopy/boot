@@ -2,23 +2,37 @@ package personal.popy.localserver.data;
 
 import personal.popy.localserver.util.BufferUtil;
 
+import javax.servlet.http.Cookie;
 import java.nio.ByteBuffer;
 import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 public class Headers extends HeaderList<String> {
+    private List<Cookie> cookies;
+
+    public void addCookie(Cookie cookie) {
+        if (cookie == null) {
+            cookies = new ArraySet<>();
+        }
+        cookies.add(cookie);
+    }
+
+    public List<Cookie> getCookies() {
+        return cookies;
+    }
 
     public void getChars(ByteBuffer cb) {
         for (int i = 0; i < size; i++) {
             Node node = table[i];
             BufferUtil.put(cb, node.name);
-            BufferUtil.put(cb, ": ");
+            cb.put((byte) ':');
             BufferUtil.put(cb, (String) node.value);
-            BufferUtil.put(cb, "\r\n");
+            cb.put(BufferUtil.LINE_SEP);
         }
-        BufferUtil.put(cb, "\r\n");
+        cb.put(BufferUtil.LINE_SEP);
     }
 
     static class ValueList extends AbstractList<String> {

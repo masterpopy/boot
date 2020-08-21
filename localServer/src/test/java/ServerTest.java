@@ -24,7 +24,7 @@ public class ServerTest {
 
     @Test
     public void test1() throws Exception {
-        System.out.println(getClass().getResource("personal/popy/localserver"));
+
     }
 
     @Test
