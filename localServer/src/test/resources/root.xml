@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <root>
-    <ValidOption name="validationInterval" explain="连接验证时间间隔"/>
-    <ValidOption name="removeAbandoned" explain="泄露回收"/>
-    <ValidOption name="connectionProperties"/>
-    <ValidOption name="minIdle"/>
-    <ValidOption name="logValidationErrors" explain="打印验证失败信息"/>
-    <ValidOption name="ignoreExceptionOnPreLoad" explain="打印初始化连接异常"/>
+    <ValidOption name="accesslog" />
+    <ValidOption name="accesslogDir"/>
+    <ValidOption name="addValve"/>
+    <ValidOption name="remoteFilterEnabled"/>
+    <ValidOption name="ssoEnabled"/>
+    <ValidOption name="allowAddr"/>
+    <ValidOption name="denyAddr"/>
+    <ValidOption name="allowHost"/>
+    <ValidOption name="denyHost"/>
+    <ValidOption name="filterHostType" explain="allow"/>
+    <ValidOption name="filterAddrType" explain="allow"/>
 </root>

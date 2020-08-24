@@ -1,5 +1,6 @@
 import org.junit.Test;
 import personal.popy.localserver.servlet.util.RestPath;
+import personal.popy.localserver.util.UnSafeStrBuf;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
@@ -24,7 +25,10 @@ public class ServerTest {
 
     @Test
     public void test1() throws Exception {
+        UnSafeStrBuf cw = new UnSafeStrBuf();
+        cw.append(835583).append('2').append("/gsagsag").append("sagasgasgwagwgawwgawg".toCharArray()).append(-515151525);
 
+        System.out.println(cw);
     }
 
     @Test
@@ -34,8 +38,9 @@ public class ServerTest {
         // output pretty printed
 
         Root unmarshal = (Root) jaxbMarshaller.unmarshal(getClass().getResourceAsStream("root.xml"));
+        UnSafeStrBuf buf=new UnSafeStrBuf();
         for (ValidOption validOption : unmarshal.validOptions) {
-            System.out.print(validOption.name+"={$"+validOption.name+"},");
+            System.out.println(buf.append("--").append(validOption.name).append("  ").append(validOption.explain).append("。").getAndReset());
         }
     }
 

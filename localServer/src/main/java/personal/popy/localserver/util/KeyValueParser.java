@@ -4,7 +4,7 @@ public class KeyValueParser {
 
     private char kvSep;
     private char pairSep;
-    private StringBuilder buffer = new StringBuilder();
+    private UnSafeStrBuf buffer = new UnSafeStrBuf();
 
     public KeyValueParser(char kvSep, char pairSep) {
         this.kvSep = kvSep;

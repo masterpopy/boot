@@ -22,7 +22,6 @@ public class HttpExchanger extends TimeMonitor implements HttpWorker {
     private ResponseImpl response;
 
     //todo thread safe
-    public static final ThreadLocal<ProcessBuffer> buffers = ThreadLocal.withInitial(ProcessBuffer::new);
     private ProcessBuffer buf;
     private ByteBuffer readBuf;
 
@@ -104,7 +103,7 @@ public class HttpExchanger extends TimeMonitor implements HttpWorker {
     }
 
     public void refreshBuf() {
-        buf = buffers.get();
+        buf = ProcessBuffer.buffers.get();
         buf.clear();
     }
 
