@@ -68,6 +68,7 @@ public class ServletContextImpl extends AbsServletContextImpl implements Servlet
 
     @Override
     public String getInitParameter(String name) {
+        if (name == null) return null;
         return parameters.get(name);
     }
 
@@ -101,8 +102,6 @@ public class ServletContextImpl extends AbsServletContextImpl implements Servlet
     public void removeAttribute(String name) {
         attributes.remove(name);
     }
-
-
 
 
     @Override

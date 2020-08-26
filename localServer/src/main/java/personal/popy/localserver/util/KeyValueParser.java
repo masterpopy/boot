@@ -2,31 +2,35 @@ package personal.popy.localserver.util;
 
 public class KeyValueParser {
 
-    private char kvSep;
-    private char pairSep;
-    private UnSafeStrBuf buffer = new UnSafeStrBuf();
+    private String value;
 
-    public KeyValueParser(char kvSep, char pairSep) {
-        this.kvSep = kvSep;
-        this.pairSep = pairSep;
+    private int pos;
+
+    private int length;
+
+    public KeyValueParser(String value) {
+        this.value = value;
+        this.length = value.length();
     }
 
-    public void parse(String s) {
-        int length = s.length();
-        for (int i = 0; i < length; i++) {
-            char c = s.charAt(i);
-            if (Character.isSpaceChar(c)) {
-                continue;
-            }
-            if (c == kvSep) {
+    public boolean hasMore() {
+        return pos < length;
+    }
 
-            } else if (c == pairSep) {
-
-            } else {
-                buffer.append(c);
-            }
-
-
+    public void skipWhiteSpace() {
+        while (Character.isWhitespace(value.charAt(pos))) {
+            pos++;
         }
+    }
+
+    public String nextToken(char delimeter) {
+        int idx = pos;
+        while (value.charAt(pos) != delimeter) {
+            pos++;
+            if (pos == length) break;
+        }
+        int pos = this.pos;
+        this.pos++;//skip delimeter
+        return value.substring(idx, pos);
     }
 }

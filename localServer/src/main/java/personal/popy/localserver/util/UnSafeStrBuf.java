@@ -6,7 +6,7 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 
 @SuppressWarnings("UnusedReturnValue")
-public class UnSafeStrBuf {
+public class UnSafeStrBuf implements Appendable {
     private char[] buf;
 
     private int pos;
@@ -90,6 +90,17 @@ public class UnSafeStrBuf {
         return Math.max(minCapacity, max);
     }
 
+    @Override
+    public UnSafeStrBuf append(CharSequence csq) throws IOException {
+        return this;
+    }
+
+    @Override
+    public UnSafeStrBuf append(CharSequence csq, int start, int end) throws IOException {
+
+        return this;
+    }
+
     public UnSafeStrBuf append(char c) {
         ensureCount(1);
         buf[pos++] = c;
@@ -114,6 +125,14 @@ public class UnSafeStrBuf {
         int length = s.length();
         ensureCount(length + pos);
         s.getChars(0, length, buf, pos);
+        pos += length;
+        return this;
+    }
+
+    public UnSafeStrBuf append(String s, int start, int end) {
+        int length = end - start;
+        ensureCount(length + pos);
+        s.getChars(start, length, buf, pos);
         pos += length;
         return this;
     }
@@ -208,6 +227,7 @@ public class UnSafeStrBuf {
 
     @Override
     public String toString() {
+        if (pos == 0) return "";
         return new String(buf, 0, pos);
     }
 

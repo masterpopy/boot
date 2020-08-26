@@ -1,6 +1,6 @@
 package personal.popy.localserver.servlet;
 
-import personal.popy.localserver.data.ProcessBuffer;
+import personal.popy.localserver.data.ThreadLocalBuffer;
 import personal.popy.localserver.io.stream.ResponseWriter;
 import personal.popy.localserver.lifecycle.Http11ConnHandler;
 import personal.popy.localserver.lifecycle.HttpWorker;
@@ -22,7 +22,7 @@ public class HttpExchanger extends TimeMonitor implements HttpWorker {
     private ResponseImpl response;
 
     //todo thread safe
-    private ProcessBuffer buf;
+    private ThreadLocalBuffer buf;
     private ByteBuffer readBuf;
 
     private HttpRequestProtocol protocol;
@@ -103,7 +103,7 @@ public class HttpExchanger extends TimeMonitor implements HttpWorker {
     }
 
     public void refreshBuf() {
-        buf = ProcessBuffer.buffers.get();
+        buf = ThreadLocalBuffer.buffers.get();
         buf.clear();
     }
 
@@ -155,7 +155,7 @@ public class HttpExchanger extends TimeMonitor implements HttpWorker {
         return channel;
     }
 
-    public ProcessBuffer getBuf() {
+    public ThreadLocalBuffer getBuf() {
         return buf;
     }
 

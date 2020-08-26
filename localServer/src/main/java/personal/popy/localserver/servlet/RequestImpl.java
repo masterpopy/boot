@@ -2,6 +2,7 @@ package personal.popy.localserver.servlet;
 
 import personal.popy.localserver.lifecycle.ConnectionContext;
 import personal.popy.localserver.lifecycle.HttpWorker;
+import personal.popy.localserver.servlet.data.CookieParser;
 import personal.popy.localserver.util.TimeMonitor;
 import personal.popy.localserver.wrapper.HttpReqEntity;
 
@@ -63,7 +64,7 @@ public class RequestImpl extends TimeMonitor implements HttpServletRequest, Http
 
     @Override
     public Cookie[] getCookies() {
-        return entity.headers.getCookies().toArray(new Cookie[0]);
+        return CookieParser.parse(getHeader("cookie"));
     }
 
     @Override

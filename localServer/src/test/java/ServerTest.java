@@ -5,7 +5,6 @@ import personal.popy.localserver.util.UnSafeStrBuf;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
-import java.util.StringTokenizer;
 import java.util.function.Consumer;
 
 public class ServerTest {
@@ -46,11 +45,10 @@ public class ServerTest {
 
     @Test
     public void test3() throws Exception {
-        StringTokenizer tokenizer = new StringTokenizer("22/33/44/55", "/");
-        while (tokenizer.hasMoreElements()) {
-            System.out.println(tokenizer.nextElement());
-        }
+
     }
+
+
 
     private static class Cnt implements Consumer<String> {
         int i = 0;
