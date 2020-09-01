@@ -144,7 +144,7 @@ public class ResponseImpl implements HttpServletResponse {
         if (checkSpecialHeader(name, value)) {
             return;
         }
-        getHttpRespEntity().headers.addIfNotExits(name, value);
+        getHttpRespEntity().headers.putIfAbsent(name, value);
     }
 
     @Override
@@ -153,7 +153,7 @@ public class ResponseImpl implements HttpServletResponse {
         if (checkSpecialHeader(name, value)) {
             return;
         }
-        getHttpRespEntity().headers.add(name, value);
+        getHttpRespEntity().headers.put(name, value);
     }
 
     @Override
@@ -302,7 +302,7 @@ public class ResponseImpl implements HttpServletResponse {
 
         httpRespEntity.prepareHeader();
 
-        httpRespEntity.headers.getChars(writer);
+        httpRespEntity.headers.getHeaderChars(writer);
 
 
         if (httpRespEntity.isChunked) {

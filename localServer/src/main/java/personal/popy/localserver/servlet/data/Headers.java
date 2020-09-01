@@ -1,5 +1,6 @@
-package personal.popy.localserver.data;
+package personal.popy.localserver.servlet.data;
 
+import personal.popy.localserver.data.ArraySet;
 import personal.popy.localserver.util.BufferUtil;
 
 import javax.servlet.http.Cookie;
@@ -24,7 +25,7 @@ public class Headers extends HeaderList<String> {
         return cookies;
     }
 
-    public void getChars(ByteBuffer cb) {
+    public void getHeaderChars(ByteBuffer cb) {
         for (int i = 0; i < size; i++) {
             Node node = table[i];
             BufferUtil.put(cb, node.name);

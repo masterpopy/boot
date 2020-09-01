@@ -1,9 +1,11 @@
-package personal.popy.localserver.data;
+package personal.popy.localserver.servlet.data;
 
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.Map;
 import java.util.Objects;
 
+//忽略key大小写的，专为Header提供的类
 public class HeaderList<V> {
 
     Node[] table;
@@ -38,7 +40,7 @@ public class HeaderList<V> {
         return new Node(key, value);
     }
 
-    public final void add(String key, V value) {
+    public final void put(String key, V value) {
         Objects.requireNonNull(key);
         sorted = false;
         resize();
@@ -82,11 +84,11 @@ public class HeaderList<V> {
         return null;
     }
 
-    public void addIfNotExits(String key, V value) {
+    public void putIfAbsent(String key, V value) {
         if (get(key) != null) {
             throw new IllegalArgumentException();
         }
-        add(key, value);
+        put(key, value);
     }
 
     void sort() {
@@ -169,6 +171,53 @@ public class HeaderList<V> {
                 }
             }
             return node;
+        }
+    }
+
+    static class Node implements Comparable<Node>, Map.Entry<String, Object> {
+        final static Node EMPTY = new Node("", null);
+        Node(String name, Object value) {
+            if (name == null) {
+                throw new NullPointerException();
+            }
+            this.name = name;
+            this.value = value;
+        }
+
+        String name;
+        Object value;
+
+        @Override
+        public int compareTo(Node node) {
+            int ret = name.compareToIgnoreCase(node.name);
+            if (ret == 0) {
+                name = node.name;
+            }
+            return ret;
+        }
+
+        boolean keyEq(String n) {
+            return name.equalsIgnoreCase(n);
+        }
+
+        @Override
+        public String toString() {
+            return name + "=" + value;
+        }
+
+        @Override
+        public String getKey() {
+            return name;
+        }
+
+        @Override
+        public Object getValue() {
+            return value;
+        }
+
+        @Override
+        public Object setValue(Object value) {
+            return this.value = value;
         }
     }
 }

@@ -1,4 +1,4 @@
-package personal.popy.localserver.data;
+package personal.popy.localserver.servlet.data;
 
 import java.util.Collections;
 import java.util.HashMap;

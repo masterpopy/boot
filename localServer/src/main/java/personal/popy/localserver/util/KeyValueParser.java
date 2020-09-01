@@ -27,7 +27,9 @@ public class KeyValueParser {
         int idx = pos;
         while (value.charAt(pos) != delimeter) {
             pos++;
-            if (pos == length) break;
+            if (pos == length) {
+                break;
+            }
         }
         int pos = this.pos;
         this.pos++;//skip delimeter

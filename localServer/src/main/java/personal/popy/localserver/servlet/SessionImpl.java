@@ -1,6 +1,6 @@
 package personal.popy.localserver.servlet;
 
-import personal.popy.localserver.data.HeaderList;
+import personal.popy.localserver.servlet.data.HeaderList;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
@@ -91,7 +91,7 @@ public class SessionImpl implements HttpSession {
         if (attributes == null) {
             attributes = new HeaderList<>(4);
         }
-        attributes.add(name, value);
+        attributes.put(name, value);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package personal.popy.localserver.wrapper;
 
-import personal.popy.localserver.data.Headers;
+import personal.popy.localserver.servlet.data.Headers;
 
 import java.nio.charset.Charset;
 
@@ -16,12 +16,12 @@ public class HttpRespEntity {
     public void prepareHeader() {
         if (contentType != null)
         {
-            headers.add("content-type",charset == null ? contentType : contentType + ";charset=" + charset.name());
+            headers.put("content-type",charset == null ? contentType : contentType + ";charset=" + charset.name());
         }
         if (contentLength != -1L) {
-            headers.add("content-length", String.valueOf(contentLength));
+            headers.put("content-length", String.valueOf(contentLength));
         } else {
-            headers.add("Transfer-Encoding", "chunked");
+            headers.put("Transfer-Encoding", "chunked");
             isChunked = true;
         }
 

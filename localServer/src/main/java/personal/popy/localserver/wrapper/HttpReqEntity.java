@@ -1,7 +1,7 @@
 package personal.popy.localserver.wrapper;
 
-import personal.popy.localserver.data.Headers;
-import personal.popy.localserver.data.Parameters;
+import personal.popy.localserver.servlet.data.Headers;
+import personal.popy.localserver.servlet.data.Parameters;
 
 import java.nio.ByteBuffer;
 
@@ -78,7 +78,7 @@ public class HttpReqEntity {
         }
         String value = bytes.stringValue(start, pos - start);
         //todo content-length check
-        headers.add(key, value);
+        headers.put(key, value);
     }
 
     @Override

@@ -3,8 +3,7 @@ package personal.popy.localserver.servlet.data;
 import personal.popy.localserver.util.KeyValueParser;
 
 import javax.servlet.http.Cookie;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 
 public class CookieParser {
     public static final String DOMAIN = "$Domain";
@@ -13,13 +12,16 @@ public class CookieParser {
 
     /**
      * 支持的格式  key=value; key=value
+     *
      * @param s cookie字符串
      * @return Cookie数组
      */
     public static Cookie[] parse(String s) {
-        HashMap<String, String> map = new HashMap<>();
+        ArrayList<Cookie> cookies = new ArrayList<>();
         KeyValueParser parser = new KeyValueParser(s);
-        $1 base = new $1("null", "null");
+        String domain = null;
+        int version = 0;
+        String path = null;
         while (parser.hasMore()) {
             parser.skipWhiteSpace();
             String key = parser.nextToken('=');
@@ -32,52 +34,37 @@ public class CookieParser {
             if (value.length() > 0) {
                 switch (key) {
                     case DOMAIN:
-                        base.setDomain(value);
+                        domain = value;
                         break;
                     case VERSION:
-                        base.setVersion(Integer.parseInt(value));
+                        version = Integer.parseInt(value);
                         break;
                     case PATH:
-                        base.setPath(value);
+                        path = value;
                         break;
                     default:
-                        map.put(key, value);
+                        cookies.add(new Cookie(key, value));
                         break;
                 }
                 continue;
             }
 
-            map.put(key, value);
+            cookies.add(new Cookie(key, value));
         }
 
-        int size = map.size();
-        int index = 0;
+        int size = cookies.size();
         Cookie[] ret = new Cookie[size];
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            ret[index++] = base.toCookie(entry.getKey(), entry.getValue());
+        for (int i = 0; i < size; i++) {
+            Cookie cookie = cookies.get(i);
+            if (domain != null) {
+                cookie.setDomain(domain);
+            }
+            cookie.setPath(path);
+            cookie.setVersion(version);
+            ret[i] = cookie;
         }
         return ret;
     }
 
-    private static class $1 extends Cookie {
 
-        public $1(String name, String value) {
-            super(name, value);
-        }
-
-        @Override
-        public String toString() {
-            return getName() + "=" + getValue();
-        }
-
-        private $1 toCookie(String name, String value) {
-            $1 cookie = new $1(name, value);
-            String domain = getDomain();
-            if (domain != null)
-                cookie.setDomain(domain);
-            cookie.setPath(getPath());
-            cookie.setVersion(getVersion());
-            return cookie;
-        }
-    }
 }

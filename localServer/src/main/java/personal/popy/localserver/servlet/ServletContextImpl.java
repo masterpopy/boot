@@ -266,7 +266,6 @@ public class ServletContextImpl extends AbsServletContextImpl implements Servlet
     }
 
     public void clean() {
-        servletRegistrations = null;
-        parameters = null;
+        servletRegistrations = null;// no use any more
     }
 }

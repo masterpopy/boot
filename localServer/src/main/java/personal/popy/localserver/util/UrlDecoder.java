@@ -42,7 +42,7 @@ public class UrlDecoder {
                     break;
                 case '&':
                     String value = convert(wrap, pos, cb, decoder);
-                    entity.parameters.add(key, value);
+                    entity.parameters.put(key, value);
                     pos = 0;
                     ++i;
                     break;
@@ -52,7 +52,7 @@ public class UrlDecoder {
             }
         }
         String value = convert(wrap, pos, cb, decoder);
-        entity.parameters.add(key, value);
+        entity.parameters.put(key, value);
     }
 
     private static String convert(ByteBuffer wrap, int pos, CharBuffer cb, CharsetDecoder decoder) {
