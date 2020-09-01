@@ -14,11 +14,36 @@
 		<module>client</module>
         <module>record</module>
 		<module>localServer</module>
-    </modules>
+		<module>copy</module>
+	</modules>
 
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
 
+		</plugins>
+
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<!--包含文件夹以及子文件夹下所有资源-->
+					<include>**/*.*</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+	</build>
 
 </project>

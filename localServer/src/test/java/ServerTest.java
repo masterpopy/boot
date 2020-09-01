@@ -1,18 +1,21 @@
 import org.junit.Test;
+import personal.popy.copy.spring.io.Resource;
 import personal.popy.localserver.factory.ClassLoaderResource;
 import personal.popy.localserver.util.UnSafeStrBuf;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
-import java.util.Arrays;
 import java.util.function.Consumer;
 
 public class ServerTest {
 
     @Test
     public void test0() throws Exception {
-        System.out.println(Arrays.toString(new ClassLoaderResource().find("personal.popy.localserver")));
+        Resource[] a = new ClassLoaderResource().find("personal.popy.localserver");
+        for (Resource resource : a) {
+            System.out.println(resource);
+        }
     }
 
     public static void et(Object s) {
