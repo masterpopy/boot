@@ -1,6 +1,6 @@
 package personal.popy.localserver.lifecycle;
 
-public class ServerContext {
+public class WebServerApplication {
 
     private String proxyName = "localhost";
 

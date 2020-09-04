@@ -4,16 +4,16 @@ import org.springframework.boot.web.server.WebServer;
 import org.springframework.boot.web.server.WebServerException;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
-import personal.popy.localserver.lifecycle.ServerContext;
+import personal.popy.localserver.lifecycle.WebServerApplication;
 
 import javax.servlet.ServletException;
 
 public class WebFactory implements ServletWebServerFactory, WebServer {
-    private ServerContext container;
+    private WebServerApplication container;
 
     private ServletInitializer servletInitializer = new ServletInitializer();
     public WebFactory() {
-        container = new ServerContext();
+        container = new WebServerApplication();
         container.setInitializer(servletInitializer);
     }
 

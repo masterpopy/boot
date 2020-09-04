@@ -1,7 +1,7 @@
 package personal.popy.localserver.lifecycle;
 
 public interface Lifecycle {
-    void init(ServerContext context);
+    void init(WebServerApplication context);
 
-    void start(ServerContext context);
+    void start(WebServerApplication context);
 }

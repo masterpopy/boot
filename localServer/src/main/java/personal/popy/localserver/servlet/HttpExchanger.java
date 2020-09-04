@@ -4,7 +4,7 @@ import personal.popy.localserver.data.ThreadLocalBuffer;
 import personal.popy.localserver.io.stream.ResponseWriter;
 import personal.popy.localserver.lifecycle.Http11ConnHandler;
 import personal.popy.localserver.lifecycle.HttpWorker;
-import personal.popy.localserver.lifecycle.ServerContext;
+import personal.popy.localserver.lifecycle.WebServerApplication;
 import personal.popy.localserver.util.TimeMonitor;
 import personal.popy.localserver.wrapper.HttpReqEntity;
 
@@ -47,7 +47,7 @@ public class HttpExchanger extends TimeMonitor implements HttpWorker {
         return task;
     }
 
-    public ServerContext getServer() {
+    public WebServerApplication getServer() {
         return processor.getServer();
     }
 
