@@ -1,11 +1,15 @@
 import org.junit.Test;
 import personal.popy.copy.spring.io.Resource;
+import personal.popy.copy.tomcat.classfile.ClassParser;
+import personal.popy.copy.tomcat.classfile.JavaClass;
 import personal.popy.localserver.factory.ClassLoaderResource;
+import personal.popy.localserver.io.ReusableBufferedInputStream;
 import personal.popy.localserver.util.UnSafeStrBuf;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
+import java.io.InputStream;
 import java.util.function.Consumer;
 
 public class ServerTest {
@@ -13,8 +17,13 @@ public class ServerTest {
     @Test
     public void test0() throws Exception {
         Resource[] a = new ClassLoaderResource().find("personal.popy.localserver");
+        ReusableBufferedInputStream bufferedInputStream = new ReusableBufferedInputStream(null);
         for (Resource resource : a) {
-            System.out.println(resource);
+            InputStream inputStream = resource.getInputStream();
+            bufferedInputStream.setIn(inputStream);
+            JavaClass parse = new ClassParser(bufferedInputStream).parse();
+            inputStream.close();
+            System.out.println(parse.getClassName());
         }
     }
 

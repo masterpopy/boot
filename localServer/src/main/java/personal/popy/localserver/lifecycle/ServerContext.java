@@ -6,13 +6,13 @@ public class ServerContext {
 
     private ConnectionContext connectionContext = new ConnectionContext();
 
-    private ServerInitializer initializer;
+    private Lifecycle initializer;
 
     public void start() throws Exception {
-        initializer.onInitialzing(this);
+        initializer.init(this);
         connectionContext.setServer(this);
-        connectionContext.start();
-        initializer.onInitialized(this);
+        connectionContext.init();
+        initializer.start(this);
     }
 
     public ConnectionContext getConnectionContext() {
@@ -21,7 +21,7 @@ public class ServerContext {
 
 
     public void stop() {
-        connectionContext.stop();
+        connectionContext.destory();
     }
 
     public String getProxyName() {
@@ -32,7 +32,7 @@ public class ServerContext {
         this.proxyName = proxyName;
     }
 
-    public void setInitializer(ServerInitializer initializer) {
+    public void setInitializer(Lifecycle initializer) {
         this.initializer = initializer;
     }
 }
