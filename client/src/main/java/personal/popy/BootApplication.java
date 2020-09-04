@@ -12,7 +12,6 @@ public class BootApplication {
 
     public static void main(String[] args) throws Exception {
         ConfigurableApplicationContext run = SpringApplication.run(BootApplication.class, args);
-        run.close();
     }
 
 

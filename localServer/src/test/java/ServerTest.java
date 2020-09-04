@@ -2,7 +2,7 @@ import org.junit.Test;
 import personal.popy.copy.spring.io.Resource;
 import personal.popy.copy.tomcat.classfile.ClassParser;
 import personal.popy.copy.tomcat.classfile.JavaClass;
-import personal.popy.localserver.factory.ClassLoaderResource;
+import personal.popy.localserver.factory.ClassResourceLoader;
 import personal.popy.localserver.io.ReusableBufferedInputStream;
 import personal.popy.localserver.util.UnSafeStrBuf;
 
@@ -16,7 +16,7 @@ public class ServerTest {
 
     @Test
     public void test0() throws Exception {
-        Resource[] a = new ClassLoaderResource().find("personal.popy.localserver");
+        Resource[] a = new ClassResourceLoader().find("personal.popy.localserver");
         ReusableBufferedInputStream bufferedInputStream = new ReusableBufferedInputStream(null);
         for (Resource resource : a) {
             InputStream inputStream = resource.getInputStream();

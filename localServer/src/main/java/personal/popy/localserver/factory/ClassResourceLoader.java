@@ -7,28 +7,14 @@ import personal.popy.copy.spring.util.ClassUtils;
 import personal.popy.localserver.exception.UnHandledException;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
 
 //嵌入式版可以直接使用classloader来加载
-public class ClassLoaderResource implements WebResource {
+public class ClassResourceLoader implements WebResourceLoader {
 
     private PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 
-    public ClassLoaderResource() {
+    public ClassResourceLoader() {
 
-    }
-
-    @Override
-    public List<URL> list(String path) {
-        try {
-            Enumeration<URL> resources = resolver.getClassLoader().getResources(path);
-            return Collections.list(resources);
-        } catch (IOException e) {
-            return Collections.emptyList();
-        }
     }
 
     @Override

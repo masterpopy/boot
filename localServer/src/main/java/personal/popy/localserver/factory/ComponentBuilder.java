@@ -3,7 +3,7 @@ package personal.popy.localserver.factory;
 public class ComponentBuilder {
     private FactoryInitializer initializer;
 
-    private WebResource webResource = new ClassLoaderResource();
+    private WebResourceLoader webResource = new ClassResourceLoader();
 
     private ComponentFactory factory;
 

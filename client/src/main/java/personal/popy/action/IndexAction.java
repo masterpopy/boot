@@ -6,10 +6,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import personal.popy.entity.User;
-import personal.popy.localserver.servlet.data.CookieParser;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
@@ -19,7 +17,7 @@ public class IndexAction extends BaseController {
     @GetMapping("index")
     @ResponseBody
     public Map hello(HttpServletRequest request) {
-        System.out.println(Arrays.toString(CookieParser.parse(request.getHeader("cookie"))));
+
 
         return Collections.emptyMap();
     }

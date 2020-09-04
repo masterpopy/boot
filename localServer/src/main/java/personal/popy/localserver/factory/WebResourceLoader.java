@@ -1,9 +1,8 @@
 package personal.popy.localserver.factory;
 
-import java.net.URL;
-import java.util.List;
+import personal.popy.copy.spring.io.Resource;
 
-public interface WebResource {
+public interface WebResourceLoader {
     static ClassLoader getDefaultLoader() {
         ClassLoader cl = null;
 
@@ -13,7 +12,7 @@ public interface WebResource {
         }
 
         if (cl == null) {
-            cl = WebResource.class.getClassLoader();
+            cl = WebResourceLoader.class.getClassLoader();
             if (cl == null) {
                 try {
                     cl = ClassLoader.getSystemClassLoader();
@@ -25,6 +24,7 @@ public interface WebResource {
         return cl;
     }
 
-    List<URL> list(String path);
+    Resource[] find(String basePackage);
+
     Class<?> load(String className);
 }

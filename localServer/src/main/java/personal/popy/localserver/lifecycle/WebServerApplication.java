@@ -1,5 +1,8 @@
 package personal.popy.localserver.lifecycle;
 
+import personal.popy.localserver.factory.ClassResourceLoader;
+import personal.popy.localserver.factory.WebResourceLoader;
+
 public class WebServerApplication {
 
     private String proxyName = "localhost";
@@ -7,6 +10,15 @@ public class WebServerApplication {
     private ConnectionContext connectionContext = new ConnectionContext();
 
     private Lifecycle initializer;
+
+    private WebServerContainer[] baseServerContainers;
+
+    private WebResourceLoader webResourceLoader = new ClassResourceLoader();
+
+    private void init() {
+
+    }
+
 
     public void start() throws Exception {
         initializer.init(this);

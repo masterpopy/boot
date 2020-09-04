@@ -2,7 +2,7 @@ package personal.popy.localserver.factory;
 
 public class ComponentFactory implements FactoryInitializer {
     private FactoryInitializer delegate;
-    private WebResource webResource;
+    private WebResourceLoader webResource;
     private String basePackage;
 
     public void setDelegate(FactoryInitializer delegate) {
