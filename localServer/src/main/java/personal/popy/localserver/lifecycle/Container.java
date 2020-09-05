@@ -3,7 +3,6 @@ package personal.popy.localserver.lifecycle;
 import personal.popy.copy.spring.lang.NonNull;
 
 import java.util.HashMap;
-import java.util.List;
 
 public abstract class Container implements Lifecycle {
     private String scope;
@@ -51,19 +50,16 @@ public abstract class Container implements Lifecycle {
         return "";
     }
 
-    public <T> T getBean(Class<T> beanClass) {
+    public <T> T getComponent(ComponentDefinition<T> bean) {
+
         return null;
     }
 
-    public <T> List<T> getBeans(Class<T> beanClass) {
-        return null;
+    public void addComponent(ComponentDefinition<?> bean){
+
     }
 
-    public Object getBean(String name) {
-        return null;
-    }
+    public void addChild(Container container) {
 
-    public <T> T getBean(String name, Class<T> beanClass) {
-        return null;
     }
 }

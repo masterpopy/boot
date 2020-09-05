@@ -33,7 +33,7 @@ public class WebServerApplication {
 
 
     public void stop() {
-        connectionContext.destory();
+        connectionContext.destroy();
     }
 
     public String getProxyName() {

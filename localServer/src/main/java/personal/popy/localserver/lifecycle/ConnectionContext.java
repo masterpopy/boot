@@ -55,7 +55,7 @@ public class ConnectionContext extends EnvAwire implements CompletionHandler<Asy
         return worker;
     }
 
-    public void destory() {
+    public void destroy() {
         ioExecutor.shutdown();
         worker.shutdown();
     }

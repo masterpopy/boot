@@ -39,7 +39,7 @@ public class RequestImpl extends TimeMonitor implements HttpServletRequest, Http
 
     private String bodyEncoding = "UTF-8";
 
-    public RequestImpl(HttpExchanger exchanger) {
+    RequestImpl(HttpExchanger exchanger) {
         this.exchanger = exchanger;
     }
 
@@ -47,7 +47,7 @@ public class RequestImpl extends TimeMonitor implements HttpServletRequest, Http
         return exchanger;
     }
 
-    public void recycle() {
+    void recycle() {
         entity.recycle();
         inputStream = null;
     }
@@ -433,7 +433,7 @@ public class RequestImpl extends TimeMonitor implements HttpServletRequest, Http
         return DispatcherType.REQUEST;
     }
 
-    public void doServlet(HttpReqEntity entity) {
+    void doServlet(HttpReqEntity entity) {
         this.entity = entity;
         exchanger.exe(this);
     }

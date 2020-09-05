@@ -6,5 +6,5 @@ public interface ServerWorker extends Runnable {
 
     void init();
 
-    void destory();
+    void destroy();
 }

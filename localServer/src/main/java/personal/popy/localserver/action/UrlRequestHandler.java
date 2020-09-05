@@ -14,15 +14,15 @@ public class UrlRequestHandler implements RequestHandler {
     private MappingMatch matching;
     private String pattern;
 
-    public UrlRequestHandler(Servlet servlet) {
+    UrlRequestHandler(Servlet servlet) {
         this.servlet = servlet;
     }
 
-    public void setMatching(MappingMatch matching) {
+    void setMatching(MappingMatch matching) {
         this.matching = matching;
     }
 
-    public void setPattern(String pattern) {
+    void setPattern(String pattern) {
         this.pattern = pattern;
     }
 
