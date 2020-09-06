@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
-import personal.popy.localserver.executor.FastLock;
+import personal.popy.server.executor.FastLock;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;

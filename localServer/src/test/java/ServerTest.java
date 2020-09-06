@@ -2,9 +2,9 @@ import org.junit.Test;
 import personal.popy.copy.spring.io.Resource;
 import personal.popy.copy.tomcat.classfile.ClassParser;
 import personal.popy.copy.tomcat.classfile.JavaClass;
-import personal.popy.localserver.factory.ClassResourceLoader;
-import personal.popy.localserver.io.ReusableBufferedInputStream;
-import personal.popy.localserver.util.UnSafeStrBuf;
+import personal.popy.server.factory.ClassResourceLoader;
+import personal.popy.server.io.ReusableBufferedInputStream;
+import personal.popy.server.util.UnSafeStrBuf;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;

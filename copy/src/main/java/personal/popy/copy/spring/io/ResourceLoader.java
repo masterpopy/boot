@@ -78,8 +78,8 @@ public interface ResourceLoader {
      *
      * @return the ClassLoader
      * (only {@code null} if even the system ClassLoader isn't accessible)
-     * @see personal.popy.localserver.util.ClassUtils#getDefaultClassLoader()
-     * @see personal.popy.localserver.util.ClassUtils#forName(String, ClassLoader)
+     * @see personal.popy.server.util.ClassUtils#getDefaultClassLoader()
+     * @see personal.popy.server.util.ClassUtils#forName(String, ClassLoader)
      */
     @Nullable
     ClassLoader getClassLoader();
