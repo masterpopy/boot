@@ -5,7 +5,7 @@ import personal.popy.copy.spring.lang.NonNull;
 import java.util.Collection;
 import java.util.HashMap;
 
-public abstract class Container implements Lifecycle,ComponentWrapper {
+public abstract class Container implements Lifecycle {
     private String scope;
 
     private final Container parent;
@@ -51,14 +51,16 @@ public abstract class Container implements Lifecycle,ComponentWrapper {
         return "";
     }
 
-    @Override
-    public <T> T getComponent(ComponentDefinition<T> bean) {
+    public void addEndpoint(BeanDef<?> bean) {
 
-        return null;
     }
 
-    public void addComponent(ComponentDefinition<?> bean) {
+    public void addEntrypoint(BeanDef<?> bean) {
 
+    }
+
+    public Entrypoint getEntrypoint() {
+        return null;
     }
 
     public void addChild(Container container) {

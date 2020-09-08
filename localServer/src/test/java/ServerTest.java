@@ -54,7 +54,7 @@ public class ServerTest {
 
     @Test
     public void test3() throws Exception {
-
+        String.class.getDeclaredField("value").setAccessible(true);
     }
 
 

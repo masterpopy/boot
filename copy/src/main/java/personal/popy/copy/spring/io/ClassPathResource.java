@@ -17,7 +17,8 @@
 package personal.popy.copy.spring.io;
 
 
-import com.sun.istack.internal.Nullable;
+
+import personal.popy.copy.spring.lang.Nullable;
 import personal.popy.copy.spring.util.Assert;
 import personal.popy.copy.spring.util.ClassUtils;
 import personal.popy.copy.spring.util.ObjectUtils;

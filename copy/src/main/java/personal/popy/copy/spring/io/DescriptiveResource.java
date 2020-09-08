@@ -17,7 +17,9 @@
 package personal.popy.copy.spring.io;
 
 
-import com.sun.istack.internal.Nullable;
+
+
+import personal.popy.copy.spring.lang.Nullable;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
