@@ -1,5 +1,5 @@
 package personal.popy.application.lifecycle;
 
 public interface ContainerFactory {
-    <T extends Container> T create(Class<T> clz);
+    <T extends Container> T create(BeanDef<T> clz);
 }

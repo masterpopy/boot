@@ -55,12 +55,16 @@ public abstract class Container implements Lifecycle {
 
     }
 
-    public void addEntrypoint(BeanDef<?> bean) {
+    public void setEntrypoint(BeanDef<?> bean) {
 
     }
 
     public Entrypoint getEntrypoint() {
         return null;
+    }
+
+    public void contact(Container another) {
+        getEntrypoint().contact(another.getEntrypoint());
     }
 
     public void addChild(Container container) {

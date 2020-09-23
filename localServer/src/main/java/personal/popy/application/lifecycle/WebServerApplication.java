@@ -50,7 +50,7 @@ public class WebServerApplication implements ContainerFactory{
     }
 
     @Override
-    public <T extends Container> T create(Class<T> clz) {
+    public <T extends Container> T create(BeanDef<T> clz) {
         return null;
     }
 }
