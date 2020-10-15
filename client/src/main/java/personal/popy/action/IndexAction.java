@@ -1,5 +1,7 @@
 package personal.popy.action;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,12 +15,12 @@ import java.util.Map;
 
 @Controller
 public class IndexAction extends BaseController {
-
+    private static final Log log = LogFactory.getLog(IndexAction.class);
     @GetMapping("index")
     @ResponseBody
     public Map hello(HttpServletRequest request) {
 
-
+        log.info("233333");
         return Collections.emptyMap();
     }
 

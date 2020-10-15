@@ -3,8 +3,8 @@ import personal.popy.record.structure.AbstractQueueSync;
 import personal.popy.record.xse.IpsScript;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Properties;
 
 public class RecordTest {
+
 
     @org.junit.Test
     public void disruptorTest() {
@@ -32,15 +33,8 @@ public class RecordTest {
 
     @Test
     public void runAlgorithms() throws Exception {
-        String file = "D:\\work\\project\\files\\provider\\provider.bat";
-        ProcessBuilder b = new ProcessBuilder(file);
-        InputStream inputStream = b.start().getInputStream();
-        byte[] buffer = new byte[1024];
-        int read;
-
-        while ((read = inputStream.read(buffer)) > 0){
-            System.out.write(buffer,0,read);
-        }
+        System.out.println(Arrays.toString(File.listRoots()));
+        System.out.println(new File("d:/tools").exists());
     }
 
     @Test

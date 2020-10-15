@@ -1,14 +1,12 @@
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
 import org.junit.Test;
-import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
 import personal.popy.server.executor.FastLock;
 
+import javax.xml.bind.JAXBContext;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
+import java.nio.charset.Charset;
+import java.nio.charset.spi.CharsetProvider;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -17,46 +15,27 @@ import java.util.concurrent.TimeoutException;
 
 public class Run {
 
+    private class GbaCharset extends CharsetProvider {
+
+
+        @Override
+        public Iterator<Charset> charsets() {
+            return null;
+        }
+
+        @Override
+        public Charset charsetForName(String charsetName) {
+            return null;
+        }
+    }
     @Test
     public void run1() throws Throwable {
 
-        Observable.fromPublisher(new Publisher<String>() {
-            @Override
-            public void subscribe(Subscriber<? super String> subscriber) {
-                subscriber.onSubscribe(new Subscription() {
-                    @Override
-                    public void request(long l) {
-
-                    }
-
-                    @Override
-                    public void cancel() {
-
-                    }
-                });
-                subscriber.onNext("321");
-            }
-        }).subscribe(new Observer<String>() {
-            @Override
-            public void onSubscribe(Disposable disposable) {
-                System.out.println("onSubscribe");
-            }
-
-            @Override
-            public void onNext(String s) {
-                System.out.println("onNext");
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
+        JAXBContext jaxbContext=JAXBContext.newInstance(Root.class);
+        Root unmarshal = (Root) jaxbContext.createUnmarshaller().unmarshal(getClass().getResource("root.xml"));
+        for (ValidOption validOption : unmarshal.validOptions) {
+            System.out.print("[--"+validOption.name+"="+validOption.name+"] ");
+        }
 
 
     }
