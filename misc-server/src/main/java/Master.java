@@ -1,27 +1,24 @@
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.channels.CompletionHandler;
 
 public class Master {
     private IoStream[] players;
 
     private boolean isAllPlayerConnected;
 
-    private ByteBuffer buffer ;
+    private ByteBuffer buffer;
 
     private final int max;
 
-    private String username;
 
     private final int[] data = {0, 0xffff434d, 0xffff834d, 0xffffc34d};
 
 
-    public Master(int max, String username, IoStream io) {
+    public Master(int max, IoStream io) {
         players = new IoStream[max];
         players[0] = io;
-        this.username = username;
         this.max = max;
-        buffer= ByteBuffer.allocate(32).order(ByteOrder.LITTLE_ENDIAN);
+        buffer = ByteBuffer.allocate(32).order(ByteOrder.LITTLE_ENDIAN);
     }
 
     public boolean add(IoStream io) {
@@ -43,13 +40,25 @@ public class Master {
 
     protected void InitLink() {
         //first, send id to all players;
-
+        boolean erro = false;
         for (int i = 0; i < max; i++) {
             buffer.putInt(i);
             buffer.flip();
-            players[i].write(buffer);
+            try {
+                players[i].write(buffer);
+            } catch (Exception e) {
+                erro = true;
+            }
+
             buffer.clear();
         }
+        if (erro) {
+            players[0].close();
+            players[1].close();
+            players = null;
+            return;
+        }
+
 
         //recieve 8 from master; async
         BeginRead();
@@ -74,7 +83,7 @@ public class Master {
 
         buffer.clear().limit(4);
 
-        players[1].read(buffer);
+        players[1].read(buffer, null);
 //        System.out.println("read from player1:" + Integer.toHexString(buffer.getInt(0)));
 
         buffer.flip();
@@ -87,16 +96,8 @@ public class Master {
 
     protected void BeginRead() {
         buffer.limit(8);
-        players[0].read(buffer, this, new CompletionHandler<Integer, Master>() {
-            @Override
-            public void completed(Integer result, Master attachment) {
-                attachment.processTransfer();
-            }
 
-            @Override
-            public void failed(Throwable exc, Master attachment) {
-                exc.printStackTrace();
-            }
-        });
+        players[0].read(buffer, s -> processTransfer());
+
     }
 }

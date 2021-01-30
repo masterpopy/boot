@@ -13,7 +13,7 @@ public class ServerMain {
 
         AsynchronousChannelGroup threadGroup = AsynchronousChannelGroup.withThreadPool(new ThreadPoolExecutor(1, 4, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>()));
         AsynchronousServerSocketChannel aio = AsynchronousServerSocketChannel.open(threadGroup);
-        aio.bind(new InetSocketAddress(8888), 100);
+        aio.bind(new InetSocketAddress(9999), 100);
 
         AcceptorHandler handler = new AcceptorHandler();
         while (RUN) {
