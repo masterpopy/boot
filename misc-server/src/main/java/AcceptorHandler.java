@@ -1,4 +1,5 @@
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.util.concurrent.ConcurrentHashMap;
@@ -10,6 +11,10 @@ public class AcceptorHandler implements CompletionHandler<AsynchronousSocketChan
     private final ConcurrentHashMap<String, Master> players = new ConcurrentHashMap<>();
 
     private final ByteBuffer buffer = ByteBuffer.allocate(32);
+
+    public AcceptorHandler(){
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
+    }
 
     @Override
     public void completed(AsynchronousSocketChannel result, Void _void) {

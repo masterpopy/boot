@@ -1,36 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <root>
-    <ValidOption name="ioMode" explain="io模式"/>
-    <ValidOption name="proxyUrl" explain="代理服务器URL"/>
-    <ValidOption name="connectionTimeout" explain="连接超时"/>
-    <ValidOption name="tcpNoDelay"/>
-    <ValidOption name="oomParachute" explain="内存释放空间"/>
-    <ValidOption name="asyncTimeout" explain="异步超时时间"/>
-    <ValidOption name="keepAliveTimeout" explain="请求超时时间"/>
-    <ValidOption name="maxKeepAliveRequests" explain="最大长连接请求数"/>
-    <ValidOption name="maxConnections" explain="最大连接数"/>
-    <ValidOption name="processorCache" explain="处理器缓存数量"/>
-    <ValidOption name="selfTuned" explain="线程池自调节"/>
-    <ValidOption name="threadPriority" explain="线程优先级"/>
-    <ValidOption name="compression" explain="压缩属性"/>
-    <ValidOption name="compressableMimeType" explain="压缩类型"/>
-    <ValidOption name="compressionMinSize" explain="压缩内容最小值"/>
-    <ValidOption name="noCompressionUserAgents" explain="排除的浏览器"/>
-    <ValidOption name="notAllowHTTPMethods" explain="禁用HTTP请求方法"/>
-    <ValidOption name="maxPostSize" explain="请求最大字节数"/>
-    <ValidOption name="connectionUploadTimeout" explain="上传超时时间"/>
-    <ValidOption name="disableUploadTimeout" explain="上传超时"/>
-    <ValidOption name="uriEncoding" explain="URL编码格式"/>
-    <ValidOption name="parseBodyMethods"/>
-    <ValidOption name="useBodyEncodingForUri" explain="uri处理"/>
-    <ValidOption name="useIpvHosts" explain="虚拟主机"/>
-    <ValidOption name="enableLookups" explain="DNS反向查找"/>
-    <ValidOption name="refererHeaderCheck" explain="referer头验证"/>
-    <ValidOption name="allowRefererHosts" explain="允许的主机名"/>
-    <ValidOption name="allowRefererIps" explain="允许的IP地址"/>
-
-    <ValidOption name="enableRC4"/>
-    <ValidOption name="ciphers"/>
-    <ValidOption name="opensslEnabled" explain="是否启用openSSL"/>
-    <ValidOption name="http2Enabled"/>
+    <ValidOption name="accesslog" />
+    <ValidOption name="accesslogDir"/>
+    <ValidOption name="addValve"/>
+    <ValidOption name="remoteFilterEnabled"/>
+    <ValidOption name="ssoEnabled"/>
+    <ValidOption name="allowAddr"/>
+    <ValidOption name="denyAddr"/>
+    <ValidOption name="allowHost"/>
+    <ValidOption name="denyHost"/>
+    <ValidOption name="filterHostType" explain="allow"/>
+    <ValidOption name="filterAddrType" explain="allow"/>
 </root>

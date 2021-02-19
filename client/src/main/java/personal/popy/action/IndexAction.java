@@ -9,19 +9,59 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import personal.popy.entity.User;
 
+import javax.annotation.PostConstruct;
+import javax.servlet.AsyncContext;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
-import java.util.Map;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Controller
 public class IndexAction extends BaseController {
     private static final Log log = LogFactory.getLog(IndexAction.class);
+    private byte[] data;
+
+    private int length;
+
+    @PostConstruct
+    public void init() throws Exception {
+        data = new byte[1024 * 8];
+        length = getClass().getResourceAsStream("/static/abc.html").read(data, 0, data.length);
+    }
+
     @GetMapping("index")
     @ResponseBody
-    public Map hello(HttpServletRequest request) {
+    public void hello(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        final AsyncContext asyncContext = request.startAsync();
+        response.getOutputStream().setWriteListener(new WriteListener() {
+            private int cnt;
 
-        log.info("233333");
-        return Collections.emptyMap();
+            @Override
+            public void onWritePossible() throws IOException {
+                while (response.getOutputStream().isReady() && cnt++ < 100) {
+                    response.getOutputStream().write(data, 0, length);
+                }
+                if (cnt >= 100) {
+                    asyncContext.complete();
+                }
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+
+            }
+        });
+    }
+
+    @GetMapping("index2")
+    @ResponseBody
+    public void hello2(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        ServletOutputStream outputStream = response.getOutputStream();
+
+        for (int i = 0; i < 100; i++) {
+            outputStream.write(data, 0, length);
+        }
     }
 
 
@@ -51,8 +91,6 @@ public class IndexAction extends BaseController {
                 ", 平均阻塞write： " + write.get();
         response.getWriter().println(cal);
     }*/
-
-
 
 
 }

@@ -15,7 +15,8 @@
         <module>record</module>
 		<module>localServer</module>
 		<module>copy</module>
-	</modules>
+        <module>misc-server</module>
+    </modules>
 
 	<properties>
 		<java.version>1.8</java.version>

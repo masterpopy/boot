@@ -31,10 +31,15 @@ public class RecordTest {
         aqs.add(4);
     }
 
+    private class newA{
+        public newA() {
+            throw new RuntimeException();
+        }
+    }
+
     @Test
     public void runAlgorithms() throws Exception {
-        System.out.println(Arrays.toString(File.listRoots()));
-        System.out.println(new File("d:/tools").exists());
+        new newA();
     }
 
     @Test

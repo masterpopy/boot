@@ -18,10 +18,12 @@ public class AioStream implements IoStream, CompletionHandler<Integer, Void> {
 
 
     @Override
-    public int read(ByteBuffer b, Consumer<Integer> ha) {
+    public void read(ByteBuffer b, Consumer<Integer> ha) {
         if (ha == null) {
             try {
-                return channel.read(b).get();
+                do {
+                    channel.read(b).get();
+                } while (b.hasRemaining());
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
                 close();
@@ -31,7 +33,6 @@ public class AioStream implements IoStream, CompletionHandler<Integer, Void> {
         } else {
             readHandle = ha;
             channel.read(b, null, this);
-            return 0;
         }
 
     }
@@ -39,7 +40,9 @@ public class AioStream implements IoStream, CompletionHandler<Integer, Void> {
     @Override
     public void write(ByteBuffer b) {
         try {
-            channel.write(b).get();
+            do {
+                channel.write(b).get();
+            } while (b.hasRemaining());
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
             close();

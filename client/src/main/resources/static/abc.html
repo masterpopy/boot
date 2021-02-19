@@ -7,21 +7,24 @@
 </head>
 <script src="https://lib.sinaapp.com/js/jquery/2.0.2/jquery-2.0.2.min.js"></script>
 <body>
-<button onclick="s()">点击</button>
+<input type="file" id="files" style="display:none" onchange="fnimport();"/>
+<input type="button" id="import" value="导入"/>
 </body>
 
 <script>
-    function s() {
-        $.ajax({
-            type: 'post',
-            url: '/post',
-            dataType: 'json',
-            data: JSON.stringify({age: 1}), //需要将当前的对象转换为json字符串,
-            contentType: 'application/json',
-            success: function (result) {
-                console.log(result);
-            }
-        })
+    $("#import").click(function () {//点击导入按钮，使files触发点击事件，然后完成读取文件的操作。
+
+    });
+
+    function fnimport() {
+        this.Min = (function () {
+            var cnt=0;
+            return () => cnt += 1;
+        })();
+
+        this.add = function () {
+            return this.Min()
+        }
     }
 </script>
 </html>
