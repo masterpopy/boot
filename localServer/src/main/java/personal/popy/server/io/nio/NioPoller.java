@@ -58,7 +58,7 @@ public class NioPoller implements Runnable {
         this.timeoutInterval = timeoutInterval;
     }
 
-    public void register(PollerEvent event) {
+    public void reg(PollerEvent event) {
         if (event == null)
             throw new NullPointerException();
         synchronized (events) {
@@ -83,7 +83,7 @@ public class NioPoller implements Runnable {
         }
     }
 
-    private boolean events() {
+    private boolean processReg() {
         if (events.size() == 0)
             return false;
         synchronized (events) {
@@ -106,7 +106,7 @@ public class NioPoller implements Runnable {
 
             try {
                 if (!close) {
-                    hasEvents = events();
+                    hasEvents = processReg();
                     if (wakeupCounter.getAndSet(-1L) > 0) {
                         // If we are here, means we have other stuff to do
                         // Do a non blocking select
@@ -117,7 +117,7 @@ public class NioPoller implements Runnable {
                     wakeupCounter.set(0);
                 }
                 if (close) {
-                    events();
+                    processReg();
                     timeout(0, false);
                     try {
                         selector.close();
@@ -133,7 +133,7 @@ public class NioPoller implements Runnable {
             }
             // Either we timed out or we woke up, process events first
             if (keyCount == 0) {
-                hasEvents = (hasEvents | events());
+                hasEvents = (hasEvents | processReg());
             }
 
             Iterator<SelectionKey> iterator =
