@@ -7,7 +7,6 @@ import java.nio.channels.Selector;
 import java.util.ArrayDeque;
 import java.util.ConcurrentModificationException;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class NioPoller implements Runnable {
 
