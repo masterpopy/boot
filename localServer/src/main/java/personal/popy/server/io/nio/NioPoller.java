@@ -6,7 +6,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.util.ArrayDeque;
 import java.util.ConcurrentModificationException;
-import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class NioPoller implements Runnable {
@@ -19,9 +19,9 @@ public class NioPoller implements Runnable {
     // Optimize expiration handling
     private long nextExpiration = 0;
 
-    private AtomicLong wakeupCounter = new AtomicLong(0);
+    private AtomicInteger wakeupCounter = new AtomicInteger();
 
-    private volatile int keyCount = 0;
+
 
     private int selectorTimeout = 1000;
 
@@ -103,11 +103,11 @@ public class NioPoller implements Runnable {
         while (true) {
 
             boolean hasEvents = false;
-
+            int keyCount = 0;
             try {
                 if (!close) {
                     hasEvents = processReg();
-                    if (wakeupCounter.getAndSet(-1L) > 0) {
+                    if (wakeupCounter.getAndSet(-1) > 0) {
                         // If we are here, means we have other stuff to do
                         // Do a non blocking select
                         keyCount = selector.selectNow();
@@ -134,18 +134,12 @@ public class NioPoller implements Runnable {
             // Either we timed out or we woke up, process events first
             if (keyCount == 0) {
                 hasEvents = (hasEvents | processReg());
+            } else {
+                for (SelectionKey selectedKey : selector.selectedKeys()) {
+                    processKey(selectedKey);
+                }
+                selector.selectedKeys().clear();
             }
-
-            Iterator<SelectionKey> iterator =
-                    keyCount > 0 ? selector.selectedKeys().iterator() : null;
-            // Walk through the collection of ready keys and dispatch
-            // any active event.
-            while (iterator != null && iterator.hasNext()) {
-                SelectionKey key = iterator.next();
-                iterator.remove();
-                processKey(key);
-            }
-
             // Process timeouts
             timeout(keyCount, hasEvents);
         }
