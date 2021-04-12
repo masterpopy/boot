@@ -1,4 +1,7 @@
-package personal.popy.server.io.nio;
+package personal.popy.newserver.nio;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -24,7 +27,7 @@ import static java.util.concurrent.locks.LockSupport.park;
 import static java.util.concurrent.locks.LockSupport.unpark;
 
 public class WorkerThread extends Thread {
-
+    private static final Logger logger = LoggerFactory.getLogger(WorkerThread.class);
     volatile boolean polling;
     private static final long LONGEST_DELAY = 9223372036853L;
 
@@ -61,7 +64,7 @@ public class WorkerThread extends Thread {
             SelectionKey[] keys = new SelectionKey[16];
             int oldState;
             int keyCount;
-            for (;;) {
+            for (; ; ) {
                 // Run all tasks
                 do {
                     synchronized (workLock) {
@@ -203,37 +206,33 @@ public class WorkerThread extends Thread {
         assert key.selector() == selector;
         final SelectableChannel channel = key.channel();
         if (currentThread() == this) {
-//            log.logf(FQCN, Logger.Level.TRACE, null, "Cancelling key %s of %s (same thread)", key, channel);
             try {
                 key.cancel();
                 try {
                     selector.selectNow();
                 } catch (IOException e) {
-//                    log.selectionError(e);
+                    logger.error("error in select", e);
                 }
             } catch (Throwable t) {
-//                log.logf(FQCN, Logger.Level.TRACE, t, "Error cancelling key %s of %s (same thread)", key, channel);
+                logger.info("Error cancelling key {} of {} (same thread)", key, channel);
             }
         } else if (OLD_LOCKING) {
-//            log.logf(FQCN, Logger.Level.TRACE, null, "Cancelling key %s of %s (same thread, old locking)", key, channel);
             final SynchTask task = new SynchTask();
             queueTask(task);
             try {
-                // Prevent selector from sleeping until we're done!
                 selector.wakeup();
                 key.cancel();
             } catch (Throwable t) {
-//                log.logf(FQCN, Logger.Level.TRACE, t, "Error cancelling key %s of %s (same thread, old locking)", key, channel);
+                logger.info("Error in cancelling key {}", key);
             } finally {
                 task.done();
             }
         } else {
-//            log.logf(FQCN, Logger.Level.TRACE, null, "Cancelling key %s of %s (other thread)", key, channel);
             try {
                 key.cancel();
                 selector.wakeup();
             } catch (Throwable t) {
-//                log.logf(FQCN, Logger.Level.TRACE, t, "Error cancelling key %s of %s (other thread)", key, channel);
+                logger.info("Error in cancelling key {}", key);
             }
         }
     }
@@ -273,7 +272,7 @@ public class WorkerThread extends Thread {
         volatile boolean done;
 
         public void run() {
-            while (! done) {
+            while (!done) {
                 park();
             }
         }
@@ -289,31 +288,29 @@ public class WorkerThread extends Thread {
 //            log.tracef("Running task %s", command);
             command.run();
         } catch (Throwable t) {
-//            log.taskFailed(command, t);
+            logger.trace("Error in run task: {}", command);
         }
     }
 
     public static void safeClose(final Selector resource) {
         try {
             if (resource != null) {
-//                closeMsg.closingResource(resource);
                 resource.close();
             }
         } catch (ClosedChannelException ignored) {
         } catch (Throwable t) {
-//            closeMsg.resourceCloseFailed(t, resource);
+            logger.trace("Error in close Selector {}", resource);
         }
     }
 
     public static void safeClose(final Closeable resource) {
         try {
             if (resource != null) {
-//                closeMsg.closingResource(resource);
                 resource.close();
             }
         } catch (ClosedChannelException ignored) {
         } catch (Throwable t) {
-//            closeMsg.resourceCloseFailed(t, resource);
+            logger.trace("Error in close resource {}", resource);
         }
     }
 
@@ -428,8 +425,8 @@ public class WorkerThread extends Thread {
                 // idempotent
                 return;
             }
-        } while (! stateUpdater.compareAndSet(this, oldState, oldState | SHUTDOWN));
-        if(currentThread() != this) {
+        } while (!stateUpdater.compareAndSet(this, oldState, oldState | SHUTDOWN));
+        if (currentThread() != this) {
             selector.wakeup();
         }
     }
@@ -438,7 +435,8 @@ public class WorkerThread extends Thread {
         if (currentThread() == this) {
             try {
                 key.interestOps(key.interestOps() | ops);
-            } catch (CancelledKeyException ignored) {}
+            } catch (CancelledKeyException ignored) {
+            }
         } else if (OLD_LOCKING) {
             final SynchTask task = new SynchTask();
             queueTask(task);
@@ -460,10 +458,11 @@ public class WorkerThread extends Thread {
     }
 
     void clearOps(final SelectionKey key, final int ops) {
-        if (currentThread() == this || ! OLD_LOCKING) {
+        if (currentThread() == this || !OLD_LOCKING) {
             try {
                 key.interestOps(key.interestOps() & ~ops);
-            } catch (CancelledKeyException ignored) {}
+            } catch (CancelledKeyException ignored) {
+            }
         } else {
             final SynchTask task = new SynchTask();
             queueTask(task);

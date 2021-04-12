@@ -1,4 +1,7 @@
-package personal.popy.server.io.nio;
+package personal.popy.newserver.nio;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.channels.CancelledKeyException;
@@ -9,9 +12,9 @@ import java.util.ConcurrentModificationException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class NioPoller implements Runnable {
-
+    private static final Logger logger = LoggerFactory.getLogger(NioPoller.class);
     private Selector selector;
-    private final ArrayDeque<PollerEvent> events =
+    private final ArrayDeque<NioChannel> events =
             new ArrayDeque<>(32);
 
     private volatile boolean close = false;
@@ -31,16 +34,12 @@ public class NioPoller implements Runnable {
     private int timeoutInterval = 1000;
 
     public NioPoller(Selector selector) {
+        if (selector == null)
+            throw new NullPointerException();
         this.selector = selector;
     }
 
-    /**
-     * Destroy the poller.
-     */
     protected void destroy() {
-        // Wait for polltime before doing anything, so that the poller threads
-        // exit, otherwise parallel closure of sockets which are still
-        // in the poller can cause problems
         close = true;
         selector.wakeup();
     }
@@ -57,7 +56,7 @@ public class NioPoller implements Runnable {
         this.timeoutInterval = timeoutInterval;
     }
 
-    public void reg(PollerEvent event) {
+    public void reg(NioChannel event) {
         if (event == null)
             throw new NullPointerException();
         synchronized (events) {
@@ -68,7 +67,7 @@ public class NioPoller implements Runnable {
         }
     }
 
-    public void ops(PollerEvent event) {
+    public void ops(NioChannel event) {
         SelectionKey key = event.ch.keyFor(selector);
         try {
             if (key != null)
@@ -86,11 +85,11 @@ public class NioPoller implements Runnable {
         if (events.size() == 0)
             return false;
         synchronized (events) {
-            for (PollerEvent event : events) {
+            for (NioChannel event : events) {
                 try {
                     event.ch.register(selector, SelectionKey.OP_READ, event);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } catch (Throwable e) {
+                    logger.error("error in register", e);
                 }
             }
         }
@@ -107,8 +106,6 @@ public class NioPoller implements Runnable {
                 if (!close) {
                     hasEvents = processReg();
                     if (wakeupCounter.getAndSet(-1) > 0) {
-                        // If we are here, means we have other stuff to do
-                        // Do a non blocking select
                         keyCount = selector.selectNow();
                     } else {
                         keyCount = selector.select(selectorTimeout);
@@ -121,7 +118,7 @@ public class NioPoller implements Runnable {
                     try {
                         selector.close();
                     } catch (IOException ioe) {
-                        ioe.printStackTrace();
+                        logger.error("error in selector close", ioe);
                     }
                     break;
                 }
@@ -144,11 +141,11 @@ public class NioPoller implements Runnable {
         }
     }
 
-    private void unreg(SelectionKey key, PollerEvent events) {
+    private void unReg(SelectionKey key, NioChannel events) {
         try {
             key.interestOps(key.interestOps() & (~key.readyOps()));
         } catch (CancelledKeyException e) {
-            e.printStackTrace();
+            logger.trace("Error in key interest: {}", key);
             cancelledKey(key);
         }
         events.ops = key.interestOps();
@@ -156,12 +153,12 @@ public class NioPoller implements Runnable {
 
     private void processKey(SelectionKey key) {
         Object attachment = key.attachment();
-        if (attachment instanceof PollerEvent) {
-            unreg(key, (PollerEvent) attachment);
+        if (attachment instanceof NioChannel) {
+            unReg(key, (NioChannel) attachment);
             try {
-                ((PollerEvent) attachment).process(key.readyOps());
+                ((NioChannel) attachment).process(key.readyOps());
             } catch (Throwable e) {
-                e.printStackTrace();
+                logger.trace("Error in process key: {}", attachment);
                 cancelledKey(key);
             }
         }
@@ -169,13 +166,7 @@ public class NioPoller implements Runnable {
 
     private void timeout(int keyCount, boolean hasEvents) {
         long now = System.currentTimeMillis();
-        // This method is called on every loop of the Poller. Don't process
-        // timeouts on every loop of the Poller since that would create too
-        // much load and timeouts can afford to wait a few seconds.
-        // However, do process timeouts if any of the following are true:
-        // - the selector simply timed out (suggests there isn't much load)
-        // - the nextExpiration time has passed
-        // - the server socket is being closed
+
         if (nextExpiration > 0 && (keyCount > 0 || hasEvents) && (now < nextExpiration) && !close) {
             return;
         }
@@ -183,9 +174,8 @@ public class NioPoller implements Runnable {
         try {
             for (SelectionKey key : selector.keys()) {
                 try {
-                    PollerEvent event = (PollerEvent) key.attachment();
+                    NioChannel event = (NioChannel) key.attachment();
                     if (event == null) {
-                        // We don't support any keys without attachments
                         cancelledKey(key);
                     } else if (close) {
                         cancelledKey(key);
@@ -193,14 +183,12 @@ public class NioPoller implements Runnable {
                             (event.ops & SelectionKey.OP_WRITE) == SelectionKey.OP_WRITE) {
                         boolean readTimeout = false;
                         boolean writeTimeout = false;
-                        // Check for read timeout
                         if ((event.ops & SelectionKey.OP_READ) == SelectionKey.OP_READ) {
                             long timeout = event.readTimeout;
                             if (timeout > 0 && now - event.lastRead > timeout) {
                                 readTimeout = true;
                             }
                         }
-                        // Check for write timeout
                         if (!readTimeout && (event.ops & SelectionKey.OP_WRITE) == SelectionKey.OP_WRITE) {
                             long timeout = event.writeTimeout;
                             if (timeout > 0 && now - event.lastWrite > timeout) {
@@ -209,7 +197,6 @@ public class NioPoller implements Runnable {
                         }
                         if (readTimeout || writeTimeout) {
                             key.interestOps(0);
-                            // Avoid duplicate timeout calls
                             event.ops = 0;
                             if (readTimeout && !event.processReadTimeout()) {
                                 cancelledKey(key);
@@ -223,19 +210,15 @@ public class NioPoller implements Runnable {
                 }
             }
         } catch (ConcurrentModificationException cme) {
-            // See https://bz.apache.org/bugzilla/show_bug.cgi?id=57943
             cme.printStackTrace();
         }
-        // For logging purposes only
         nextExpiration = System.currentTimeMillis() + timeoutInterval;
     }
 
     private void cancelledKey(SelectionKey key) {
         try {
-            // If is important to cancel the key first, otherwise a deadlock may occur between the
-            // poller select and the socket channel close which would cancel the key
             if (key != null) {
-                PollerEvent attachment = (PollerEvent) key.attach(null);
+                NioChannel attachment = (NioChannel) key.attach(null);
                 if (attachment != null) {
                     attachment.ops = 0;
                     attachment.cancelled();
@@ -245,7 +228,7 @@ public class NioPoller implements Runnable {
                 }
             }
         } catch (Throwable e) {
-            e.printStackTrace();
+            logger.trace("Error in cancelling key: {}", key);
         }
     }
 

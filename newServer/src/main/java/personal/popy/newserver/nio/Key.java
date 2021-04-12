@@ -1,4 +1,4 @@
-package personal.popy.server.io.nio;
+package personal.popy.newserver.nio;
 
 public interface Key {
     boolean remove();

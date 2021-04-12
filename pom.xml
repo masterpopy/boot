@@ -16,6 +16,7 @@
 		<module>localServer</module>
 		<module>copy</module>
         <module>misc-server</module>
+        <module>newServer</module>
     </modules>
 
 	<properties>

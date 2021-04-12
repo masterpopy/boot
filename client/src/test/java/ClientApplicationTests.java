@@ -1,8 +1,6 @@
 import org.junit.Test;
-import sun.nio.cs.ext.GBK;
 
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 
 /*@RunWith(SpringRunner.class)
 @SpringBootTest*/
@@ -10,14 +8,14 @@ public class ClientApplicationTests {
 
 
     public static void main(String[] args) throws Exception {
-        Charset charset= new GBK();
+
     }
 
 
 
     @Test
     public void runs() throws Exception {
-        System.out.println(new Sio((short) 0x600F));
+
     }
 
     private static int getInt(ByteBuffer b) {
